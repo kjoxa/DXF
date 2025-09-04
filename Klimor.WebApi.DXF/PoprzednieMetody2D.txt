@@ -1,0 +1,719 @@
+//private void Generate2D(List<Element> elements, string filePath)
+        //{
+        //    var dxf = new DxfDocument();
+
+        //    foreach (var el in elements)
+        //    {
+        //        // vertices ju¿ masz:
+        //        var vertices = new List<Polyline2DVertex>
+        //        {
+        //            new Polyline2DVertex(el.x1, el.y1, 0),
+        //            new Polyline2DVertex(el.x2, el.y1, 0),
+        //            new Polyline2DVertex(el.x2, el.y2, 0),
+        //            new Polyline2DVertex(el.x1, el.y2, 0)
+        //        };
+
+        //        // tu U¯YWAMY Polyline2D, nie Polyline:
+        //        var poly = new Polyline2D(vertices, true) // true = IsClosed
+        //        {
+        //            Layer = new Layer(el.label) { Color = new AciColor(5) }
+        //        };
+
+        //        dxf.Entities.Add(poly);
+        //    }
+
+        //    dxf.Save(filePath);
+        //}
+
+        //private void Generate2D(List<Element> elements, string filePath)
+        //{
+        //    var dxf = new DxfDocument();
+
+        //    // 1. Dodaj wszystkie warstwy z unikalnych labeli
+        //    var uniqueLabels = elements.Select(e => e.label).Distinct().ToList();
+        //    byte colorIndex = 1; // zaczniemy od koloru ACI=1 (czerwony)
+
+        //    foreach (var label in uniqueLabels)
+        //    {
+        //        if (colorIndex > 255) colorIndex = 1; // pêtla po palecie
+        //        var layer = new Layer(label) { Color = new AciColor(colorIndex) };
+        //        dxf.Layers.Add(layer);
+        //        colorIndex++;
+        //    }
+
+        //    // 2. Rysowanie geometrii
+        //    foreach (var el in elements)
+        //    {
+        //        List<Polyline2DVertex> vertices;
+
+        //        if (el.label.StartsWith("Operational", StringComparison.OrdinalIgnoreCase))
+        //        {
+        //            vertices = new List<Polyline2DVertex>
+        //    {
+        //        new Polyline2DVertex(el.x1, el.y1, 0),
+        //        new Polyline2DVertex(el.x2, el.y1, 0),
+        //        new Polyline2DVertex(el.x2, el.y2, 0),
+        //        new Polyline2DVertex(el.x1, el.y2, 0)
+        //    };
+        //        }
+        //        else if (el.label.StartsWith("Down", StringComparison.OrdinalIgnoreCase) ||
+        //                 el.label.StartsWith("Middle", StringComparison.OrdinalIgnoreCase) ||
+        //                 el.label.StartsWith("Up", StringComparison.OrdinalIgnoreCase))
+        //        {
+        //            vertices = new List<Polyline2DVertex>
+        //    {
+        //        new Polyline2DVertex(el.x1, el.z1, 0),
+        //        new Polyline2DVertex(el.x2, el.z1, 0),
+        //        new Polyline2DVertex(el.x2, el.z2, 0),
+        //        new Polyline2DVertex(el.x1, el.z2, 0)
+        //    };
+        //        }
+        //        else
+        //        {
+        //            // Reszta (Frame, Back, Connector, Block, FC, AD, Hole)
+        //            vertices = new List<Polyline2DVertex>
+        //    {
+        //        new Polyline2DVertex(el.x1, el.y1, 0),
+        //        new Polyline2DVertex(el.x2, el.y1, 0),
+        //        new Polyline2DVertex(el.x2, el.y2, 0),
+        //        new Polyline2DVertex(el.x1, el.y2, 0)
+        //    };
+        //        }
+
+        //        var poly = new Polyline2D(vertices, true)
+        //        {
+        //            Layer = dxf.Layers[el.label] // przypisanie do istniej¹cej warstwy
+        //        };
+
+        //        dxf.Entities.Add(poly);
+        //    }
+
+        //    dxf.Save(filePath);
+        //}
+
+        private void Generate2D_old(List<Element> elements, string filePath)
+        {
+            var dxf = new DxfDocument();
+
+            // 1. Dodaj wszystkie warstwy z unikalnych labeli
+            var uniqueLabels = elements.Select(e => e.label).Distinct().ToList();
+            byte colorIndex = 1; // zaczniemy od koloru ACI=1 (czerwony)
+
+            foreach (var label in uniqueLabels)
+            {
+                if (colorIndex > 255) colorIndex = 1; // pêtla po palecie
+                var layer = new Layer(label) { Color = new AciColor(colorIndex) };
+                dxf.Layers.Add(layer);
+                colorIndex++;
+            }
+
+            // 2. Rysowanie geometrii
+            foreach (var el in elements)
+            {
+                List<Polyline2DVertex> vertices;
+
+                // widoki z góry
+                switch (el.label)
+                {
+                    case "Operational":
+                        vertices = new List<Polyline2DVertex>
+                        {
+                        new Polyline2DVertex(el.x1, el.y1, 0),
+                        new Polyline2DVertex(el.x2, el.y1, 0),
+                        new Polyline2DVertex(el.x2, el.y2, 0),
+                        new Polyline2DVertex(el.x1, el.y2, 0)
+                        };
+                        break;
+
+                    case "Down":
+                        el.x1 += 1000;
+                        el.x2 += 1000;
+                        el.y1 += 1000;
+                        el.y2 += 1000;
+                        el.z1 += 1000;
+                        el.z2 += 1000;
+                        vertices = new List<Polyline2DVertex>
+                        {
+                        new Polyline2DVertex(el.x1, el.z1, 0),
+                        new Polyline2DVertex(el.x2, el.z1, 0),
+                        new Polyline2DVertex(el.x2, el.z2, 0),
+                        new Polyline2DVertex(el.x1, el.z2, 0)
+                        };
+                        break;
+                    //case "Middle":
+                    //    vertices = new List<Polyline2DVertex>
+                    //    {
+                    //    new Polyline2DVertex(el.x1, el.y1, 0),
+                    //    new Polyline2DVertex(el.x2, el.y1, 0),
+                    //    new Polyline2DVertex(el.x2, el.y2, 0),
+                    //    new Polyline2DVertex(el.x1, el.y2, 0)
+                    //    };
+                    //    break;
+                    //case "Up":
+                    //    vertices = new List<Polyline2DVertex>
+                    //    {
+                    //    new Polyline2DVertex(el.x1, el.z1, 0),
+                    //    new Polyline2DVertex(el.x2, el.z1, 0),
+                    //    new Polyline2DVertex(el.x2, el.z2, 0),
+                    //    new Polyline2DVertex(el.x1, el.z2, 0)
+                    //    };
+                    //    break;
+
+                    default:
+                        vertices = new List<Polyline2DVertex>
+                        {
+                        new Polyline2DVertex(el.x1, el.z1, 0),
+                        new Polyline2DVertex(el.x2, el.z1, 0),
+                        new Polyline2DVertex(el.x2, el.z2, 0),
+                        new Polyline2DVertex(el.x1, el.z2, 0)
+                        };
+                        break;
+                }
+
+                var poly = new Polyline2D(vertices, true)
+                {
+                    Layer = dxf.Layers[el.label]
+                };
+
+                dxf.Entities.Add(poly);
+            }
+
+            dxf.Save(filePath);
+        }
+
+        private void Generate2D_lepiej(List<Element> elements, string filePath)
+        {
+            var dxf = new DxfDocument();
+
+            // 1. Dodaj wszystkie warstwy z unikalnych labeli
+            var uniqueLabels = elements.Select(e => e.label).Distinct().ToList();
+            byte colorIndex = 1; // zaczniemy od koloru ACI=1 (czerwony)
+
+            foreach (var label in uniqueLabels)
+            {
+                if (colorIndex > 255) colorIndex = 1;
+                var layer = new Layer(label) { Color = new AciColor(colorIndex) };
+                dxf.Layers.Add(layer);
+                colorIndex++;
+            }
+
+            double offset = 5; // gruboœæ profilu / wielkoœæ naro¿nika
+
+            // Funkcja do wype³nienia naro¿nika prostok¹tami
+            void FillCorner(DxfDocument doc, Layer layer, Vector2 outer, Vector2 inner)
+            {
+                double step = 5; // wielkoœæ prostok¹ta
+                double startX = Math.Min(outer.X, inner.X);
+                double endX = Math.Max(outer.X, inner.X);
+                double startY = Math.Min(outer.Y, inner.Y);
+                double endY = Math.Max(outer.Y, inner.Y);
+
+                for (double x = startX; x < endX; x += step)
+                {
+                    for (double y = startY; y < endY; y += step)
+                    {
+                        var verts = new List<Polyline2DVertex>
+            {
+                new Polyline2DVertex(x, y, 0),
+                new Polyline2DVertex(x + step, y, 0),
+                new Polyline2DVertex(x + step, y + step, 0),
+                new Polyline2DVertex(x, y + step, 0)
+            };
+                        var rect = new Polyline2D(verts, true)
+                        {
+                            Layer = layer,
+                            Color = new AciColor(7) // czarny
+                        };
+                        doc.Entities.Add(rect);
+                    }
+                }
+            }
+
+            void FillCornerLines(DxfDocument doc, Layer layer, Vector2 outer, Vector2 inner)
+            {
+                double step = 1; // odleg³oœæ linii
+                double startX = Math.Min(outer.X, inner.X);
+                double endX = Math.Max(outer.X, inner.X);
+                double startY = Math.Min(outer.Y, inner.Y);
+                double endY = Math.Max(outer.Y, inner.Y);
+
+                for (double i = 0; i < (endX - startX); i += step)
+                {
+                    var line = new netDxf.Entities.Line(
+                        new Vector2(startX + i, startY),
+                        new Vector2(startX, startY + i))
+                    {
+                        Layer = layer
+                    };
+                    doc.Entities.Add(line);
+                }
+            }
+
+            // 2. Rysowanie geometrii
+            foreach (var el in elements.Where(l => l.label == "Operational"))
+            {
+                List<Polyline2DVertex> outerVertices;
+                List<Polyline2DVertex> innerVertices;
+
+                bool useXY = el.label == "Operational"; // XY dla Operational, XZ dla reszty
+
+                if (useXY)
+                {
+                    outerVertices = new List<Polyline2DVertex>
+            {
+                new Polyline2DVertex(el.x1, el.y1, 0),
+                new Polyline2DVertex(el.x2, el.y1, 0),
+                new Polyline2DVertex(el.x2, el.y2, 0),
+                new Polyline2DVertex(el.x1, el.y2, 0)
+            };
+
+                    innerVertices = new List<Polyline2DVertex>
+            {
+                new Polyline2DVertex(el.x1 + offset, el.y1 + offset, 0),
+                new Polyline2DVertex(el.x2 - offset, el.y1 + offset, 0),
+                new Polyline2DVertex(el.x2 - offset, el.y2 - offset, 0),
+                new Polyline2DVertex(el.x1 + offset, el.y2 - offset, 0)
+            };
+                }
+                else
+                {
+                    outerVertices = new List<Polyline2DVertex>
+            {
+                new Polyline2DVertex(el.x1, el.z1, 0),
+                new Polyline2DVertex(el.x2, el.z1, 0),
+                new Polyline2DVertex(el.x2, el.z2, 0),
+                new Polyline2DVertex(el.x1, el.z2, 0)
+            };
+
+                    innerVertices = new List<Polyline2DVertex>
+            {
+                new Polyline2DVertex(el.x1 + offset, el.z1 + offset, 0),
+                new Polyline2DVertex(el.x2 - offset, el.z1 + offset, 0),
+                new Polyline2DVertex(el.x2 - offset, el.z2 - offset, 0),
+                new Polyline2DVertex(el.x1 + offset, el.z2 - offset, 0)
+            };
+                }
+
+                // Dodaj zewnêtrzny
+                var outerPoly = new Polyline2D(outerVertices, true) { Layer = dxf.Layers[el.label] };
+                dxf.Entities.Add(outerPoly);
+
+                // Dodaj wewnêtrzny
+                var innerPoly = new Polyline2D(innerVertices, true) { Layer = dxf.Layers[el.label] };
+                dxf.Entities.Add(innerPoly);
+
+                // Naro¿niki (³¹cz¹ce wewnêtrzny i zewnêtrzny)
+                if (useXY)
+                {
+                    FillCornerSolid(dxf, dxf.Layers[el.label], new Vector2(el.x1, el.y1), new Vector2(el.x1 + offset, el.y1 + offset));
+                    FillCornerSolid(dxf, dxf.Layers[el.label], new Vector2(el.x2, el.y1), new Vector2(el.x2 - offset, el.y1 + offset));
+                    FillCornerSolid(dxf, dxf.Layers[el.label], new Vector2(el.x2, el.y2), new Vector2(el.x2 - offset, el.y2 - offset));
+                    FillCornerSolid(dxf, dxf.Layers[el.label], new Vector2(el.x1, el.y2), new Vector2(el.x1 + offset, el.y2 - offset));
+                }
+                else
+                {
+                    FillCornerSolid(dxf, dxf.Layers[el.label], new Vector2(el.x1, el.z1), new Vector2(el.x1 + offset, el.z1 + offset));
+                    FillCornerSolid(dxf, dxf.Layers[el.label], new Vector2(el.x2, el.z1), new Vector2(el.x2 - offset, el.z1 + offset));
+                    FillCornerSolid(dxf, dxf.Layers[el.label], new Vector2(el.x2, el.z2), new Vector2(el.x2 - offset, el.z2 - offset));
+                    FillCornerSolid(dxf, dxf.Layers[el.label], new Vector2(el.x1, el.z2), new Vector2(el.x1 + offset, el.z2 - offset));
+                }
+            }
+
+            dxf.Save(filePath);
+        }
+
+        void FillCornerSolid(DxfDocument doc, Layer layer, Vector2 outer, Vector2 inner)
+        {
+            double step = 0.5; // im mniejsze, tym bardziej wygl¹da jak wype³niony
+            double startX = Math.Min(outer.X, inner.X);
+            double endX = Math.Max(outer.X, inner.X);
+            double startY = Math.Min(outer.Y, inner.Y);
+            double endY = Math.Max(outer.Y, inner.Y);
+
+            for (double x = startX; x < endX; x += step)
+            {
+                var line = new netDxf.Entities.Line(
+                    new Vector2(x, startY),
+                    new Vector2(x, endY))
+                {
+                    Layer = layer
+                };
+                doc.Entities.Add(line);
+            }
+        }
+
+        private void Generate2D_jakotako(List<Element> elements, string filePath)
+        {
+            var dxf = new DxfDocument();
+
+            // 1. Dodaj wszystkie warstwy z unikalnych labeli
+            var uniqueLabels = elements.Select(e => e.label).Distinct().ToList();
+            byte colorIndex = 1; // zaczynamy od koloru ACI=1 (czerwony)
+
+            foreach (var label in uniqueLabels)
+            {
+                if (colorIndex > 255) colorIndex = 1;
+                var layer = new Layer(label) { Color = new AciColor(1) };
+                dxf.Layers.Add(layer);
+                //colorIndex++;
+            }
+
+            // Warstwa na czarne naro¿niki
+            var cornerLayer = new Layer("CornerFill") { Color = new AciColor(1) }; // czarny
+            dxf.Layers.Add(cornerLayer);
+
+            // 2. Rysowanie geometrii
+            foreach (var el in elements)
+            {
+                double offset = 5; // gruboœæ profilu
+                double cornerSize = 5; // rozmiar wype³nionego kwadratu naro¿nika
+
+                List<Polyline2DVertex> outerVertices;
+                List<Polyline2DVertex> innerVertices;
+
+                bool useXY = el.label == "Operational";
+
+                if (useXY)
+                {
+                    outerVertices = new List<Polyline2DVertex>
+            {
+                new Polyline2DVertex(el.x1, el.y1, 0),
+                new Polyline2DVertex(el.x2, el.y1, 0),
+                new Polyline2DVertex(el.x2, el.y2, 0),
+                new Polyline2DVertex(el.x1, el.y2, 0)
+            };
+
+                    innerVertices = new List<Polyline2DVertex>
+            {
+                new Polyline2DVertex(el.x1 + offset, el.y1 + offset, 0),
+                new Polyline2DVertex(el.x2 - offset, el.y1 + offset, 0),
+                new Polyline2DVertex(el.x2 - offset, el.y2 - offset, 0),
+                new Polyline2DVertex(el.x1 + offset, el.y2 - offset, 0)
+            };
+                }
+                else
+                {
+                    outerVertices = new List<Polyline2DVertex>
+            {
+                new Polyline2DVertex(el.x1, el.z1, 0),
+                new Polyline2DVertex(el.x2, el.z1, 0),
+                new Polyline2DVertex(el.x2, el.z2, 0),
+                new Polyline2DVertex(el.x1, el.z2, 0)
+            };
+
+                    innerVertices = new List<Polyline2DVertex>
+            {
+                new Polyline2DVertex(el.x1 + offset, el.z1 + offset, 0),
+                new Polyline2DVertex(el.x2 - offset, el.z1 + offset, 0),
+                new Polyline2DVertex(el.x2 - offset, el.z2 - offset, 0),
+                new Polyline2DVertex(el.x1 + offset, el.z2 - offset, 0)
+            };
+                }
+
+                // Dodaj zewnêtrzny prostok¹t
+                var outerPoly = new Polyline2D(outerVertices, true) { Layer = dxf.Layers[el.label] };
+                dxf.Entities.Add(outerPoly);
+
+                // Dodaj wewnêtrzny prostok¹t
+                var innerPoly = new Polyline2D(innerVertices, true) { Layer = dxf.Layers[el.label] };
+                dxf.Entities.Add(innerPoly);
+
+                // Dodaj naro¿niki jako wype³nione czarne kwadraty
+                var cornerPositions = new List<(double x, double y)>
+        {
+            (outerVertices[0].Position.X, outerVertices[0].Position.Y), // lewy dolny
+            (outerVertices[1].Position.X - cornerSize, outerVertices[1].Position.Y), // prawy dolny
+            (outerVertices[2].Position.X - cornerSize, outerVertices[2].Position.Y - cornerSize), // prawy górny
+            (outerVertices[3].Position.X, outerVertices[3].Position.Y - cornerSize) // lewy górny
+        };
+
+                foreach (var (x, y) in cornerPositions)
+                {
+                    var cornerVerts = new List<Polyline2DVertex>
+            {
+                new Polyline2DVertex(x, y, 0),
+                new Polyline2DVertex(x + cornerSize, y, 0),
+                new Polyline2DVertex(x + cornerSize, y + cornerSize, 0),
+                new Polyline2DVertex(x, y + cornerSize, 0)
+            };
+
+                    var cornerPoly = new Polyline2D(cornerVerts, true) { Layer = cornerLayer };
+                    dxf.Entities.Add(cornerPoly);
+                }
+
+                // Opcjonalnie: linie przek¹tne wewnêtrznego -> zewnêtrznego
+                // (mo¿esz je zostawiæ lub usun¹æ)
+                for (int i = 0; i < 4; i++)
+                {
+                    var start = outerVertices[i].Position;
+                    var end = innerVertices[i].Position;
+                    dxf.Entities.Add(new netDxf.Entities.Line(new Vector2(start.X, start.Y), new Vector2(end.X, end.Y))
+                    {
+                        Layer = dxf.Layers[el.label]
+                    });
+                }
+            }
+
+            dxf.Save(filePath);
+        }
+
+
+                        // Opcjonalnie: linie przek¹tne wewnêtrznego -> zewnêtrznego
+                //for (int i = 0; i < 4; i++)
+                //{
+                //    var start = outerVertices[i].Position;
+                //    var end = innerVertices[i].Position;
+                //    dxf.Entities.Add(new netDxf.Entities.Line(new Vector2(start.X, start.Y), new Vector2(end.X, end.Y))
+                //    {
+                //        Layer = dxf.Layers[el.label]
+                //    });
+                //}
+
+OK
+
+private void Generate2DL(List<Element> elements, string filePath)
+        {
+            var dxf = new DxfDocument();
+
+            // 1. Dodaj wszystkie warstwy z unikalnych labeli
+            var uniqueLabels = elements.Select(e => e.label).Distinct().ToList();
+            byte colorIndex = 1; // zaczynamy od koloru ACI=1 (czerwony)
+
+            foreach (var label in uniqueLabels)
+            {
+                if (colorIndex > 255) colorIndex = 1;
+                var layer = new Layer(label) { Color = new AciColor(colorIndex) };
+                dxf.Layers.Add(layer);
+                colorIndex++;
+            }
+
+            // Warstwa na czarne naro¿niki
+            var cornerLayer = new Layer("CornerFill") { Color = new AciColor(7) }; // czarny
+            dxf.Layers.Add(cornerLayer);
+
+            // 2. Rysowanie geometrii
+            foreach (var el in elements)
+            {
+                double offset = 5; // gruboœæ profilu
+                double cornerSize = 5; // rozmiar wype³nionego kwadratu naro¿nika
+
+                List<Polyline2DVertex> outerVertices;
+                List<Polyline2DVertex> innerVertices;
+
+                bool useXY = true;//el.label == "Operational";
+
+                if (useXY)
+                {
+                    outerVertices = new List<Polyline2DVertex>
+                    {
+                        new Polyline2DVertex(el.x1, el.y1, 0),
+                        new Polyline2DVertex(el.x2, el.y1, 0),
+                        new Polyline2DVertex(el.x2, el.y2, 0),
+                        new Polyline2DVertex(el.x1, el.y2, 0)
+                    };
+
+                    innerVertices = new List<Polyline2DVertex>
+                    {
+                        new Polyline2DVertex(el.x1 + offset, el.y1 + offset, 0),
+                        new Polyline2DVertex(el.x2 - offset, el.y1 + offset, 0),
+                        new Polyline2DVertex(el.x2 - offset, el.y2 - offset, 0),
+                        new Polyline2DVertex(el.x1 + offset, el.y2 - offset, 0)
+                    };
+                }
+                else
+                {
+                    outerVertices = new List<Polyline2DVertex>
+                    {
+                        new Polyline2DVertex(el.x1, el.z1, 0),
+                        new Polyline2DVertex(el.x2, el.z1, 0),
+                        new Polyline2DVertex(el.x2, el.z2, 0),
+                        new Polyline2DVertex(el.x1, el.z2, 0)
+                    };
+
+                    innerVertices = new List<Polyline2DVertex>
+                    {
+                        new Polyline2DVertex(el.x1 + offset, el.z1 + offset, 0),
+                        new Polyline2DVertex(el.x2 - offset, el.z1 + offset, 0),
+                        new Polyline2DVertex(el.x2 - offset, el.z2 - offset, 0),
+                        new Polyline2DVertex(el.x1 + offset, el.z2 - offset, 0)
+                    };
+                }
+
+                // Dodaj zewnêtrzny prostok¹t
+                var outerPoly = new Polyline2D(outerVertices, true) { Layer = dxf.Layers[el.label] };
+                dxf.Entities.Add(outerPoly);
+
+                // Dodaj wewnêtrzny prostok¹t
+                var innerPoly = new Polyline2D(innerVertices, true) { Layer = dxf.Layers[el.label] };
+                dxf.Entities.Add(innerPoly);
+
+                // Lista naro¿ników: lewy-dolny, prawy-dolny, prawy-górny, lewy-górny
+                var corners = new List<Vector2>
+                {
+                    new Vector2(el.x1, el.y1),
+                    new Vector2(el.x2 - offset, el.y1),
+                    new Vector2(el.x2 - offset, el.y2 - offset),
+                    new Vector2(el.x1, el.y2 - offset)
+                };
+
+                foreach (var c in corners)
+                {
+                    var cornerVertices = new List<Polyline2DVertex>
+                    {
+                        new Polyline2DVertex(c.X, c.Y, 0),
+                        new Polyline2DVertex(c.X + offset, c.Y, 0),
+                        new Polyline2DVertex(c.X + offset, c.Y + offset, 0),
+                        new Polyline2DVertex(c.X, c.Y + offset, 0)
+                    };
+                    var cornerPolyline = new Polyline2D(cornerVertices, true);
+                    var hatch = new Hatch(HatchPattern.Solid, true);
+                    hatch.BoundaryPaths.Add(new HatchBoundaryPath(new List<netDxf.Entities.EntityObject> { cornerPolyline }));
+                    hatch.Layer = dxf.Layers["CornerFill"];
+                    hatch.Color = new AciColor(7); // czarny
+                    dxf.Entities.Add(hatch);
+                }
+            }
+
+            dxf.Save(filePath);
+        }
+
+        private void Generate2Dl(List<Element> elements, string filePath)
+        {
+            var dxf = new DxfDocument();
+
+            // 1) Warstwy z labeli
+            var uniqueLabels = elements.Select(e => e.label).Distinct().ToList();
+            byte colorIndex = 1;
+            foreach (var label in uniqueLabels)
+            {
+                if (colorIndex > 255) colorIndex = 1;
+                var layer = new Layer(label) { Color = new AciColor(colorIndex) };
+                dxf.Layers.Add(layer);
+                colorIndex++;
+            }
+
+            // Warstwa pod wype³nione naro¿niki
+            var cornerLayer = new Layer("CornerFill") { Color = new AciColor(7) };
+            dxf.Layers.Add(cornerLayer);
+
+            // Warstwa i styl wymiarów
+            var dimLayer = new Layer("Dimensions") { Color = AciColor.Yellow };
+            dxf.Layers.Add(dimLayer);
+
+            var dimStyle = new DimensionStyle("MyDimStyle")
+            {
+                TextHeight = 5.0,
+                ArrowSize = 2.5,
+                LengthPrecision = 0,
+                DimLineColor = AciColor.Yellow,
+                ExtLineColor = AciColor.Yellow,
+                TextColor = AciColor.Yellow
+            };
+            dxf.DimensionStyles.Add(dimStyle);
+
+            // 2) Rysowanie geometrii + wymiary
+            foreach (var el in elements)
+            {
+                double offset = 5;       // gruboœæ profilu
+                double cornerSize = 5;   // rozmiar wype³nionego kwadratu naro¿nika
+                bool useXY = true;       // el.label == "Operational";
+
+                List<Polyline2DVertex> outerVertices;
+                List<Polyline2DVertex> innerVertices;
+
+                if (useXY)
+                {
+                    outerVertices = new List<Polyline2DVertex>
+            {
+                new Polyline2DVertex(el.x1, el.y1, 0),
+                new Polyline2DVertex(el.x2, el.y1, 0),
+                new Polyline2DVertex(el.x2, el.y2, 0),
+                new Polyline2DVertex(el.x1, el.y2, 0)
+            };
+
+                    innerVertices = new List<Polyline2DVertex>
+            {
+                new Polyline2DVertex(el.x1 + offset, el.y1 + offset, 0),
+                new Polyline2DVertex(el.x2 - offset, el.y1 + offset, 0),
+                new Polyline2DVertex(el.x2 - offset, el.y2 - offset, 0),
+                new Polyline2DVertex(el.x1 + offset, el.y2 - offset, 0)
+            };
+                }
+                else
+                {
+                    outerVertices = new List<Polyline2DVertex>
+            {
+                new Polyline2DVertex(el.x1, el.z1, 0),
+                new Polyline2DVertex(el.x2, el.z1, 0),
+                new Polyline2DVertex(el.x2, el.z2, 0),
+                new Polyline2DVertex(el.x1, el.z2, 0)
+            };
+
+                    innerVertices = new List<Polyline2DVertex>
+            {
+                new Polyline2DVertex(el.x1 + offset, el.z1 + offset, 0),
+                new Polyline2DVertex(el.x2 - offset, el.z1 + offset, 0),
+                new Polyline2DVertex(el.x2 - offset, el.z2 - offset, 0),
+                new Polyline2DVertex(el.x1 + offset, el.z2 - offset, 0)
+            };
+                }
+
+                // Zewnêtrzny i wewnêtrzny prostok¹t
+                var outerPoly = new Polyline2D(outerVertices, true) { Layer = dxf.Layers[el.label] };
+                dxf.Entities.Add(outerPoly);
+
+                var innerPoly = new Polyline2D(innerVertices, true) { Layer = dxf.Layers[el.label] };
+                dxf.Entities.Add(innerPoly);
+
+                // Wype³nione naro¿niki
+                var corners = new List<Vector2>
+        {
+            new Vector2(el.x1, el.y1),
+            new Vector2(el.x2 - offset, el.y1),
+            new Vector2(el.x2 - offset, el.y2 - offset),
+            new Vector2(el.x1, el.y2 - offset)
+        };
+
+                foreach (var c in corners)
+                {
+                    var cornerVertices = new List<Polyline2DVertex>
+            {
+                new Polyline2DVertex(c.X, c.Y, 0),
+                new Polyline2DVertex(c.X + offset, c.Y, 0),
+                new Polyline2DVertex(c.X + offset, c.Y + offset, 0),
+                new Polyline2DVertex(c.X, c.Y + offset, 0)
+            };
+                    var cornerPolyline = new Polyline2D(cornerVertices, true);
+                    var hatch = new Hatch(HatchPattern.Solid, true);
+                    hatch.BoundaryPaths.Add(new HatchBoundaryPath(new List<EntityObject> { cornerPolyline }));
+                    hatch.Layer = cornerLayer;
+                    hatch.Color = new AciColor(7);
+                    dxf.Entities.Add(hatch);
+                }
+
+                // --- WYMIARY (poprawne przeci¹¿enie: Vector2, Vector2, offset, rotation, style) ---
+
+                double dimOffset = 10.0; // odleg³oœæ linii wymiarowej od referencji
+
+                // Wymiar szerokoœci (poziomy) – linia wymiarowa poni¿ej: offset ujemny, rotacja 0°
+                var wStart = new Vector2(el.x1, el.y1);
+                var wEnd = new Vector2(el.x2, el.y1);
+                var widthDim = new LinearDimension(wStart, wEnd, -dimOffset, 0.0, dimStyle)
+                {
+                    Layer = dimLayer
+                };
+                dxf.Entities.Add(widthDim);
+
+                // Wymiar wysokoœci (pionowy) – linia wymiarowa po prawej: offset dodatni, rotacja 90°
+                var hStart = new Vector2(el.x2, el.y1);
+                var hEnd = new Vector2(el.x2, el.y2);
+                var heightDim = new LinearDimension(hStart, hEnd, dimOffset, 90.0, dimStyle)
+                {
+                    Layer = dimLayer
+                };
+                dxf.Entities.Add(heightDim);
+            }
+
+            dxf.Save(filePath);
+        }
+

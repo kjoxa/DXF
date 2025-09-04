@@ -1,0 +1,116 @@
+private void Generate2D(List<Element> elements, string filePath)
+        {
+            var dxf = new DxfDocument();
+
+            // 1. Dodaj wszystkie warstwy z unikalnych labeli
+            var uniqueLabels = elements.Select(e => e.label).Distinct().ToList();
+            byte colorIndex = 1; // zaczynamy od koloru ACI=1 (czerwony)
+
+            foreach (var label in uniqueLabels)
+            {
+                if (colorIndex > 255) colorIndex = 1;
+                var layer = new Layer(label) { Color = new AciColor(colorIndex) };
+                dxf.Layers.Add(layer);
+                colorIndex++;
+            }
+
+            // Warstwa na czarne naro¿niki
+            var cornerLayer = new Layer("CornerFill") { Color = new AciColor(7) }; // czarny
+            dxf.Layers.Add(cornerLayer);
+
+            // 2. Rysowanie geometrii
+            foreach (var el in elements)
+            {
+                double offset = 5; // gruboœæ profilu
+                double cornerSize = 5; // rozmiar wype³nionego kwadratu naro¿nika
+
+                List<Polyline2DVertex> outerVertices;
+                List<Polyline2DVertex> innerVertices;
+
+                bool useXY = true;//el.label == "Operational";
+
+                if (useXY)
+                {
+                    outerVertices = new List<Polyline2DVertex>
+                    {
+                        new Polyline2DVertex(el.x1, el.y1, 0),
+                        new Polyline2DVertex(el.x2, el.y1, 0),
+                        new Polyline2DVertex(el.x2, el.y2, 0),
+                        new Polyline2DVertex(el.x1, el.y2, 0)
+                    };
+
+                    innerVertices = new List<Polyline2DVertex>
+                    {
+                        new Polyline2DVertex(el.x1 + offset, el.y1 + offset, 0),
+                        new Polyline2DVertex(el.x2 - offset, el.y1 + offset, 0),
+                        new Polyline2DVertex(el.x2 - offset, el.y2 - offset, 0),
+                        new Polyline2DVertex(el.x1 + offset, el.y2 - offset, 0)
+                    };
+                }
+                else
+                {
+                    outerVertices = new List<Polyline2DVertex>
+                    {
+                        new Polyline2DVertex(el.x1, el.z1, 0),
+                        new Polyline2DVertex(el.x2, el.z1, 0),
+                        new Polyline2DVertex(el.x2, el.z2, 0),
+                        new Polyline2DVertex(el.x1, el.z2, 0)
+                    };
+
+                    innerVertices = new List<Polyline2DVertex>
+                    {
+                        new Polyline2DVertex(el.x1 + offset, el.z1 + offset, 0),
+                        new Polyline2DVertex(el.x2 - offset, el.z1 + offset, 0),
+                        new Polyline2DVertex(el.x2 - offset, el.z2 - offset, 0),
+                        new Polyline2DVertex(el.x1 + offset, el.z2 - offset, 0)
+                    };
+                }
+
+                // Dodaj zewnêtrzny prostok¹t
+                var outerPoly = new Polyline2D(outerVertices, true) { Layer = dxf.Layers[el.label] };
+                dxf.Entities.Add(outerPoly);
+
+                // Dodaj wewnêtrzny prostok¹t
+                var innerPoly = new Polyline2D(innerVertices, true) { Layer = dxf.Layers[el.label] };
+                dxf.Entities.Add(innerPoly);
+
+                // Lista naro¿ników: lewy-dolny, prawy-dolny, prawy-górny, lewy-górny
+                var corners = new List<Vector2>
+                {
+                    new Vector2(el.x1, el.y1),
+                    new Vector2(el.x2 - offset, el.y1),
+                    new Vector2(el.x2 - offset, el.y2 - offset),
+                    new Vector2(el.x1, el.y2 - offset)
+                };
+
+                foreach (var c in corners)
+                {
+                    var cornerVertices = new List<Polyline2DVertex>
+                    {
+                        new Polyline2DVertex(c.X, c.Y, 0),
+                        new Polyline2DVertex(c.X + offset, c.Y, 0),
+                        new Polyline2DVertex(c.X + offset, c.Y + offset, 0),
+                        new Polyline2DVertex(c.X, c.Y + offset, 0)
+                    };
+                    var cornerPolyline = new Polyline2D(cornerVertices, true);
+                    var hatch = new Hatch(HatchPattern.Solid, true);
+                    hatch.BoundaryPaths.Add(new HatchBoundaryPath(new List<netDxf.Entities.EntityObject> { cornerPolyline }));
+                    hatch.Layer = dxf.Layers["CornerFill"];
+                    hatch.Color = new AciColor(7); // czarny
+                    dxf.Entities.Add(hatch);
+                }
+
+                // Opcjonalnie: linie przek¹tne wewnêtrznego -> zewnêtrznego
+                //for (int i = 0; i < 4; i++)
+                //{
+                //    var start = outerVertices[i].Position;
+                //    var end = innerVertices[i].Position;
+                //    dxf.Entities.Add(new netDxf.Entities.Line(new Vector2(start.X, start.Y), new Vector2(end.X, end.Y))
+                //    {
+                //        Layer = dxf.Layers[el.label]
+                //    });
+                //}
+            }
+
+            dxf.Save(filePath);
+        }

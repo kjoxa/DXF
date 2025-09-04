@@ -1,0 +1,69 @@
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Build results
+bin/
+obj/
+[Bb]uild/
+[Ll]og/
+[Ll]ogs/
+
+# Generated files
+*.cache
+*.dll
+*.exe
+*.app
+*.pdb
+*.mdb
+*.tmp
+*.bak
+*.Backup
+*.swp
+*.vspscc
+*.vssscc
+*.ncb
+*.dbmdl
+*.jfm
+*.tlog
+
+# Publish output
+publish/
+out/
+
+# NuGet
+*.nupkg
+*.snupkg
+*.nuspec
+*.psmdcp
+*.packages
+*.package
+*.nuget.props
+*.nuget.targets
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userprefs
+*.dbmdl
+
+# Rider / JetBrains
+.idea/
+*.sln.iml
+
+# MacOS / Linux system files
+.DS_Store
+*.swp
+*.swo
+*~
+
+# Windows system files
+Thumbs.db
+Desktop.ini
