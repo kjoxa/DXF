@@ -207,307 +207,32 @@ namespace Klimor.WebApi.DXF
 
                 var layerDim = dxf.Layers.Add(new Layer("ExternalElements_dimensions") { Color = AciColor.Cyan });
                 GenerateView(new List<string> { "AD", "FC", "INTK" }, true, false, layerDim);
-            }
+            }                        
 
-            void GenerateView_old(List<string> elementsGroup, bool createDimension, bool createShape, Layer layer)
+            double ReflectZ(double z) => globalZMax + globalZMin - z;
+
+            void GetProjectedZ(Element el, string viewName, out double zLeft, out double zRight)
             {
-                foreach (var view in views)
+                if (viewName == "LeftFront") // tu robimy odbicie
                 {
-                    // podpis widoku przy elemencie
-                    var firstElement = elements.FirstOrDefault();
-                    if (firstElement != null)
-                    {
-                        double elementCenterY = (firstElement.y1 + firstElement.y2) / 2 + view.yOffset;
-                        var text = new Text(view.name, new Vector3(-1200, elementCenterY + 900, 0), 100) // -300 przesunięcie w lewo
-                        {
-                            Layer = textLayer,
-                            Rotation = 0,
-                            Color = AciColor.LightGray,
-                            WidthFactor = 1.2,
-                        };
-                        dxf.Entities.Add(text);
-                    }
-
-                    foreach (var el in elements.Where(e => elementsGroup.Any(g => string.Equals(g, e.label, StringComparison.OrdinalIgnoreCase))))
-                    {
-                        // generowanie współrzędnych dla widoku
-                        List<Vector2> outer2D = GenerateViewVertices(el, view.name, globalXMin, globalXMax,
-                            globalYMin, globalYMax, globalZMin, globalZMax);
-                        List<Vector2> inner2D = outer2D.Select(v => new Vector2(v.X + profileOffset, v.Y - profileOffset)).ToList();
-
-                        // przesunięcie Y dla widoku
-                        outer2D = outer2D.Select(v => new Vector2(v.X, v.Y + view.yOffset)).ToList();
-                        inner2D = inner2D.Select(v => new Vector2(v.X, v.Y + view.yOffset)).ToList();
-
-                        if (createShape)
-                        {
-                            // rysowanie zewnętrznej i wewnętrznej polilinii
-                            var outerPoly = new Polyline2D(outer2D.Select(v => new Polyline2DVertex(v.X, v.Y, 0)).ToList(), true)
-                            {
-                                Layer = layer
-                            };
-                            dxf.Entities.Add(outerPoly);
-                            
-
-                            // wypełnione narożniki
-                            if (el.label == "Block")
-                            {
-                                // zamiast inner2DArray[0..3] -> rozpoznawanie rogów po min/max
-                                var left = inner2D.Min(p => p.X);
-                                var right = inner2D.Max(p => p.X);
-                                var bottom = inner2D.Min(p => p.Y);
-                                var top = inner2D.Max(p => p.Y);
-
-                                var bottomLeft = inner2D.First(p => p.X == left && p.Y == bottom);
-                                var bottomRight = inner2D.First(p => p.X == right && p.Y == bottom);
-                                var topRight = inner2D.First(p => p.X == right && p.Y == top);
-                                var topLeft = inner2D.First(p => p.X == left && p.Y == top);
-
-                                // korekta narożników
-                                bottomLeft = new Vector2(bottomLeft.X, bottomLeft.Y + 2*profileOffset);
-                                bottomRight = new Vector2(bottomRight.X - 2*profileOffset, bottomRight.Y + 2*profileOffset);
-                                topRight = new Vector2(topRight.X - 2*profileOffset, topRight.Y);
-                                topLeft = new Vector2(topLeft.X, topLeft.Y);
-
-                                inner2D = new List<Vector2> { bottomLeft, bottomRight, topRight, topLeft };
-
-                                var innerPoly = new Polyline2D(inner2D.Select(v => new Polyline2DVertex(v.X, v.Y, 0)).ToList(), true)
-                                {
-                                    Layer = layer
-                                };
-                                dxf.Entities.Add(innerPoly);
-
-                                var idx = 0;
-                                foreach (var c in outer2D)
-                                {
-                                    var cornerVertices = new List<Polyline2DVertex>();
-                                    switch (idx)
-                                    {
-                                        case 0: // lewy dół
-                                            cornerVertices.Add(new Polyline2DVertex(c.X, c.Y, 0));
-                                            cornerVertices.Add(new Polyline2DVertex(c.X + profileOffset, c.Y, 0));
-                                            cornerVertices.Add(new Polyline2DVertex(c.X + profileOffset, c.Y + profileOffset, 0));
-                                            cornerVertices.Add(new Polyline2DVertex(c.X, c.Y + profileOffset, 0));
-                                            
-                                            if (!view.name.ToLower().Contains("front"))
-                                            {
-                                                var text = new Text(el.additionalInfos.blockNumber.ToString(),
-                                                new Vector3(c.X + 2*profileOffset, c.Y + 2*profileOffset, 0), 30);
-
-                                                text.Style = new TextStyle("ArialBold", "arialbd.ttf");
-                                                text.Layer = layer;
-                                                text.Color = new AciColor(7);
-                                                dxf.Entities.Add(text);
-                                            }
-                                            break;
-
-                                        case 1: // prawy dół
-                                            cornerVertices.Add(new Polyline2DVertex(c.X - profileOffset, c.Y, 0));
-                                            cornerVertices.Add(new Polyline2DVertex(c.X, c.Y, 0));
-                                            cornerVertices.Add(new Polyline2DVertex(c.X, c.Y + profileOffset, 0));
-                                            cornerVertices.Add(new Polyline2DVertex(c.X - profileOffset, c.Y + profileOffset, 0));
-                                            break;
-
-                                        case 2: // prawy góra
-                                            cornerVertices.Add(new Polyline2DVertex(c.X - profileOffset, c.Y - profileOffset, 0));
-                                            cornerVertices.Add(new Polyline2DVertex(c.X, c.Y - profileOffset, 0));
-                                            cornerVertices.Add(new Polyline2DVertex(c.X, c.Y, 0));
-                                            cornerVertices.Add(new Polyline2DVertex(c.X - profileOffset, c.Y, 0));
-                                            break;
-
-                                        case 3: // lewy góra
-                                            cornerVertices.Add(new Polyline2DVertex(c.X, c.Y, 0));
-                                            cornerVertices.Add(new Polyline2DVertex(c.X + profileOffset, c.Y, 0));
-                                            cornerVertices.Add(new Polyline2DVertex(c.X + profileOffset, c.Y - profileOffset, 0));
-                                            cornerVertices.Add(new Polyline2DVertex(c.X, c.Y - profileOffset, 0));
-                                            break;
-                                    }
-
-                                    var cornerPoly = new Polyline2D(cornerVertices, true);
-                                    cornerPoly.Layer = layer;
-
-                                    var hatch = new Hatch(HatchPattern.Solid, true);
-                                    hatch.BoundaryPaths.Add(new HatchBoundaryPath(new List<EntityObject> { cornerPoly }));
-                                    hatch.Layer = layer;
-                                    hatch.Color = new AciColor(7);
-
-                                    dxf.Entities.Add(hatch);
-                                    idx++;
-                                }
-                                idx = 0;
-                            }
-                        }
-
-                        if (createDimension)
-                        {
-                            // wymiary
-                            double dimOffset = 30.0;
-
-                            // szerokość (poziomy)
-                            var wStart = outer2D[0];
-                            var wEnd = outer2D[1];
-                            var widthDim = new LinearDimension(wStart, wEnd, -dimOffset, 0.0, dimStyle)
-                            {
-                                Layer = layer
-                            };
-                            dxf.Entities.Add(widthDim);
-
-                            // wysokość (pionowy)
-                            var hStart = outer2D[1];
-                            var hEnd = outer2D[2];
-                            var heightDim = new LinearDimension(hStart, hEnd, dimOffset, 90.0, dimStyle)
-                            {
-                                Layer = layer
-                            };
-                            dxf.Entities.Add(heightDim);
-                        }
-                    }
+                    double a = ReflectZ(el.z2);
+                    double b = ReflectZ(el.z1);
+                    zLeft = Math.Min(a, b);
+                    zRight = Math.Max(a, b);
+                }
+                else // rightFront – naturalne
+                {
+                    zLeft = el.z1;
+                    zRight = el.z2;
                 }
             }
 
-            void GenerateSideView_old(List<string> elementsGroup, bool createDimension, bool createShape, Layer layer, string viewName)
+            double FrontDepth(Element el, string viewName)
             {
-                var groupElements = elements
-                    .Where(e => elementsGroup.Any(g => string.Equals(e.label, g, StringComparison.OrdinalIgnoreCase)))
-                    .ToList();
-
-                var sideElements = groupElements
-                    .OrderBy(e => viewName == "LeftFront" ? e.z1 : e.z2)
-                    .ToList();
-
-                List<Rect2D> visibleRects = new List<Rect2D>();
-
-                var blocks = elements.Where(e => e.label == "Block").OrderBy(e => e.x1).ToList();
-                double secondBlockX1 = blocks.Skip(1).FirstOrDefault()?.x1 ?? double.MaxValue;
-                double secondLastBlockX2 = blocks.OrderByDescending(e => e.x2).Skip(1).FirstOrDefault()?.x2 ?? double.MinValue;
-
-                foreach (var el in sideElements)
-                {
-                    // Filtrowanie AD/FC
-                    if ((el.label == "AD" || el.label == "FC") && viewName == "LeftFront" && el.x1 >= secondBlockX1)
-                        continue;
-                    if ((el.label == "AD" || el.label == "FC") && viewName == "RightFront" && el.x2 <= secondLastBlockX2)
-                        continue;
-
-                    var rect = new Rect2D(
-                        el.y1,
-                        el.y2,
-                        Math.Min(viewName == "LeftFront" ? el.z1 : el.z2, viewName == "LeftFront" ? el.z2 : el.z1),
-                        Math.Max(viewName == "LeftFront" ? el.z1 : el.z2, viewName == "LeftFront" ? el.z2 : el.z1),
-                        el.label
-                    );
-
-                    var yOffset = views.FirstOrDefault(v => v.name == viewName).yOffset;
-                    if (el.label == "Block")
-                    {
-                        var outer2DFull = new List<Vector2>
-    {
-        new Vector2(rect.Z1, rect.Y1 + yOffset),
-        new Vector2(rect.Z2, rect.Y1 + yOffset),
-        new Vector2(rect.Z2, rect.Y2 + yOffset),
-        new Vector2(rect.Z1, rect.Y2 + yOffset)
-    };
-
-                        var profile = new Polyline2D(
-                            outer2DFull.Select(v => new Polyline2DVertex(v.X, v.Y, 0)).ToList(),
-                            true
-                        )
-                        {
-                            Layer = layer,
-                            Color = new AciColor(7) // np. biały kontur
-                        };
-                        dxf.Entities.Add(profile);
-                    }
-
-                    List<Rect2D> toAdd = new List<Rect2D> { rect };
-                    foreach (var existing in visibleRects)
-                    {
-                        List<Rect2D> newToAdd = new List<Rect2D>();
-                        foreach (var r in toAdd)
-                            newToAdd.AddRange(r.Subtract(existing));
-                        toAdd = newToAdd;
-                        if (toAdd.Count == 0) break;
-                    }
-
-                    visibleRects.AddRange(toAdd);
-                }
-                
-
-                // Rysowanie widocznych prostokątów
-                foreach (var r in visibleRects)
-                {
-                    var yOffset = views.FirstOrDefault(v => v.name == viewName).yOffset;
-                    List<Vector2> outer2D = r.ToVertices().Select(v => new Vector2(v.X, v.Y + yOffset)).ToList();
-
-                    if (createShape)
-                    {
-                        var poly = new Polyline2D(
-                            outer2D.Select(v => new Polyline2DVertex(v.X, v.Y, 0)).ToList(),
-                            true
-                        )
-                        {
-                            Layer = layer
-                        };
-                        dxf.Entities.Add(poly);
-
-                        // Narożniki tylko dla bloków
-                        if (r.SourceLabel == "Block")
-                        {
-                            double offset = 50;
-
-                            // Zakładam, że outer2D ma wierzchołki w kolejności: LL, LR, UR, UL
-                            for (int i = 0; i < outer2D.Count; i++)
-                            {
-                                var c = outer2D[i];
-                                double dx = 0, dy = 0;
-
-                                switch (i)
-                                {
-                                    case 0: // lewy-dolny
-                                        dx = -offset; dy = -offset;
-                                        break;
-                                    case 1: // prawy-dolny
-                                        dx = offset; dy = -offset;
-                                        break;
-                                    case 2: // prawy-górny
-                                        dx = offset; dy = offset;
-                                        break;
-                                    case 3: // lewy-górny
-                                        dx = -offset; dy = offset;
-                                        break;
-                                }
-
-                                var cornerVertices = new List<Polyline2DVertex>
-    {
-        new Polyline2DVertex(c.X, c.Y, 0),
-        new Polyline2DVertex(c.X + dx, c.Y, 0),
-        new Polyline2DVertex(c.X + dx, c.Y + dy, 0),
-        new Polyline2DVertex(c.X, c.Y + dy, 0)
-    };
-
-                                var cornerPoly = new Polyline2D(cornerVertices, true);
-                                var hatch = new Hatch(HatchPattern.Solid, true);
-                                hatch.BoundaryPaths.Add(new HatchBoundaryPath(new List<EntityObject> { cornerPoly }));
-                                hatch.Layer = layer;
-                                hatch.Color = new AciColor(7);
-                                dxf.Entities.Add(hatch);
-                            }
-
-                        }
-                    }
-
-                    if (createDimension)
-                    {
-                        double dimOffset = 30.0;
-                        var wStart = outer2D[0];
-                        var wEnd = outer2D[1];
-                        dxf.Entities.Add(new LinearDimension(wStart, wEnd, -dimOffset, 0.0, dimStyle) { Layer = layer });
-
-                        var hStart = outer2D[1];
-                        var hEnd = outer2D[2];
-                        dxf.Entities.Add(new LinearDimension(hStart, hEnd, dimOffset, 90.0, dimStyle) { Layer = layer });
-                    }
-                }
+                if (viewName == "LeftFront")
+                    return ReflectZ(el.z2);  // przód = odbity z2
+                else
+                    return el.z1;            // rightFront przód = z1
             }
 
             void GenerateSideView(List<string> elementsGroup, bool createDimension, bool createShape, Layer layer, string viewName)
@@ -516,32 +241,27 @@ namespace Klimor.WebApi.DXF
                     .Where(e => elementsGroup.Any(g => string.Equals(e.label, g, StringComparison.OrdinalIgnoreCase)))
                     .ToList();
 
-                // sort: od najbliższego do widoku (LeftFront -> z1, RightFront -> z2)
                 var sideElements = groupElements
-                    .OrderBy(e => viewName == "LeftFront" ? e.z1 : e.z2)
+                    .OrderBy(e => FrontDepth(e, viewName))
                     .ToList();
 
                 List<Rect2D> visibleRects = new List<Rect2D>();
 
-                // do filtrów AD/FC
+                // do AD/FC
                 var blocksAll = elements.Where(e => e.label == "Block").OrderBy(e => e.x1).ToList();
                 double secondBlockX1 = blocksAll.Skip(1).FirstOrDefault()?.x1 ?? double.MaxValue;
                 double secondLastBlockX2 = blocksAll.OrderByDescending(e => e.x2).Skip(1).FirstOrDefault()?.x2 ?? double.MinValue;
 
                 var yOffset = views.FirstOrDefault(v => v.name == viewName).yOffset;
 
-                // --- 1) Pełne kontury bloków (profil) – rysujemy tylko w przebiegu dla "Block" (createShape) ---
+                // pełne kontury bloków (profil)
                 if (createShape && elementsGroup.Any(g => string.Equals(g, "Block", StringComparison.OrdinalIgnoreCase)))
                 {
                     foreach (var block in sideElements.Where(e => e.label == "Block"))
                     {
-                        var rectFull = new Rect2D(
-                            block.y1,
-                            block.y2,
-                            Math.Min(viewName == "LeftFront" ? block.z1 : block.z2, viewName == "LeftFront" ? block.z2 : block.z1),
-                            Math.Max(viewName == "LeftFront" ? block.z1 : block.z2, viewName == "LeftFront" ? block.z2 : block.z1),
-                            "Block"
-                        );
+                        GetProjectedZ(block, viewName, out double zL, out double zR);
+
+                        var rectFull = new Rect2D(block.y1, block.y2, zL, zR, "Block");
 
                         var outer2DFull = new List<Vector2>
                         {
@@ -562,22 +282,16 @@ namespace Klimor.WebApi.DXF
                     }
                 }
 
-                // --- 2) Wylicz widoczne fragmenty (Subtract) + rysowanie ---
+                // wyliczanie widocznych fragmentów (Subtract) + rysowanie
                 foreach (var el in sideElements)
                 {
-                    // filtry AD/FC wg drugiego bloku
                     if ((el.label == "AD" || el.label == "FC") && viewName == "LeftFront" && el.x1 >= secondBlockX1) continue;
                     if ((el.label == "AD" || el.label == "FC") && viewName == "RightFront" && el.x2 <= secondLastBlockX2) continue;
 
-                    var rect = new Rect2D(
-                        el.y1,
-                        el.y2,
-                        Math.Min(viewName == "LeftFront" ? el.z1 : el.z2, viewName == "LeftFront" ? el.z2 : el.z1),
-                        Math.Max(viewName == "LeftFront" ? el.z1 : el.z2, viewName == "LeftFront" ? el.z2 : el.z1),
-                        el.label // ważne: zachowujemy źródło
-                    );
+                    GetProjectedZ(el, viewName, out double zLeft, out double zRight);
 
-                    // odetnij części zasłonięte już widocznymi fragmentami
+                    var rect = new Rect2D(el.y1, el.y2, zLeft, zRight, el.label);
+
                     List<Rect2D> toAdd = new List<Rect2D> { rect };
                     foreach (var existing in visibleRects)
                     {
@@ -588,18 +302,16 @@ namespace Klimor.WebApi.DXF
                         if (toAdd.Count == 0) break;
                     }
 
-                    // dodaj nowe widoczne fragmenty
                     visibleRects.AddRange(toAdd);
                 }
 
-                // --- 3) Rysowanie widocznych fragmentów (kształty + wymiary + narożniki tylko dla Block) ---
+                // rysowanie widocznych fragmentów
                 foreach (var r in visibleRects)
-                {                                        
+                {
                     var outer2D = r.ToVertices().Select(v => new Vector2(v.X, v.Y + yOffset)).ToList();
 
                     if (createShape)
                     {
-                        // Zewnętrzny widoczny fragment (po clipie)
                         var outerPoly = new Polyline2D(
                             outer2D.Select(v => new Polyline2DVertex(v.X, v.Y, 0)).ToList(),
                             true
@@ -609,27 +321,24 @@ namespace Klimor.WebApi.DXF
                         };
                         dxf.Entities.Add(outerPoly);
 
-                        // --- Tylko dla BLOCK: inner linia + narożniki do środka ---
                         if (r.SourceLabel == "Block")
                         {
                             double profileThickness = 50.0;
 
-                            // 1) INNER LINIA (wcięcie do środka o profileThickness)
-                            // Liczymy z r (bez offsetu), a potem dodajemy yOffset.
+                            // wewnętrzna linia
                             double iZ1 = r.Z1 + profileThickness;
                             double iZ2 = r.Z2 - profileThickness;
                             double iY1 = r.Y1 + profileThickness;
                             double iY2 = r.Y2 - profileThickness;
 
-                            // rzut do 2D z offsetem
                             if (iZ2 > iZ1 && iY2 > iY1)
                             {
                                 var inner2D = new List<Vector2>
                                 {
-                                    new Vector2(iZ1, iY1 + yOffset), // LL
-                                    new Vector2(iZ2, iY1 + yOffset), // LR
-                                    new Vector2(iZ2, iY2 + yOffset), // UR
-                                    new Vector2(iZ1, iY2 + yOffset)  // UL
+                                    new Vector2(iZ1, iY1 + yOffset),
+                                    new Vector2(iZ2, iY1 + yOffset),
+                                    new Vector2(iZ2, iY2 + yOffset),
+                                    new Vector2(iZ1, iY2 + yOffset)
                                 };
 
                                 var innerPoly = new Polyline2D(
@@ -642,30 +351,25 @@ namespace Klimor.WebApi.DXF
                                 dxf.Entities.Add(innerPoly);
                             }
 
-                            // 2) NAROŻNIKI DO ŚRODKA
-                            // outer2D: 0=LL, 1=LR, 2=UR, 3=UL
+                            // narożniki do środka
                             for (int i = 0; i < outer2D.Count; i++)
                             {
                                 var c = outer2D[i];
-
-                                // wektor do środka dla każdego rogu:
-                                // LL -> (+,+), LR -> (-,+), UR -> (-,-), UL -> (+,-)
                                 double dx = 0, dy = 0;
                                 switch (i)
                                 {
-                                    case 0: dx = profileThickness; dy = profileThickness; break; // LL
-                                    case 1: dx = -profileThickness; dy = profileThickness; break; // LR
-                                    case 2: dx = -profileThickness; dy = -profileThickness; break; // UR
-                                    case 3: dx = profileThickness; dy = -profileThickness; break; // UL
+                                    case 0: dx = profileThickness; dy = profileThickness; break;
+                                    case 1: dx = -profileThickness; dy = profileThickness; break;
+                                    case 2: dx = -profileThickness; dy = -profileThickness; break;
+                                    case 3: dx = profileThickness; dy = -profileThickness; break;
                                 }
 
-                                // kwadrat narożny skierowany DO ŚRODKA
                                 var cornerVertices = new List<Polyline2DVertex>
                                 {
-                                    new Polyline2DVertex(c.X,         c.Y,         0),
-                                    new Polyline2DVertex(c.X + dx,    c.Y,         0),
-                                    new Polyline2DVertex(c.X + dx,    c.Y + dy,    0),
-                                    new Polyline2DVertex(c.X,         c.Y + dy,    0)
+                                    new Polyline2DVertex(c.X,       c.Y,       0),
+                                    new Polyline2DVertex(c.X + dx,  c.Y,       0),
+                                    new Polyline2DVertex(c.X + dx,  c.Y + dy,  0),
+                                    new Polyline2DVertex(c.X,       c.Y + dy,  0)
                                 };
 
                                 var cornerPoly = new Polyline2D(cornerVertices, true) { Layer = layer };
@@ -691,6 +395,7 @@ namespace Klimor.WebApi.DXF
                     }
                 }
             }
+
 
             void GenerateView(List<string> elementsGroup, bool createDimension, bool createShape, Layer layer)
             {
@@ -745,8 +450,7 @@ namespace Klimor.WebApi.DXF
                             if (createShape)
                             {
                                 if (el.label == "Block")
-                                {
-                                    // zamiast inner2DArray[0..3] -> rozpoznawanie rogów po min/max
+                                {                                    
                                     var left = inner2D.Min(p => p.X);
                                     var right = inner2D.Max(p => p.X);
                                     var bottom = inner2D.Min(p => p.Y);
@@ -862,164 +566,7 @@ namespace Klimor.WebApi.DXF
             GenerateFunctionsDimensions();
             GenerateExternalElements();
             dxf.Save(fileOutput);
-        }
-
-        private void GenerateViews(List<Element> elements, string filePath)
-        {
-            bool createDimension = true;
-            bool createShape = true;
-            var dxf = new DxfDocument();
-
-            // --- Warstwy ---
-            var layerNames = elements.Select(e => e.label).Distinct().ToList();
-            byte colorIndex = 1;
-            foreach (var label in layerNames)
-            {
-                if (colorIndex > 255) colorIndex = 1;
-                dxf.Layers.Add(new Layer(label) { Color = new AciColor(colorIndex) });
-                colorIndex++;
-            }
-
-            var cornerLayer = new Layer("CornerFill") { Color = new AciColor(7) };
-            dxf.Layers.Add(cornerLayer);
-
-            var dimLayer = new Layer("Dimensions") { Color = AciColor.Yellow };
-            dxf.Layers.Add(dimLayer);
-
-            var textLayer = new Layer("Text") { Color = AciColor.Blue };
-            dxf.Layers.Add(textLayer);
-
-            var dimStyle = new DimensionStyle("MyDimStyle")
-            {
-                TextHeight = 5.0,
-                ArrowSize = 2.5,
-                LengthPrecision = 0,
-                DimLineColor = AciColor.Yellow,
-                ExtLineColor = AciColor.Yellow,
-                TextColor = AciColor.Yellow
-            };
-            dxf.DimensionStyles.Add(dimStyle);
-
-            // --- Definicja widoków ---
-            var views = new List<(string name, double yOffset)>
-            {
-                ("Operational", 0),
-                ("Back", 2000),
-                ("Up", 4000),
-                ("Down", 6000),
-                ("LeftFront", 8000),
-                ("RightFront", 10000)
-            };
-
-            double offset = 5.0; // grubość profilu
-            double cornerSize = 5.0;
-
-            // --- Wyznaczenie globalnych min/max dla wszystkich elementów ---
-            double globalXMin = elements.Min(e => e.x1);
-            double globalXMax = elements.Max(e => e.x2);
-            double globalYMin = elements.Min(e => e.y1);
-            double globalYMax = elements.Max(e => e.y2);
-            double globalZMin = elements.Min(e => e.z1);
-            double globalZMax = elements.Max(e => e.z2);
-
-            foreach (var view in views)
-            {
-                // Podpis widoku przy elemencie
-                var firstElement = elements.FirstOrDefault();
-                if (firstElement != null)
-                {
-                    double elementCenterY = (firstElement.y1 + firstElement.y2) / 2 + view.yOffset;
-                    var text = new Text(view.name, new Vector3(-1200, elementCenterY + 900, 0), 100) // -300 przesunięcie w lewo
-                    {
-                        Layer = textLayer,
-                        Rotation = 0,
-                        Color = AciColor.LightGray,
-                        WidthFactor = 1.2,
-                    };
-                    dxf.Entities.Add(text);
-                }
-
-                foreach (var el in elements)
-                {
-                    // --- Generowanie współrzędnych dla widoku ---
-                    List<Vector2> outer2D = GenerateViewVertices(el, view.name, globalXMin, globalXMax,
-                        globalYMin, globalYMax, globalZMin, globalZMax);
-                    List<Vector2> inner2D = outer2D.Select(v => new Vector2(v.X + offset, v.Y + offset)).ToList();
-
-                    // przesunięcie Y dla widoku
-                    outer2D = outer2D.Select(v => new Vector2(v.X, v.Y + view.yOffset)).ToList();
-                    inner2D = inner2D.Select(v => new Vector2(v.X, v.Y + view.yOffset)).ToList();
-
-                    if (createShape)
-                    {
-                        // --- Rysowanie zewnętrznej i wewnętrznej polilinii ---
-
-                        var outerPoly = new Polyline2D(outer2D.Select(v => new Polyline2DVertex(v.X, v.Y, 0)).ToList(), true)
-                        {
-                            Layer = dxf.Layers[el.label]
-                        };
-                        dxf.Entities.Add(outerPoly);
-
-                        var innerPoly = new Polyline2D(inner2D.Select(v => new Polyline2DVertex(v.X, v.Y, 0)).ToList(), true)
-                        {
-                            Layer = dxf.Layers[el.label]
-                        };
-                        if (el.label == "Block")
-                        {
-                            dxf.Entities.Add(innerPoly);
-                        }
-
-                        // --- Wypełnione narożniki ---
-                        foreach (var c in outer2D)
-                        {
-                            var cornerVertices = new List<Polyline2DVertex>
-                        {
-                            new Polyline2DVertex(c.X, c.Y, 0),
-                            new Polyline2DVertex(c.X + offset, c.Y, 0),
-                            new Polyline2DVertex(c.X + offset, c.Y + offset, 0),
-                            new Polyline2DVertex(c.X, c.Y + offset, 0)
-                        };
-                            var cornerPoly = new Polyline2D(cornerVertices, true);
-                            var hatch = new Hatch(HatchPattern.Solid, true);
-                            hatch.BoundaryPaths.Add(new HatchBoundaryPath(new List<EntityObject> { cornerPoly }));
-                            hatch.Layer = cornerLayer;
-                            hatch.Color = new AciColor(7);
-
-                            if (el.label == "Block")
-                                dxf.Entities.Add(hatch);
-                        }
-                    }
-
-
-                    if (createDimension)
-                    {
-                        // --- Wymiary ---
-                        double dimOffset = 10.0;
-
-                        // Szerokość (poziomy)
-                        var wStart = outer2D[0];
-                        var wEnd = outer2D[1];
-                        var widthDim = new LinearDimension(wStart, wEnd, -dimOffset, 0.0, dimStyle)
-                        {
-                            Layer = dimLayer
-                        };
-                        dxf.Entities.Add(widthDim);
-
-                        // Wysokość (pionowy)
-                        var hStart = outer2D[1];
-                        var hEnd = outer2D[2];
-                        var heightDim = new LinearDimension(hStart, hEnd, dimOffset, 90.0, dimStyle)
-                        {
-                            Layer = dimLayer
-                        };
-                        dxf.Entities.Add(heightDim);
-                    }
-
-                }
-            }
-
-            dxf.Save(filePath);
-        }
+        }        
 
         // współrzędne dla poszczególnych widoków / perspektyw
         private List<Vector2> GenerateViewVertices(Element el, string view, double globalXMin, double globalXMax,
@@ -1080,7 +627,7 @@ namespace Klimor.WebApi.DXF
                 double zOverlapMin = Math.Max(Z1, other.Z1);
                 double zOverlapMax = Math.Min(Z2, other.Z2);
 
-                // brak nakładania → cały prostokąt zostaje
+                // brak nakładania - cały prostokąt zostaje
                 if (yOverlapMax <= yOverlapMin || zOverlapMax <= zOverlapMin)
                 {
                     result.Add(this);
@@ -1106,16 +653,14 @@ namespace Klimor.WebApi.DXF
             {
                 // kolejność: LL, LR, UR, UL (po Z w poziomie, Y w pionie)
                 return new List<Vector2>
-        {
-            new Vector2(Z1, Y1),
-            new Vector2(Z2, Y1),
-            new Vector2(Z2, Y2),
-            new Vector2(Z1, Y2)
-        };
+                {
+                    new Vector2(Z1, Y1),
+                    new Vector2(Z2, Y1),
+                    new Vector2(Z2, Y2),
+                    new Vector2(Z1, Y2)
+                };
             }
         }
-
-
 
         private void Generate3D(List<Element> elements, string filePath)
         {
