@@ -106,11 +106,11 @@ namespace Klimor.WebApi.DXF
             var views = new List<(string name, double yOffset)>
             {
                 ("Operational", 0),
-                ("Back", 3000),
-                ("Up", 6000),
-                ("Down", 9000),
-                ("LeftFront", 12000),
-                ("RightFront", 15000)
+                ("Back", 5000),
+                ("Up", 10000),
+                ("Down", 15000),
+                ("LeftFront", 20000),
+                ("RightFront", 25000)
             };
 
             double profileOffset = 50.0;
@@ -546,9 +546,8 @@ namespace Klimor.WebApi.DXF
                                         idx++;
                                     }
                                     idx = 0;
-                                }
-                                
-                                if (!string.IsNullOrEmpty(el.elementType))
+                                }                                
+                                if (!string.IsNullOrEmpty(el.elementType) && el.label != "Block")
                                 {
                                     if (el.label == view.name || (view.name == "Down" && el.label.Contains("_")))
                                     {
@@ -577,7 +576,7 @@ namespace Klimor.WebApi.DXF
                                                     cornerVertices.Add(new Polyline2DVertex(c.X, c.Y + profileOffset, 0));
                                                     cornerVertices.Add(new Polyline2DVertex(c.X - profileOffset, c.Y + profileOffset, 0));
 
-                                                    if (!view.name.ToLower().Contains("front") 
+                                                    if (!view.name.ToLower().Contains("front")
                                                         && el.label == view.name || (el.label.Contains("_") && view.name == "Down"))
                                                     {
                                                         var wallDescription = el.label switch
@@ -598,7 +597,7 @@ namespace Klimor.WebApi.DXF
                                                                 "Door" => "DOOR",
                                                                 "Removable" => "REM_1",
                                                                 "Removable_2" => "REM_2",
-                                                                "Removable_3" => "REM_3",                                                                
+                                                                "Removable_3" => "REM_3",
                                                                 "Wall" => "PNL", //operational, back, frontLeft, frontRight, up, down, middle
                                                                 "DrainTray" => "DRN_TY", //down, middle
                                                                 "Hole" => "HOLE", //operational, back, frontLeft, frontRight, up, down, middle
@@ -607,7 +606,7 @@ namespace Klimor.WebApi.DXF
                                                             };
                                                         }
                                                         var text = new Text(wallDescription,
-                                                            new Vector3(el.x2 - ((el.x2 - el.x1) / 2) - profileOffset, c.Y + 4 * profileOffset, 0), 20);
+                                                            new Vector3(c.X - ((el.x2 - el.x1) / 2) - profileOffset, c.Y + 4 * profileOffset, 0), 20);
 
                                                         text.Style = new TextStyle("ArialBold", "arialbd.ttf");
                                                         text.Layer = layer;
