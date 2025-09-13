@@ -8,7 +8,7 @@
     "z2": 50,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -20,7 +20,7 @@
     "z2": 2000,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -32,7 +32,7 @@
     "z2": 1950,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -44,7 +44,7 @@
     "z2": 1950,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -56,7 +56,7 @@
     "z2": 50,
     "label": "Operational",
     "posUpDown": "",
-    "elementType": "Door",
+    "type": "Door",
     "additionalInfos": null
   },
   {
@@ -68,7 +68,7 @@
     "z2": 2000,
     "label": "Back",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -80,7 +80,7 @@
     "z2": 1950,
     "label": "Down_Wall",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -92,7 +92,7 @@
     "z2": 975,
     "label": "Up",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -104,7 +104,7 @@
     "z2": 1950,
     "label": "Up",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -116,7 +116,7 @@
     "z2": 50,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -128,7 +128,7 @@
     "z2": 2000,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -140,7 +140,7 @@
     "z2": 1950,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -152,7 +152,7 @@
     "z2": 1950,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -164,7 +164,7 @@
     "z2": 50,
     "label": "Operational",
     "posUpDown": "",
-    "elementType": "Removable",
+    "type": "Removable",
     "additionalInfos": null
   },
   {
@@ -176,7 +176,7 @@
     "z2": 50,
     "label": "Operational",
     "posUpDown": "",
-    "elementType": "Removable_3",
+    "type": "Removable_3",
     "additionalInfos": null
   },
   {
@@ -188,7 +188,7 @@
     "z2": 50,
     "label": "Operational",
     "posUpDown": "",
-    "elementType": "Removable_3",
+    "type": "Removable_3",
     "additionalInfos": null
   },
   {
@@ -200,7 +200,7 @@
     "z2": 2000,
     "label": "Back",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -212,7 +212,7 @@
     "z2": 1950,
     "label": "Down_DrainTray",
     "posUpDown": "",
-    "elementType": "DrainTray",
+    "type": "DrainTray",
     "additionalInfos": null
   },
   {
@@ -224,7 +224,7 @@
     "z2": 1950,
     "label": "Down_DrainTray",
     "posUpDown": "",
-    "elementType": "DrainTray",
+    "type": "DrainTray",
     "additionalInfos": null
   },
   {
@@ -236,7 +236,7 @@
     "z2": 1950,
     "label": "Down_Wall",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -248,7 +248,7 @@
     "z2": 975,
     "label": "Up",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -260,7 +260,7 @@
     "z2": 1950,
     "label": "Up",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -272,7 +272,7 @@
     "z2": 50,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -284,7 +284,7 @@
     "z2": 2000,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -296,7 +296,7 @@
     "z2": 1950,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -308,7 +308,7 @@
     "z2": 1950,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -320,7 +320,7 @@
     "z2": 1950,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -332,7 +332,7 @@
     "z2": 50,
     "label": "Operational",
     "posUpDown": "",
-    "elementType": "Door",
+    "type": "Door",
     "additionalInfos": null
   },
   {
@@ -344,7 +344,7 @@
     "z2": 50,
     "label": "Operational",
     "posUpDown": "",
-    "elementType": "Door",
+    "type": "Door",
     "additionalInfos": null
   },
   {
@@ -356,7 +356,7 @@
     "z2": 50,
     "label": "Operational",
     "posUpDown": "",
-    "elementType": "Removable_3",
+    "type": "Removable_3",
     "additionalInfos": null
   },
   {
@@ -368,7 +368,7 @@
     "z2": 2000,
     "label": "Back",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -380,7 +380,7 @@
     "z2": 1950,
     "label": "Down_Wall",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -392,7 +392,7 @@
     "z2": 1950,
     "label": "Down_Wall",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -404,7 +404,7 @@
     "z2": 975,
     "label": "Up",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -416,7 +416,7 @@
     "z2": 1950,
     "label": "Up",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -428,7 +428,7 @@
     "z2": 50,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -440,7 +440,7 @@
     "z2": 2000,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -452,7 +452,7 @@
     "z2": 1950,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -464,7 +464,7 @@
     "z2": 1950,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -476,7 +476,7 @@
     "z2": 50,
     "label": "Operational",
     "posUpDown": "",
-    "elementType": "Removable",
+    "type": "Removable",
     "additionalInfos": null
   },
   {
@@ -488,7 +488,7 @@
     "z2": 50,
     "label": "Operational",
     "posUpDown": "",
-    "elementType": "Removable",
+    "type": "Removable",
     "additionalInfos": null
   },
   {
@@ -500,7 +500,7 @@
     "z2": 2000,
     "label": "Back",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -512,7 +512,7 @@
     "z2": 1950,
     "label": "Down_Wall",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -524,7 +524,7 @@
     "z2": 975,
     "label": "Up",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -536,7 +536,7 @@
     "z2": 1950,
     "label": "Up",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -548,7 +548,7 @@
     "z2": 50,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -560,7 +560,7 @@
     "z2": 2000,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -572,7 +572,7 @@
     "z2": 1950,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -584,7 +584,7 @@
     "z2": 1950,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -596,7 +596,7 @@
     "z2": 50,
     "label": "Operational",
     "posUpDown": "",
-    "elementType": "Door",
+    "type": "Door",
     "additionalInfos": null
   },
   {
@@ -608,7 +608,7 @@
     "z2": 2000,
     "label": "Back",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -620,7 +620,7 @@
     "z2": 1950,
     "label": "Down_Wall",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -632,7 +632,7 @@
     "z2": 975,
     "label": "Up",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -644,7 +644,7 @@
     "z2": 1950,
     "label": "Up",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -656,7 +656,7 @@
     "z2": -150,
     "label": "Connector",
     "posUpDown": "DrainTray: AhuFreonCoolerOutput / Up: 0, Down: 2",
-    "elementType": null,
+    "type": "DrainTrayConnector",
     "additionalInfos": null
   },
   {
@@ -668,7 +668,7 @@
     "z2": -150,
     "label": "Connector",
     "posUpDown": "DrainTray: AhuFreonCoolerOutput / Up: 0, Down: 2",
-    "elementType": null,
+    "type": "DrainTrayConnector",
     "additionalInfos": null
   },
   {
@@ -680,7 +680,7 @@
     "z2": -150,
     "label": "Connector",
     "posUpDown": "DrainTray: AhuEmptySectionOutput / Up: 0, Down: 5",
-    "elementType": null,
+    "type": "DrainTrayConnector",
     "additionalInfos": null
   },
   {
@@ -692,7 +692,7 @@
     "z2": -150,
     "label": "Connector",
     "posUpDown": "DrainTray: AhuEmptySectionOutput / Up: 0, Down: 6",
-    "elementType": null,
+    "type": "DrainTrayConnector",
     "additionalInfos": null
   },
   {
@@ -704,7 +704,7 @@
     "z2": 2000,
     "label": "Block",
     "posUpDown": "Block: Up 0, Down 1",
-    "elementType": null,
+    "type": "Block",
     "additionalInfos": {
       "sName": null,
       "airPath": null,
@@ -724,7 +724,7 @@
     "z2": 2000,
     "label": "Block",
     "posUpDown": "Block: Up 0, Down 2",
-    "elementType": null,
+    "type": "Block",
     "additionalInfos": {
       "sName": null,
       "airPath": null,
@@ -744,7 +744,7 @@
     "z2": 2000,
     "label": "Block",
     "posUpDown": "Block: Up 0, Down 3",
-    "elementType": null,
+    "type": "Block",
     "additionalInfos": {
       "sName": null,
       "airPath": null,
@@ -764,7 +764,7 @@
     "z2": 2000,
     "label": "Block",
     "posUpDown": "Block: Up 0, Down 4",
-    "elementType": null,
+    "type": "Block",
     "additionalInfos": {
       "sName": null,
       "airPath": null,
@@ -784,7 +784,7 @@
     "z2": 2000,
     "label": "Block",
     "posUpDown": "Block: Up 0, Down 5",
-    "elementType": null,
+    "type": "Block",
     "additionalInfos": {
       "sName": null,
       "airPath": null,
@@ -796,30 +796,6 @@
     }
   },
   {
-    "x1": 4950,
-    "x2": 4955,
-    "y1": 170,
-    "y2": 1370,
-    "z1": 50,
-    "z2": 1950,
-    "label": "Hole",
-    "posUpDown": "",
-    "elementType": null,
-    "additionalInfos": null
-  },
-  {
-    "x1": 0,
-    "x2": 5,
-    "y1": 170,
-    "y2": 1370,
-    "z1": 50,
-    "z2": 1950,
-    "label": "Hole",
-    "posUpDown": "",
-    "elementType": null,
-    "additionalInfos": null
-  },
-  {
     "x1": 4955,
     "x2": 5070,
     "y1": 180,
@@ -828,7 +804,7 @@
     "z2": 1950,
     "label": "AD",
     "posUpDown": "",
-    "elementType": null,
+    "type": "AirDamper",
     "additionalInfos": null
   },
   {
@@ -840,7 +816,7 @@
     "z2": 1950,
     "label": "FC",
     "posUpDown": "",
-    "elementType": null,
+    "type": "FlexibleConnection",
     "additionalInfos": null
   },
   {
@@ -852,7 +828,7 @@
     "z2": 1950,
     "label": "FC",
     "posUpDown": "",
-    "elementType": null,
+    "type": "FlexibleConnection",
     "additionalInfos": null
   },
   {
@@ -864,7 +840,7 @@
     "z2": 1950,
     "label": "Function",
     "posUpDown": "SF, U:0, D:1",
-    "elementType": "Function",
+    "type": "Function",
     "additionalInfos": {
       "sName": "SF",
       "airPath": "Supply",
@@ -884,7 +860,7 @@
     "z2": 1950,
     "label": "Function",
     "posUpDown": "DX, U:0, D:2",
-    "elementType": "Function",
+    "type": "Function",
     "additionalInfos": {
       "sName": "DX",
       "airPath": "Supply",
@@ -904,7 +880,7 @@
     "z2": 1950,
     "label": "Function",
     "posUpDown": "WH, U:0, D:3",
-    "elementType": "Function",
+    "type": "Function",
     "additionalInfos": {
       "sName": "WH",
       "airPath": "Supply",
@@ -924,7 +900,7 @@
     "z2": 1950,
     "label": "Function",
     "posUpDown": "VF, U:0, D:4",
-    "elementType": "Function",
+    "type": "Function",
     "additionalInfos": {
       "sName": "VF",
       "airPath": "Supply",
@@ -944,7 +920,7 @@
     "z2": 1950,
     "label": "Function",
     "posUpDown": "ES, U:0, D:5",
-    "elementType": "Function",
+    "type": "Function",
     "additionalInfos": {
       "sName": "ES",
       "airPath": "Supply",
@@ -964,7 +940,7 @@
     "z2": 1950,
     "label": "Function",
     "posUpDown": "ES, U:0, D:6",
-    "elementType": "Function",
+    "type": "Function",
     "additionalInfos": {
       "sName": "ES",
       "airPath": "Supply",
@@ -984,7 +960,7 @@
     "z2": 1950,
     "label": "Function",
     "posUpDown": "PF, U:0, D:7",
-    "elementType": "Function",
+    "type": "Function",
     "additionalInfos": {
       "sName": "PF",
       "airPath": "Supply",
@@ -1004,7 +980,7 @@
     "z2": -1,
     "label": "icon_filter",
     "posUpDown": "Icon: SF",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "SF",
       "airPath": "Supply",
@@ -1024,7 +1000,7 @@
     "z2": 2001,
     "label": "icon_filter",
     "posUpDown": "Icon: SF",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "SF",
       "airPath": "Supply",
@@ -1044,7 +1020,7 @@
     "z2": 1050,
     "label": "icon_filter",
     "posUpDown": "Icon: SF",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "SF",
       "airPath": "Supply",
@@ -1064,7 +1040,7 @@
     "z2": -1,
     "label": "icon_dx",
     "posUpDown": "Icon: DX",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "DX",
       "airPath": "Supply",
@@ -1084,7 +1060,7 @@
     "z2": 2001,
     "label": "icon_dx",
     "posUpDown": "Icon: DX",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "DX",
       "airPath": "Supply",
@@ -1104,7 +1080,7 @@
     "z2": 1050,
     "label": "icon_dx",
     "posUpDown": "Icon: DX",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "DX",
       "airPath": "Supply",
@@ -1124,7 +1100,7 @@
     "z2": -1,
     "label": "icon_dx",
     "posUpDown": "Icon: DE",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "DX",
       "airPath": "Supply",
@@ -1144,7 +1120,7 @@
     "z2": 2001,
     "label": "icon_dx",
     "posUpDown": "Icon: DE",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "DX",
       "airPath": "Supply",
@@ -1164,7 +1140,7 @@
     "z2": 1050,
     "label": "icon_dx",
     "posUpDown": "Icon: DE",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "DX",
       "airPath": "Supply",
@@ -1184,7 +1160,7 @@
     "z2": -1,
     "label": "icon_waterheater",
     "posUpDown": "Icon: WH",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "WH",
       "airPath": "Supply",
@@ -1204,7 +1180,7 @@
     "z2": 2001,
     "label": "icon_waterheater",
     "posUpDown": "Icon: WH",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "WH",
       "airPath": "Supply",
@@ -1224,7 +1200,7 @@
     "z2": 1050,
     "label": "icon_waterheater",
     "posUpDown": "Icon: WH",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "WH",
       "airPath": "Supply",
@@ -1244,7 +1220,7 @@
     "z2": -1,
     "label": "icon_fan",
     "posUpDown": "Icon: VF",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "VF",
       "airPath": "Supply",
@@ -1264,7 +1240,7 @@
     "z2": 2001,
     "label": "icon_fan",
     "posUpDown": "Icon: VF",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "VF",
       "airPath": "Supply",
@@ -1284,7 +1260,7 @@
     "z2": 1050,
     "label": "icon_fan",
     "posUpDown": "Icon: VF",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "VF",
       "airPath": "Supply",
@@ -1304,7 +1280,7 @@
     "z2": -1,
     "label": "icon_emptysection",
     "posUpDown": "Icon: ES",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "ES",
       "airPath": "Supply",
@@ -1324,7 +1300,7 @@
     "z2": 2001,
     "label": "icon_emptysection",
     "posUpDown": "Icon: ES",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "ES",
       "airPath": "Supply",
@@ -1344,7 +1320,7 @@
     "z2": 1050,
     "label": "icon_emptysection",
     "posUpDown": "Icon: ES",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "ES",
       "airPath": "Supply",
@@ -1364,7 +1340,7 @@
     "z2": -1,
     "label": "icon_emptysection",
     "posUpDown": "Icon: ES",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "ES",
       "airPath": "Supply",
@@ -1384,7 +1360,7 @@
     "z2": 2001,
     "label": "icon_emptysection",
     "posUpDown": "Icon: ES",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "ES",
       "airPath": "Supply",
@@ -1404,7 +1380,7 @@
     "z2": 1050,
     "label": "icon_emptysection",
     "posUpDown": "Icon: ES",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "ES",
       "airPath": "Supply",
@@ -1424,7 +1400,7 @@
     "z2": -1,
     "label": "icon_filter",
     "posUpDown": "Icon: PF",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "PF",
       "airPath": "Supply",
@@ -1444,7 +1420,7 @@
     "z2": 2001,
     "label": "icon_filter",
     "posUpDown": "Icon: PF",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "PF",
       "airPath": "Supply",
@@ -1464,7 +1440,7 @@
     "z2": 1050,
     "label": "icon_filter",
     "posUpDown": "Icon: PF",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "PF",
       "airPath": "Supply",

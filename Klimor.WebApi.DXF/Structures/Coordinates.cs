@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Klimor.WebApi.DXF.Structures
 {
-    public class Element
+    public class Coordinates
     {
         public int x1 { get; set; }
 
@@ -24,7 +24,7 @@ namespace Klimor.WebApi.DXF.Structures
 
         public string posUpDown { get; set; }
 
-        public string elementType { get; set; }
+        public string type { get; set; }
 
         public AdditionalInfo additionalInfos { get; set; }
     }

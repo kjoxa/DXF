@@ -8,7 +8,7 @@
     "z2": 50,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -20,7 +20,7 @@
     "z2": 3700,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -32,7 +32,7 @@
     "z2": 3650,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -44,7 +44,7 @@
     "z2": 3650,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -56,7 +56,7 @@
     "z2": 3650,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -68,7 +68,7 @@
     "z2": 3650,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -80,7 +80,7 @@
     "z2": 1875,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -92,7 +92,7 @@
     "z2": 1875,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -104,7 +104,7 @@
     "z2": 1875,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -116,7 +116,7 @@
     "z2": 50,
     "label": "Operational",
     "posUpDown": "",
-    "elementType": "Removable_2",
+    "type": "Removable_2",
     "additionalInfos": null
   },
   {
@@ -128,7 +128,7 @@
     "z2": 50,
     "label": "Operational",
     "posUpDown": "",
-    "elementType": "Removable_2",
+    "type": "Removable_2",
     "additionalInfos": null
   },
   {
@@ -140,7 +140,7 @@
     "z2": 50,
     "label": "Operational",
     "posUpDown": "",
-    "elementType": "Removable_2",
+    "type": "Removable_2",
     "additionalInfos": null
   },
   {
@@ -152,7 +152,7 @@
     "z2": 1825,
     "label": "Down_Wall",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -164,7 +164,7 @@
     "z2": 3650,
     "label": "Down_Wall",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -176,7 +176,7 @@
     "z2": 1825,
     "label": "Down_Wall",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -188,7 +188,7 @@
     "z2": 3650,
     "label": "Down_Wall",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -200,7 +200,7 @@
     "z2": 1825,
     "label": "Down_Wall",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -212,7 +212,7 @@
     "z2": 3650,
     "label": "Down_Wall",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -224,7 +224,7 @@
     "z2": 1250,
     "label": "Up",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -236,7 +236,7 @@
     "z2": 2400,
     "label": "Up",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -248,7 +248,7 @@
     "z2": 3650,
     "label": "Up",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -260,7 +260,7 @@
     "z2": 1250,
     "label": "Up",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -272,7 +272,7 @@
     "z2": 2400,
     "label": "Up",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -284,7 +284,7 @@
     "z2": 3650,
     "label": "Up",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -296,7 +296,7 @@
     "z2": 1250,
     "label": "FrontLeft",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -308,7 +308,7 @@
     "z2": 2400,
     "label": "FrontLeft",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -320,7 +320,7 @@
     "z2": 3650,
     "label": "FrontLeft",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -332,7 +332,7 @@
     "z2": 1250,
     "label": "FrontLeft",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -344,7 +344,7 @@
     "z2": 2400,
     "label": "FrontLeft",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -356,7 +356,7 @@
     "z2": 3650,
     "label": "FrontLeft",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -368,7 +368,7 @@
     "z2": 50,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -380,7 +380,7 @@
     "z2": 3700,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -392,7 +392,7 @@
     "z2": 3650,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -404,7 +404,7 @@
     "z2": 3650,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -416,7 +416,7 @@
     "z2": 3650,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -428,7 +428,7 @@
     "z2": 1875,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -440,7 +440,7 @@
     "z2": 1875,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -452,7 +452,7 @@
     "z2": 50,
     "label": "Operational",
     "posUpDown": "",
-    "elementType": "Removable_2",
+    "type": "Removable_2",
     "additionalInfos": null
   },
   {
@@ -464,7 +464,7 @@
     "z2": 50,
     "label": "Operational",
     "posUpDown": "",
-    "elementType": "Removable_2",
+    "type": "Removable_2",
     "additionalInfos": null
   },
   {
@@ -476,7 +476,7 @@
     "z2": 50,
     "label": "Operational",
     "posUpDown": "",
-    "elementType": "Removable_2",
+    "type": "Removable_2",
     "additionalInfos": null
   },
   {
@@ -488,7 +488,7 @@
     "z2": 3700,
     "label": "Back",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -500,7 +500,7 @@
     "z2": 3700,
     "label": "Back",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -512,7 +512,7 @@
     "z2": 1825,
     "label": "Down_DrainTray",
     "posUpDown": "",
-    "elementType": "DrainTray",
+    "type": "DrainTray",
     "additionalInfos": null
   },
   {
@@ -524,7 +524,7 @@
     "z2": 3650,
     "label": "Down_DrainTray",
     "posUpDown": "",
-    "elementType": "DrainTray",
+    "type": "DrainTray",
     "additionalInfos": null
   },
   {
@@ -536,7 +536,7 @@
     "z2": 1825,
     "label": "Down_Wall",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -548,7 +548,7 @@
     "z2": 3650,
     "label": "Down_Wall",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -560,7 +560,7 @@
     "z2": 1250,
     "label": "Up",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -572,7 +572,7 @@
     "z2": 2400,
     "label": "Up",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -584,7 +584,7 @@
     "z2": 3650,
     "label": "Up",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -596,7 +596,7 @@
     "z2": 50,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -608,7 +608,7 @@
     "z2": 3700,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -620,7 +620,7 @@
     "z2": 3650,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -632,7 +632,7 @@
     "z2": 3650,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -644,7 +644,7 @@
     "z2": 3650,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -656,7 +656,7 @@
     "z2": 1875,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -668,7 +668,7 @@
     "z2": 1875,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -680,7 +680,7 @@
     "z2": 50,
     "label": "Operational",
     "posUpDown": "",
-    "elementType": "Removable_3",
+    "type": "Removable_3",
     "additionalInfos": null
   },
   {
@@ -692,7 +692,7 @@
     "z2": 50,
     "label": "Operational",
     "posUpDown": "",
-    "elementType": "Removable_2",
+    "type": "Removable_2",
     "additionalInfos": null
   },
   {
@@ -704,7 +704,7 @@
     "z2": 50,
     "label": "Operational",
     "posUpDown": "",
-    "elementType": "Removable_2",
+    "type": "Removable_2",
     "additionalInfos": null
   },
   {
@@ -716,7 +716,7 @@
     "z2": 3700,
     "label": "Back",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -728,7 +728,7 @@
     "z2": 3700,
     "label": "Back",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -740,7 +740,7 @@
     "z2": 1825,
     "label": "Down_Wall",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -752,7 +752,7 @@
     "z2": 3650,
     "label": "Down_Wall",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -764,7 +764,7 @@
     "z2": 1825,
     "label": "Down_Wall",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -776,7 +776,7 @@
     "z2": 3650,
     "label": "Down_Wall",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -788,7 +788,7 @@
     "z2": 1250,
     "label": "Up",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -800,7 +800,7 @@
     "z2": 2400,
     "label": "Up",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -812,7 +812,7 @@
     "z2": 3650,
     "label": "Up",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -824,7 +824,7 @@
     "z2": 50,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -836,7 +836,7 @@
     "z2": 3700,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -848,7 +848,7 @@
     "z2": 3650,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -860,7 +860,7 @@
     "z2": 3650,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -872,7 +872,7 @@
     "z2": 3650,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -884,7 +884,7 @@
     "z2": 1875,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -896,7 +896,7 @@
     "z2": 1875,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -908,7 +908,7 @@
     "z2": 50,
     "label": "Operational",
     "posUpDown": "",
-    "elementType": "Removable_2",
+    "type": "Removable_2",
     "additionalInfos": null
   },
   {
@@ -920,7 +920,7 @@
     "z2": 50,
     "label": "Operational",
     "posUpDown": "",
-    "elementType": "Removable_2",
+    "type": "Removable_2",
     "additionalInfos": null
   },
   {
@@ -932,7 +932,7 @@
     "z2": 1825,
     "label": "Down_Wall",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -944,7 +944,7 @@
     "z2": 3650,
     "label": "Down_Wall",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -956,7 +956,7 @@
     "z2": 1825,
     "label": "Down_Wall",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -968,7 +968,7 @@
     "z2": 3650,
     "label": "Down_Wall",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -980,7 +980,7 @@
     "z2": 1250,
     "label": "Up",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -992,7 +992,7 @@
     "z2": 2400,
     "label": "Up",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -1004,7 +1004,7 @@
     "z2": 3650,
     "label": "Up",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -1016,7 +1016,7 @@
     "z2": 1250,
     "label": "FrontRight",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -1028,7 +1028,7 @@
     "z2": 2400,
     "label": "FrontRight",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -1040,7 +1040,7 @@
     "z2": 3650,
     "label": "FrontRight",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -1052,7 +1052,7 @@
     "z2": 1250,
     "label": "FrontRight",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -1064,7 +1064,7 @@
     "z2": 2400,
     "label": "FrontRight",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -1076,7 +1076,7 @@
     "z2": 3650,
     "label": "FrontRight",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -1088,7 +1088,7 @@
     "z2": 50,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -1100,7 +1100,7 @@
     "z2": 3700,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -1112,7 +1112,7 @@
     "z2": 3650,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -1124,7 +1124,7 @@
     "z2": 3650,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -1136,7 +1136,7 @@
     "z2": 3650,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -1148,7 +1148,7 @@
     "z2": 1875,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -1160,7 +1160,7 @@
     "z2": 1875,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -1172,7 +1172,7 @@
     "z2": 50,
     "label": "Operational",
     "posUpDown": "",
-    "elementType": "Removable_2",
+    "type": "Removable_2",
     "additionalInfos": null
   },
   {
@@ -1184,23 +1184,23 @@
     "z2": 50,
     "label": "Operational",
     "posUpDown": "",
-    "elementType": "Removable_3",
+    "type": "Removable_3",
     "additionalInfos": null
   },
   {
     "x1": 3500,
-    "x2": 4100,
+    "x2": 3700,
     "y1": 2290,
     "y2": 4190,
     "z1": 0,
     "z2": 50,
     "label": "Operational",
     "posUpDown": "",
-    "elementType": "Removable_2",
+    "type": "Removable_2",
     "additionalInfos": null
   },
   {
-    "x1": 4150,
+    "x1": 3750,
     "x2": 4350,
     "y1": 2290,
     "y2": 4190,
@@ -1208,7 +1208,7 @@
     "z2": 50,
     "label": "Operational",
     "posUpDown": "",
-    "elementType": "Removable_3",
+    "type": "Removable_3",
     "additionalInfos": null
   },
   {
@@ -1220,7 +1220,7 @@
     "z2": 3700,
     "label": "Back",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -1232,7 +1232,7 @@
     "z2": 3700,
     "label": "Back",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -1244,7 +1244,7 @@
     "z2": 3700,
     "label": "Back",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -1256,7 +1256,7 @@
     "z2": 3700,
     "label": "Back",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -1268,7 +1268,7 @@
     "z2": 1825,
     "label": "Down_Wall",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -1280,35 +1280,35 @@
     "z2": 3650,
     "label": "Down_Wall",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
     "x1": 3500,
-    "x2": 4100,
+    "x2": 3700,
     "y1": 2240,
     "y2": 2290,
     "z1": 50,
     "z2": 1825,
     "label": "Down_DrainTray",
     "posUpDown": "",
-    "elementType": "DrainTray",
+    "type": "DrainTray",
     "additionalInfos": null
   },
   {
     "x1": 3500,
-    "x2": 4100,
+    "x2": 3700,
     "y1": 2240,
     "y2": 2290,
     "z1": 1875,
     "z2": 3650,
     "label": "Down_DrainTray",
     "posUpDown": "",
-    "elementType": "DrainTray",
+    "type": "DrainTray",
     "additionalInfos": null
   },
   {
-    "x1": 4150,
+    "x1": 3750,
     "x2": 4350,
     "y1": 2240,
     "y2": 2290,
@@ -1316,11 +1316,11 @@
     "z2": 1825,
     "label": "Down_DrainTray",
     "posUpDown": "",
-    "elementType": "DrainTray",
+    "type": "DrainTray",
     "additionalInfos": null
   },
   {
-    "x1": 4150,
+    "x1": 3750,
     "x2": 4350,
     "y1": 2240,
     "y2": 2290,
@@ -1328,7 +1328,7 @@
     "z2": 3650,
     "label": "Down_DrainTray",
     "posUpDown": "",
-    "elementType": "DrainTray",
+    "type": "DrainTray",
     "additionalInfos": null
   },
   {
@@ -1340,7 +1340,7 @@
     "z2": 1250,
     "label": "Up",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -1352,7 +1352,7 @@
     "z2": 2400,
     "label": "Up",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -1364,7 +1364,7 @@
     "z2": 3650,
     "label": "Up",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -1376,7 +1376,7 @@
     "z2": 1250,
     "label": "Up",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -1388,7 +1388,7 @@
     "z2": 2400,
     "label": "Up",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -1400,7 +1400,7 @@
     "z2": 3650,
     "label": "Up",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -1412,7 +1412,7 @@
     "z2": 50,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -1424,7 +1424,7 @@
     "z2": 3700,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -1436,7 +1436,7 @@
     "z2": 3650,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -1448,7 +1448,7 @@
     "z2": 3650,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -1460,7 +1460,7 @@
     "z2": 3650,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -1472,7 +1472,7 @@
     "z2": 1875,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -1484,7 +1484,7 @@
     "z2": 1875,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -1496,7 +1496,7 @@
     "z2": 50,
     "label": "Operational",
     "posUpDown": "",
-    "elementType": "Removable_2",
+    "type": "Removable_2",
     "additionalInfos": null
   },
   {
@@ -1508,7 +1508,7 @@
     "z2": 50,
     "label": "Operational",
     "posUpDown": "",
-    "elementType": "Removable_2",
+    "type": "Removable_2",
     "additionalInfos": null
   },
   {
@@ -1520,7 +1520,7 @@
     "z2": 50,
     "label": "Operational",
     "posUpDown": "",
-    "elementType": "Removable_3",
+    "type": "Removable_3",
     "additionalInfos": null
   },
   {
@@ -1532,7 +1532,7 @@
     "z2": 3700,
     "label": "Back",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -1544,7 +1544,7 @@
     "z2": 3700,
     "label": "Back",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -1556,7 +1556,7 @@
     "z2": 1825,
     "label": "Down_Wall",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -1568,7 +1568,7 @@
     "z2": 3650,
     "label": "Down_Wall",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -1580,7 +1580,7 @@
     "z2": 1825,
     "label": "Down_Wall",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -1592,7 +1592,7 @@
     "z2": 3650,
     "label": "Down_Wall",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -1604,7 +1604,7 @@
     "z2": 1250,
     "label": "Up",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -1616,7 +1616,7 @@
     "z2": 2400,
     "label": "Up",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -1628,7 +1628,7 @@
     "z2": 3650,
     "label": "Up",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -1640,7 +1640,7 @@
     "z2": 50,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -1652,7 +1652,7 @@
     "z2": 3700,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -1664,7 +1664,7 @@
     "z2": 3650,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -1676,7 +1676,7 @@
     "z2": 3650,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -1688,7 +1688,7 @@
     "z2": 3650,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -1700,7 +1700,7 @@
     "z2": 3650,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -1712,7 +1712,7 @@
     "z2": 3650,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -1724,7 +1724,7 @@
     "z2": 50,
     "label": "Operational",
     "posUpDown": "",
-    "elementType": "Removable_2",
+    "type": "Removable_2",
     "additionalInfos": null
   },
   {
@@ -1736,7 +1736,7 @@
     "z2": 50,
     "label": "Operational",
     "posUpDown": "",
-    "elementType": "Removable_2",
+    "type": "Removable_2",
     "additionalInfos": null
   },
   {
@@ -1748,7 +1748,7 @@
     "z2": 50,
     "label": "Operational",
     "posUpDown": "",
-    "elementType": "Removable_3",
+    "type": "Removable_3",
     "additionalInfos": null
   },
   {
@@ -1760,7 +1760,7 @@
     "z2": 50,
     "label": "Operational",
     "posUpDown": "",
-    "elementType": "Removable_3",
+    "type": "Removable_3",
     "additionalInfos": null
   },
   {
@@ -1772,7 +1772,7 @@
     "z2": 50,
     "label": "Operational",
     "posUpDown": "",
-    "elementType": "Removable_3",
+    "type": "Removable_3",
     "additionalInfos": null
   },
   {
@@ -1784,7 +1784,7 @@
     "z2": 50,
     "label": "Operational",
     "posUpDown": "",
-    "elementType": "Removable_3",
+    "type": "Removable_3",
     "additionalInfos": null
   },
   {
@@ -1796,7 +1796,7 @@
     "z2": 50,
     "label": "Operational",
     "posUpDown": "",
-    "elementType": "Removable_3",
+    "type": "Removable_3",
     "additionalInfos": null
   },
   {
@@ -1808,7 +1808,7 @@
     "z2": 50,
     "label": "Operational",
     "posUpDown": "",
-    "elementType": "Removable_3",
+    "type": "Removable_3",
     "additionalInfos": null
   },
   {
@@ -1820,7 +1820,7 @@
     "z2": 50,
     "label": "Operational",
     "posUpDown": "",
-    "elementType": "Removable_3",
+    "type": "Removable_3",
     "additionalInfos": null
   },
   {
@@ -1832,7 +1832,7 @@
     "z2": 50,
     "label": "Operational",
     "posUpDown": "",
-    "elementType": "Removable_3",
+    "type": "Removable_3",
     "additionalInfos": null
   },
   {
@@ -1844,7 +1844,7 @@
     "z2": 50,
     "label": "Operational",
     "posUpDown": "",
-    "elementType": "Removable_2",
+    "type": "Removable_2",
     "additionalInfos": null
   },
   {
@@ -1856,7 +1856,7 @@
     "z2": 50,
     "label": "Operational",
     "posUpDown": "",
-    "elementType": "Removable_2",
+    "type": "Removable_2",
     "additionalInfos": null
   },
   {
@@ -1868,7 +1868,7 @@
     "z2": 3700,
     "label": "Back",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -1880,7 +1880,7 @@
     "z2": 3700,
     "label": "Back",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -1892,7 +1892,7 @@
     "z2": 3700,
     "label": "Back",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -1904,7 +1904,7 @@
     "z2": 3700,
     "label": "Back",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -1916,7 +1916,7 @@
     "z2": 3700,
     "label": "Back",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -1928,7 +1928,7 @@
     "z2": 3700,
     "label": "Back",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -1940,7 +1940,7 @@
     "z2": 3700,
     "label": "Back",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -1952,7 +1952,7 @@
     "z2": 3700,
     "label": "Back",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -1964,7 +1964,7 @@
     "z2": 3700,
     "label": "Back",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -1976,7 +1976,7 @@
     "z2": 3700,
     "label": "Back",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -1988,7 +1988,7 @@
     "z2": 3700,
     "label": "Back",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -2000,7 +2000,7 @@
     "z2": 3700,
     "label": "Back",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -2012,7 +2012,7 @@
     "z2": 3700,
     "label": "Back",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -2024,7 +2024,7 @@
     "z2": 3700,
     "label": "Back",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -2036,7 +2036,7 @@
     "z2": 3700,
     "label": "Back",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -2048,7 +2048,7 @@
     "z2": 3700,
     "label": "Back",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -2060,7 +2060,7 @@
     "z2": 1800,
     "label": "Down_DrainTray",
     "posUpDown": "",
-    "elementType": "DrainTray",
+    "type": "DrainTray",
     "additionalInfos": null
   },
   {
@@ -2072,7 +2072,7 @@
     "z2": 1850,
     "label": "Down_Div",
     "posUpDown": "",
-    "elementType": "Div",
+    "type": "Div",
     "additionalInfos": null
   },
   {
@@ -2084,7 +2084,7 @@
     "z2": 3650,
     "label": "Down_DrainTray",
     "posUpDown": "",
-    "elementType": "DrainTray",
+    "type": "DrainTray",
     "additionalInfos": null
   },
   {
@@ -2096,7 +2096,7 @@
     "z2": 1800,
     "label": "Down_DrainTray",
     "posUpDown": "",
-    "elementType": "DrainTray",
+    "type": "DrainTray",
     "additionalInfos": null
   },
   {
@@ -2108,7 +2108,7 @@
     "z2": 1850,
     "label": "Down_Div",
     "posUpDown": "",
-    "elementType": "Div",
+    "type": "Div",
     "additionalInfos": null
   },
   {
@@ -2120,7 +2120,7 @@
     "z2": 3650,
     "label": "Down_DrainTray",
     "posUpDown": "",
-    "elementType": "DrainTray",
+    "type": "DrainTray",
     "additionalInfos": null
   },
   {
@@ -2132,7 +2132,7 @@
     "z2": 1850,
     "label": "Down_Div",
     "posUpDown": "",
-    "elementType": "Div",
+    "type": "Div",
     "additionalInfos": null
   },
   {
@@ -2144,7 +2144,7 @@
     "z2": 1800,
     "label": "Down_Wall",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -2156,7 +2156,7 @@
     "z2": 3650,
     "label": "Down_Wall",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -2168,7 +2168,7 @@
     "z2": 3650,
     "label": "Down_Wall",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -2180,7 +2180,7 @@
     "z2": 1850,
     "label": "Down_Div",
     "posUpDown": "",
-    "elementType": "Div",
+    "type": "Div",
     "additionalInfos": null
   },
   {
@@ -2192,7 +2192,7 @@
     "z2": 1800,
     "label": "Down_Wall",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -2204,7 +2204,7 @@
     "z2": 900,
     "label": "Up",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -2216,7 +2216,7 @@
     "z2": 1800,
     "label": "Up",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -2228,7 +2228,7 @@
     "z2": 2750,
     "label": "Up",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -2240,7 +2240,7 @@
     "z2": 3650,
     "label": "Up",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -2252,7 +2252,7 @@
     "z2": 1850,
     "label": "Up",
     "posUpDown": "",
-    "elementType": "Div",
+    "type": "Div",
     "additionalInfos": null
   },
   {
@@ -2264,7 +2264,7 @@
     "z2": 900,
     "label": "Up",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -2276,7 +2276,7 @@
     "z2": 1800,
     "label": "Up",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -2288,7 +2288,7 @@
     "z2": 1850,
     "label": "Up",
     "posUpDown": "",
-    "elementType": "Div",
+    "type": "Div",
     "additionalInfos": null
   },
   {
@@ -2300,7 +2300,7 @@
     "z2": 2750,
     "label": "Up",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -2312,7 +2312,7 @@
     "z2": 3650,
     "label": "Up",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -2324,7 +2324,7 @@
     "z2": 3650,
     "label": "Up",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -2336,7 +2336,7 @@
     "z2": 900,
     "label": "Up",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -2348,7 +2348,7 @@
     "z2": 1800,
     "label": "Up",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -2360,7 +2360,7 @@
     "z2": 1850,
     "label": "Up",
     "posUpDown": "",
-    "elementType": "Div",
+    "type": "Div",
     "additionalInfos": null
   },
   {
@@ -2372,7 +2372,7 @@
     "z2": 2750,
     "label": "Up",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -2384,7 +2384,7 @@
     "z2": 1800,
     "label": "Up",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -2396,7 +2396,7 @@
     "z2": 3650,
     "label": "Up",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -2408,7 +2408,7 @@
     "z2": 2750,
     "label": "Up",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -2420,7 +2420,7 @@
     "z2": 900,
     "label": "Up",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -2432,7 +2432,7 @@
     "z2": 1850,
     "label": "Up",
     "posUpDown": "",
-    "elementType": "Div",
+    "type": "Div",
     "additionalInfos": null
   },
   {
@@ -2444,7 +2444,7 @@
     "z2": -150,
     "label": "Connector",
     "posUpDown": "DrainTray: AhuEmptySectionOutput / Up: 0, Down: 1",
-    "elementType": null,
+    "type": "DrainTrayConnector",
     "additionalInfos": null
   },
   {
@@ -2456,7 +2456,7 @@
     "z2": -150,
     "label": "Connector",
     "posUpDown": "DrainTray: AhuEmptySectionOutput / Up: 0, Down: 1",
-    "elementType": null,
+    "type": "DrainTrayConnector",
     "additionalInfos": null
   },
   {
@@ -2468,7 +2468,7 @@
     "z2": -150,
     "label": "Connector",
     "posUpDown": "DrainTray: AhuEmptySectionOutput / Up: 0, Down: 1",
-    "elementType": null,
+    "type": "DrainTrayConnector",
     "additionalInfos": null
   },
   {
@@ -2480,7 +2480,7 @@
     "z2": -150,
     "label": "Connector",
     "posUpDown": "DrainTray: AhuEmptySectionOutput / Up: 0, Down: 2",
-    "elementType": null,
+    "type": "DrainTrayConnector",
     "additionalInfos": null
   },
   {
@@ -2492,7 +2492,7 @@
     "z2": -150,
     "label": "Connector",
     "posUpDown": "DrainTray: AhuEmptySectionOutput / Up: 0, Down: 8",
-    "elementType": null,
+    "type": "DrainTrayConnector",
     "additionalInfos": null
   },
   {
@@ -2504,31 +2504,31 @@
     "z2": -150,
     "label": "Connector",
     "posUpDown": "DrainTray: AhuEmptySectionOutput / Up: 0, Down: 8",
-    "elementType": null,
+    "type": "DrainTrayConnector",
     "additionalInfos": null
   },
   {
-    "x1": 3800,
-    "x2": 3840,
+    "x1": 3600,
+    "x2": 3640,
     "y1": 2290,
     "y2": 2330,
     "z1": 0,
     "z2": -150,
     "label": "Connector",
     "posUpDown": "DrainTray: AhuWaterCoolerOutput / Up: 3, Down: 0",
-    "elementType": null,
+    "type": "DrainTrayConnector",
     "additionalInfos": null
   },
   {
-    "x1": 4200,
-    "x2": 4240,
+    "x1": 4000,
+    "x2": 4040,
     "y1": 2290,
     "y2": 2330,
     "z1": 0,
     "z2": -150,
     "label": "Connector",
     "posUpDown": "DrainTray: AhuWaterCoolerOutput / Up: 3, Down: 0",
-    "elementType": null,
+    "type": "DrainTrayConnector",
     "additionalInfos": null
   },
   {
@@ -2540,7 +2540,7 @@
     "z2": -150,
     "label": "Connector",
     "posUpDown": "DrainTray: AhuPlateRecuperatorOutput / Up: 5, Down: 6",
-    "elementType": null,
+    "type": "DrainTrayConnector",
     "additionalInfos": null
   },
   {
@@ -2552,7 +2552,7 @@
     "z2": -150,
     "label": "Connector",
     "posUpDown": "DrainTray: AhuPlateRecuperatorOutput / Up: 5, Down: 6",
-    "elementType": null,
+    "type": "DrainTrayConnector",
     "additionalInfos": null
   },
   {
@@ -2564,7 +2564,7 @@
     "z2": -150,
     "label": "Connector",
     "posUpDown": "DrainTray: AhuPlateRecuperatorOutput / Up: 5, Down: 6",
-    "elementType": null,
+    "type": "DrainTrayConnector",
     "additionalInfos": null
   },
   {
@@ -2576,7 +2576,7 @@
     "z2": -150,
     "label": "Connector",
     "posUpDown": "DrainTray: AhuPlateRecuperatorOutput / Up: 5, Down: 6",
-    "elementType": null,
+    "type": "DrainTrayConnector",
     "additionalInfos": null
   },
   {
@@ -2588,7 +2588,7 @@
     "z2": 3700,
     "label": "Block",
     "posUpDown": "Block: Up 0, Down 1",
-    "elementType": null,
+    "type": "Block",
     "additionalInfos": {
       "sName": null,
       "airPath": null,
@@ -2608,7 +2608,7 @@
     "z2": 3700,
     "label": "Block",
     "posUpDown": "Block: Up 0, Down 2",
-    "elementType": null,
+    "type": "Block",
     "additionalInfos": {
       "sName": null,
       "airPath": null,
@@ -2628,7 +2628,7 @@
     "z2": 3700,
     "label": "Block",
     "posUpDown": "Block: Up 0, Down 3",
-    "elementType": null,
+    "type": "Block",
     "additionalInfos": {
       "sName": null,
       "airPath": null,
@@ -2648,7 +2648,7 @@
     "z2": 3700,
     "label": "Block",
     "posUpDown": "Block: Up 3, Down 4",
-    "elementType": null,
+    "type": "Block",
     "additionalInfos": {
       "sName": null,
       "airPath": null,
@@ -2668,7 +2668,7 @@
     "z2": 3700,
     "label": "Block",
     "posUpDown": "Block: Up 0, Down 5",
-    "elementType": null,
+    "type": "Block",
     "additionalInfos": {
       "sName": null,
       "airPath": null,
@@ -2688,7 +2688,7 @@
     "z2": 3700,
     "label": "Block",
     "posUpDown": "Block: Up 1, Down 0",
-    "elementType": null,
+    "type": "Block",
     "additionalInfos": {
       "sName": null,
       "airPath": null,
@@ -2708,7 +2708,7 @@
     "z2": 3700,
     "label": "Block",
     "posUpDown": "Block: Up 2, Down 0",
-    "elementType": null,
+    "type": "Block",
     "additionalInfos": {
       "sName": null,
       "airPath": null,
@@ -2728,7 +2728,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -2740,7 +2740,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -2752,7 +2752,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -2764,7 +2764,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -2776,7 +2776,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -2788,7 +2788,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -2800,7 +2800,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -2812,7 +2812,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -2824,7 +2824,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -2836,7 +2836,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -2848,7 +2848,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -2860,7 +2860,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -2872,7 +2872,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -2884,7 +2884,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -2896,7 +2896,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -2908,7 +2908,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -2920,7 +2920,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -2932,7 +2932,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -2944,7 +2944,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -2956,7 +2956,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -2968,7 +2968,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -2980,7 +2980,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -2992,7 +2992,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3004,7 +3004,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3016,7 +3016,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3028,7 +3028,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3040,7 +3040,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3052,7 +3052,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3064,7 +3064,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3076,7 +3076,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3088,7 +3088,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3100,7 +3100,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3112,7 +3112,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3124,7 +3124,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3136,7 +3136,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3148,7 +3148,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3160,7 +3160,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3172,7 +3172,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3184,7 +3184,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3196,7 +3196,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3208,7 +3208,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3220,7 +3220,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3232,7 +3232,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3244,7 +3244,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3256,7 +3256,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3268,7 +3268,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3280,7 +3280,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3292,7 +3292,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3304,7 +3304,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3316,7 +3316,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3328,7 +3328,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3340,7 +3340,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3352,7 +3352,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3364,7 +3364,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3376,7 +3376,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3388,7 +3388,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3400,7 +3400,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3412,7 +3412,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3424,7 +3424,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3436,7 +3436,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3448,7 +3448,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3460,7 +3460,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3472,7 +3472,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3484,7 +3484,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3496,7 +3496,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3508,7 +3508,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3520,7 +3520,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3532,7 +3532,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3544,7 +3544,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3556,7 +3556,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3568,7 +3568,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3580,7 +3580,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3592,7 +3592,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3604,7 +3604,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3616,7 +3616,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3628,7 +3628,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3640,7 +3640,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3652,7 +3652,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3664,7 +3664,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3676,7 +3676,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3688,7 +3688,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3700,7 +3700,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3712,7 +3712,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3724,7 +3724,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3736,7 +3736,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3748,7 +3748,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3760,7 +3760,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3772,7 +3772,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3784,7 +3784,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3796,7 +3796,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3808,7 +3808,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3820,7 +3820,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3832,7 +3832,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3844,7 +3844,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3856,7 +3856,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3868,7 +3868,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3880,7 +3880,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3892,7 +3892,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3904,7 +3904,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3916,7 +3916,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3928,7 +3928,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3940,7 +3940,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3952,7 +3952,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3964,7 +3964,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3976,7 +3976,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -3988,7 +3988,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -4000,7 +4000,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -4012,7 +4012,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -4024,7 +4024,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -4036,7 +4036,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -4048,7 +4048,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -4060,7 +4060,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -4072,7 +4072,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -4084,7 +4084,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -4096,55 +4096,7 @@
     "z2": 3700,
     "label": "",
     "posUpDown": "",
-    "elementType": null,
-    "additionalInfos": null
-  },
-  {
-    "x1": 10420,
-    "x2": 11670,
-    "y1": 170,
-    "y2": 2070,
-    "z1": 3700,
-    "z2": 3705,
-    "label": "Hole",
-    "posUpDown": "",
-    "elementType": null,
-    "additionalInfos": null
-  },
-  {
-    "x1": 2450,
-    "x2": 2455,
-    "y1": 2290,
-    "y2": 4190,
-    "z1": 50,
-    "z2": 3650,
-    "label": "Hole",
-    "posUpDown": "",
-    "elementType": null,
-    "additionalInfos": null
-  },
-  {
-    "x1": 50,
-    "x2": 1300,
-    "y1": 170,
-    "y2": 2070,
-    "z1": 3700,
-    "z2": 3705,
-    "label": "Hole",
-    "posUpDown": "",
-    "elementType": null,
-    "additionalInfos": null
-  },
-  {
-    "x1": 10370,
-    "x2": 10375,
-    "y1": 2205,
-    "y2": 4105,
-    "z1": 50,
-    "z2": 3650,
-    "label": "Hole",
-    "posUpDown": "",
-    "elementType": null,
+    "type": "Roof",
     "additionalInfos": null
   },
   {
@@ -4156,7 +4108,7 @@
     "z2": 3815,
     "label": "AD",
     "posUpDown": "",
-    "elementType": null,
+    "type": "AirDamper",
     "additionalInfos": null
   },
   {
@@ -4168,7 +4120,7 @@
     "z2": 1820,
     "label": "AD",
     "posUpDown": "",
-    "elementType": null,
+    "type": "AirDamper",
     "additionalInfos": null
   },
   {
@@ -4180,7 +4132,7 @@
     "z2": 3650,
     "label": "AD",
     "posUpDown": "",
-    "elementType": null,
+    "type": "AirDamper",
     "additionalInfos": null
   },
   {
@@ -4192,7 +4144,7 @@
     "z2": 3915,
     "label": "FC",
     "posUpDown": "",
-    "elementType": null,
+    "type": "FlexibleConnection",
     "additionalInfos": null
   },
   {
@@ -4204,7 +4156,7 @@
     "z2": 3650,
     "label": "FC",
     "posUpDown": "",
-    "elementType": null,
+    "type": "FlexibleConnection",
     "additionalInfos": null
   },
   {
@@ -4216,7 +4168,7 @@
     "z2": 3800,
     "label": "FC",
     "posUpDown": "",
-    "elementType": null,
+    "type": "FlexibleConnection",
     "additionalInfos": null
   },
   {
@@ -4228,7 +4180,7 @@
     "z2": 3650,
     "label": "FC",
     "posUpDown": "",
-    "elementType": null,
+    "type": "FlexibleConnection",
     "additionalInfos": null
   },
   {
@@ -4240,7 +4192,7 @@
     "z2": 3650,
     "label": "Function",
     "posUpDown": "ES, U:0, D:1",
-    "elementType": "Function",
+    "type": "Function",
     "additionalInfos": {
       "sName": "ES",
       "airPath": "Exhaust",
@@ -4260,7 +4212,7 @@
     "z2": 3650,
     "label": "Function",
     "posUpDown": "ES, U:0, D:2",
-    "elementType": "Function",
+    "type": "Function",
     "additionalInfos": {
       "sName": "ES",
       "airPath": "Exhaust",
@@ -4280,7 +4232,7 @@
     "z2": 3650,
     "label": "Function",
     "posUpDown": "PF, U:0, D:3",
-    "elementType": "Function",
+    "type": "Function",
     "additionalInfos": {
       "sName": "PF",
       "airPath": "Exhaust",
@@ -4300,7 +4252,7 @@
     "z2": 3650,
     "label": "Function",
     "posUpDown": "SL, U:0, D:4",
-    "elementType": "Function",
+    "type": "Function",
     "additionalInfos": {
       "sName": "SL",
       "airPath": "Exhaust",
@@ -4320,7 +4272,7 @@
     "z2": 3650,
     "label": "Function",
     "posUpDown": "VF, U:0, D:5",
-    "elementType": "Function",
+    "type": "Function",
     "additionalInfos": {
       "sName": "VF",
       "airPath": "Exhaust",
@@ -4340,7 +4292,7 @@
     "z2": 3650,
     "label": "Function",
     "posUpDown": "ES, U:0, D:8",
-    "elementType": "Function",
+    "type": "Function",
     "additionalInfos": {
       "sName": "ES",
       "airPath": "Supply",
@@ -4360,7 +4312,7 @@
     "z2": 3650,
     "label": "Function",
     "posUpDown": "SF, U:1, D:0",
-    "elementType": "Function",
+    "type": "Function",
     "additionalInfos": {
       "sName": "SF",
       "airPath": "Supply",
@@ -4380,7 +4332,7 @@
     "z2": 3650,
     "label": "Function",
     "posUpDown": "WH, U:2, D:0",
-    "elementType": "Function",
+    "type": "Function",
     "additionalInfos": {
       "sName": "WH",
       "airPath": "Supply",
@@ -4400,7 +4352,7 @@
     "z2": 3650,
     "label": "Function",
     "posUpDown": "WC, U:3, D:0",
-    "elementType": "Function",
+    "type": "Function",
     "additionalInfos": {
       "sName": "WC",
       "airPath": "Supply",
@@ -4420,7 +4372,7 @@
     "z2": 3650,
     "label": "Function",
     "posUpDown": "VF, U:4, D:0",
-    "elementType": "Function",
+    "type": "Function",
     "additionalInfos": {
       "sName": "VF",
       "airPath": "Supply",
@@ -4440,7 +4392,7 @@
     "z2": 3650,
     "label": "Function",
     "posUpDown": "PF, U:0, D:7",
-    "elementType": "Function",
+    "type": "Function",
     "additionalInfos": {
       "sName": "PF",
       "airPath": "Supply",
@@ -4460,7 +4412,7 @@
     "z2": 3650,
     "label": "Function",
     "posUpDown": "PR, U:5, D:6",
-    "elementType": "Function",
+    "type": "Function",
     "additionalInfos": {
       "sName": "PR",
       "airPath": "Supply",
@@ -4480,7 +4432,7 @@
     "z2": -1,
     "label": "icon_emptysection",
     "posUpDown": "Icon: ES",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "ES",
       "airPath": "Exhaust",
@@ -4500,7 +4452,7 @@
     "z2": 3701,
     "label": "icon_emptysection",
     "posUpDown": "Icon: ES",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "ES",
       "airPath": "Exhaust",
@@ -4520,7 +4472,7 @@
     "z2": 1950,
     "label": "icon_emptysection",
     "posUpDown": "Icon: ES",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "ES",
       "airPath": "Exhaust",
@@ -4540,7 +4492,7 @@
     "z2": -1,
     "label": "icon_emptysection",
     "posUpDown": "Icon: ES",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "ES",
       "airPath": "Exhaust",
@@ -4560,7 +4512,7 @@
     "z2": 3701,
     "label": "icon_emptysection",
     "posUpDown": "Icon: ES",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "ES",
       "airPath": "Exhaust",
@@ -4580,7 +4532,7 @@
     "z2": 1950,
     "label": "icon_emptysection",
     "posUpDown": "Icon: ES",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "ES",
       "airPath": "Exhaust",
@@ -4600,7 +4552,7 @@
     "z2": -1,
     "label": "icon_filter",
     "posUpDown": "Icon: PF",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "PF",
       "airPath": "Exhaust",
@@ -4620,7 +4572,7 @@
     "z2": 3701,
     "label": "icon_filter",
     "posUpDown": "Icon: PF",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "PF",
       "airPath": "Exhaust",
@@ -4640,7 +4592,7 @@
     "z2": 1950,
     "label": "icon_filter",
     "posUpDown": "Icon: PF",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "PF",
       "airPath": "Exhaust",
@@ -4660,7 +4612,7 @@
     "z2": -1,
     "label": "icon_silencer",
     "posUpDown": "Icon: SL",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "SL",
       "airPath": "Exhaust",
@@ -4680,7 +4632,7 @@
     "z2": 3701,
     "label": "icon_silencer",
     "posUpDown": "Icon: SL",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "SL",
       "airPath": "Exhaust",
@@ -4700,7 +4652,7 @@
     "z2": 1950,
     "label": "icon_silencer",
     "posUpDown": "Icon: SL",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "SL",
       "airPath": "Exhaust",
@@ -4720,7 +4672,7 @@
     "z2": -1,
     "label": "icon_fan",
     "posUpDown": "Icon: VF",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "VF",
       "airPath": "Exhaust",
@@ -4740,7 +4692,7 @@
     "z2": 3701,
     "label": "icon_fan",
     "posUpDown": "Icon: VF",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "VF",
       "airPath": "Exhaust",
@@ -4760,7 +4712,7 @@
     "z2": 1950,
     "label": "icon_fan",
     "posUpDown": "Icon: VF",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "VF",
       "airPath": "Exhaust",
@@ -4780,7 +4732,7 @@
     "z2": -1,
     "label": "icon_emptysection",
     "posUpDown": "Icon: ES",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "ES",
       "airPath": "Supply",
@@ -4800,7 +4752,7 @@
     "z2": 3701,
     "label": "icon_emptysection",
     "posUpDown": "Icon: ES",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "ES",
       "airPath": "Supply",
@@ -4820,7 +4772,7 @@
     "z2": 1950,
     "label": "icon_emptysection",
     "posUpDown": "Icon: ES",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "ES",
       "airPath": "Supply",
@@ -4840,7 +4792,7 @@
     "z2": -1,
     "label": "icon_filter",
     "posUpDown": "Icon: SF",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "SF",
       "airPath": "Supply",
@@ -4860,7 +4812,7 @@
     "z2": 3701,
     "label": "icon_filter",
     "posUpDown": "Icon: SF",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "SF",
       "airPath": "Supply",
@@ -4880,7 +4832,7 @@
     "z2": 1950,
     "label": "icon_filter",
     "posUpDown": "Icon: SF",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "SF",
       "airPath": "Supply",
@@ -4900,7 +4852,7 @@
     "z2": -1,
     "label": "icon_waterheater",
     "posUpDown": "Icon: WH",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "WH",
       "airPath": "Supply",
@@ -4920,7 +4872,7 @@
     "z2": 3701,
     "label": "icon_waterheater",
     "posUpDown": "Icon: WH",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "WH",
       "airPath": "Supply",
@@ -4940,7 +4892,7 @@
     "z2": 1950,
     "label": "icon_waterheater",
     "posUpDown": "Icon: WH",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "WH",
       "airPath": "Supply",
@@ -4952,15 +4904,15 @@
     }
   },
   {
-    "x1": 4100,
-    "x2": 4300,
+    "x1": 3900,
+    "x2": 4100,
     "y1": 2857,
     "y2": 3057,
     "z1": -1,
     "z2": -1,
     "label": "icon_watercooler",
     "posUpDown": "Icon: WC",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "WC",
       "airPath": "Supply",
@@ -4972,15 +4924,15 @@
     }
   },
   {
-    "x1": 4100,
-    "x2": 4300,
+    "x1": 3900,
+    "x2": 4100,
     "y1": 2857,
     "y2": 3057,
     "z1": 3701,
     "z2": 3701,
     "label": "icon_watercooler",
     "posUpDown": "Icon: WC",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "WC",
       "airPath": "Supply",
@@ -4992,15 +4944,15 @@
     }
   },
   {
-    "x1": 4100,
-    "x2": 4300,
+    "x1": 3900,
+    "x2": 4100,
     "y1": 4241,
     "y2": 4241,
     "z1": 1750,
     "z2": 1950,
     "label": "icon_watercooler",
     "posUpDown": "Icon: WC",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "WC",
       "airPath": "Supply",
@@ -5012,15 +4964,15 @@
     }
   },
   {
-    "x1": 3700,
-    "x2": 3900,
+    "x1": 3500,
+    "x2": 3700,
     "y1": 2857,
     "y2": 3057,
     "z1": -1,
     "z2": -1,
     "label": "icon_watercooler",
     "posUpDown": "Icon: DE",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "WC",
       "airPath": "Supply",
@@ -5032,15 +4984,15 @@
     }
   },
   {
-    "x1": 3700,
-    "x2": 3900,
+    "x1": 3500,
+    "x2": 3700,
     "y1": 2857,
     "y2": 3057,
     "z1": 3701,
     "z2": 3701,
     "label": "icon_watercooler",
     "posUpDown": "Icon: DE",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "WC",
       "airPath": "Supply",
@@ -5052,15 +5004,15 @@
     }
   },
   {
-    "x1": 3700,
-    "x2": 3900,
+    "x1": 3500,
+    "x2": 3700,
     "y1": 4241,
     "y2": 4241,
     "z1": 1750,
     "z2": 1950,
     "label": "icon_watercooler",
     "posUpDown": "Icon: DE",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "WC",
       "airPath": "Supply",
@@ -5080,7 +5032,7 @@
     "z2": -1,
     "label": "icon_fan",
     "posUpDown": "Icon: VF",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "VF",
       "airPath": "Supply",
@@ -5100,7 +5052,7 @@
     "z2": 3701,
     "label": "icon_fan",
     "posUpDown": "Icon: VF",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "VF",
       "airPath": "Supply",
@@ -5120,7 +5072,7 @@
     "z2": 1950,
     "label": "icon_fan",
     "posUpDown": "Icon: VF",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "VF",
       "airPath": "Supply",
@@ -5140,7 +5092,7 @@
     "z2": -1,
     "label": "icon_filter",
     "posUpDown": "Icon: PF",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "PF",
       "airPath": "Supply",
@@ -5160,7 +5112,7 @@
     "z2": 3701,
     "label": "icon_filter",
     "posUpDown": "Icon: PF",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "PF",
       "airPath": "Supply",
@@ -5180,7 +5132,7 @@
     "z2": 1950,
     "label": "icon_filter",
     "posUpDown": "Icon: PF",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "PF",
       "airPath": "Supply",
@@ -5200,7 +5152,7 @@
     "z2": -1,
     "label": "icon_plate",
     "posUpDown": "Icon: PR",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "PR",
       "airPath": "Supply",
@@ -5220,7 +5172,7 @@
     "z2": 3701,
     "label": "icon_plate",
     "posUpDown": "Icon: PR",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "PR",
       "airPath": "Supply",
@@ -5240,7 +5192,7 @@
     "z2": 1950,
     "label": "icon_plate",
     "posUpDown": "Icon: PR",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "PR",
       "airPath": "Supply",
@@ -5260,7 +5212,7 @@
     "z2": -1,
     "label": "icon_plate",
     "posUpDown": "Icon: DE",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "PR",
       "airPath": "Supply",
@@ -5280,7 +5232,7 @@
     "z2": 3701,
     "label": "icon_plate",
     "posUpDown": "Icon: DE",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "PR",
       "airPath": "Supply",
