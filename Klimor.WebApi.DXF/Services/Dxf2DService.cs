@@ -212,7 +212,9 @@ namespace Klimor.WebApi.DXF.Services
                                     dxf.Entities.Add(outerPoly); // &&*
                                 }
 
-                                if ((el.type == "Wall" || el.type.Contains("Removable") || el.type.Contains("Door")) && el.label == view.Name ||
+                                if ((el.type == "Wall" ||
+                                    el.type.Contains("Removable") || 
+                                    el.type.Contains("Door")) && el.label == view.Name ||
                                     el.label.Contains("_"))
                                 {
                                     var idx = 0;
@@ -425,7 +427,7 @@ namespace Klimor.WebApi.DXF.Services
             double secondLastBlockX2 = blocksAll.OrderByDescending(e => e.x2).Skip(1).FirstOrDefault()?.x2 ?? double.MinValue;
 
             //var yOffset = views.FirstOrDefault(v => v.name == viewName).yOffset;
-            var yOffset = Views.All.FirstOrDefault(v => v.Name == viewName).YOffset;
+            var yOffset = Views[viewName].YOffset;
 
             // pełne kontury bloków (profil)
             if (createShape && elementsGroup.Any(g => string.Equals(g, "Block", StringComparison.OrdinalIgnoreCase)))

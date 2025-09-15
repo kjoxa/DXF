@@ -6,6 +6,7 @@ using netDxf;
 using netDxf.Blocks;
 using netDxf.Entities;
 using netDxf.Header;
+using netDxf.Objects;
 using netDxf.Tables;
 using System.Diagnostics;
 using System.Text.Json;
@@ -54,8 +55,8 @@ namespace Klimor.WebApi.DXF
 
                         elements = elements.Where(e => !string.IsNullOrWhiteSpace(e.label)).ToList();
 
-                        Views.Up.XOffset = 10000;
-                        Views.Down.XOffset = -10000;
+                        //Views.Up.XOffset = 10000;
+                        //Views.Down.XOffset = -10000;
                         Generate2D(elements, $"{Path.GetFileNameWithoutExtension(ofd.FileName)}.dxf", true);
                         //GenerateViews(elements, "output2D.dxf");
                         dxf3D.Generate3D(elements, "output3D.dxf");
