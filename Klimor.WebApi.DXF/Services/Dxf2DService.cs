@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Klimor.WebApi.DXF.Services
 {
@@ -68,14 +69,26 @@ namespace Klimor.WebApi.DXF.Services
 
         public void GenerateView(DxfDocument dxf, List<Coordinates> elements, List<string> elementsGroup, bool createDimension, bool createShape, Layer layer, Layer textLayer)
         {
+            var firstElement = elements.OrderBy(e => e.x1).FirstOrDefault(e => e.label == Lab.Block);
+            var lastElement = elements.OrderByDescending(e => e.x1).FirstOrDefault(e => e.label == Lab.Block);
+            var norm = new Text("ISO", new Vector3((lastElement.x2 - firstElement.x1) / 2, 13000, 0), 700)
+            {
+                Layer = textLayer,
+                Rotation = 0,
+                Color = AciColor.LightGray,
+                WidthFactor = 1.2,
+            };
+            dxf.Entities.Add(norm);
+
             foreach (var view in Views.All)
             {
                 // podpis widoku przy elemencie
-                var firstElement = elements.FirstOrDefault();
+                firstElement = elements.OrderBy(e => e.x1).FirstOrDefault(e => e.label == Lab.Block);
+                lastElement = elements.OrderByDescending(e => e.x1).FirstOrDefault(e => e.label == Lab.Block);
                 if (firstElement != null)
                 {
-                    double elementCenterY = (firstElement.y1 + firstElement.y2) / 2 + view.YOffset;
-                    var text = new Text(view.Name, new Vector3(-1200, elementCenterY + 900, 0), 100)
+                    //double elementCenterY = (firstElement.y1 + firstElement.y2) - 500 + view.YOffset;
+                    var text = new Text(view.Name, new Vector3(view.XOffset + 400, view.YOffset - 400, 0), 100)
                     {
                         Layer = textLayer,
                         Rotation = 0,
@@ -91,6 +104,9 @@ namespace Klimor.WebApi.DXF.Services
                     .Any(g => string.Equals(g, e.label, StringComparison.OrdinalIgnoreCase)))
                     .ToList();
 
+                bool externalElementShow = false;
+                int externalElementsYOffset = 0;
+
                 // widoki boczne: przycinanie
                 if (view.Name == "LeftFront" || view.Name == "RightFront")
                 {
@@ -101,6 +117,7 @@ namespace Klimor.WebApi.DXF.Services
                     // dla innych widoków bez przycinania
                     foreach (var el in groupElements)
                     {
+                        externalElementShow = false;
                         // generowanie współrzędnych dla widoku
                         List<Vector2> outer2D = GenerateViewVertices(el, view.Name, globalXMin, globalXMax,
                             globalYMin, globalYMax, globalZMin, globalZMax);
@@ -207,10 +224,30 @@ namespace Klimor.WebApi.DXF.Services
                             }
                             if (!string.IsNullOrEmpty(el.type) && el.label != Lab.Block)
                             {
+                                // dopasowywanie elementów zewnętrznych do widoku                                                               
+                                if (Lab.ExternalElements.Any(l => l == el.label))
+                                {
+                                    if (el.additionalInfos.direction == "Front" && el.additionalInfos.direction != "Back" && view.Name == Lab.Operational && el.label != Lab.Hole)
+                                        externalElementShow = true;
+                                    if (el.additionalInfos.direction == "Back" && view.Name == Lab.Back)
+                                        externalElementShow = true;
+                                    if (el.additionalInfos.direction == "Up" && view.Name == Lab.Back)
+                                        externalElementShow = true;
+                                }
 
-                                if (el.label == view.Name || 
-                                    Lab.ExternalElements.Any(l => l == el.type) ||
-                                    (view.Name == ViewName.Down && el.label.Contains("_")))
+                                if (externalElementShow)
+                                {
+                                    externalElementsYOffset = el.label switch
+                                    {
+                                        Lab.AD => 30,
+                                        Lab.FC => 60,
+                                        Lab.INTK => 90,
+                                        _ => 0
+                                    };
+                                }
+
+                                if (el.label == view.Name || externalElementShow
+                                    || (view.Name == ViewName.Down && el.label.Contains("_")))
                                 {
                                     dxf.Entities.Add(outerPoly); // &&*
                                 }
@@ -218,8 +255,7 @@ namespace Klimor.WebApi.DXF.Services
                                 if ((el.type == "Wall" ||                                    
                                     el.type.Contains("Removable") || 
                                     el.type.Contains("Door")) && el.label == view.Name ||
-                                    el.label.Contains("_") ||
-                                    Lab.ExternalElements.Any(l => l == el.type))
+                                    el.label.Contains("_") || externalElementShow)
                                 {
                                     var idx = 0;
                                     foreach (var c in outer2D)
@@ -242,7 +278,7 @@ namespace Klimor.WebApi.DXF.Services
 
                                                 if (!view.Name.ToLower().Contains("front")
                                                     && el.label == view.Name ||
-                                                    Lab.ExternalElements.Any(l => l == el.type) // elementy zewnętrzne
+                                                    externalElementShow // elementy zewnętrzne
                                                     || (el.label.Contains("_") && view.Name == "Down"))
                                                 {
                                                     var wallDescription = el.label switch
@@ -261,9 +297,9 @@ namespace Klimor.WebApi.DXF.Services
                                                         wallDescription = el.type switch
                                                         {
                                                             "Door" => "DOOR",
-                                                            "Removable" => "REM_1",
-                                                            "Removable_2" => "REM_2",
-                                                            "Removable_3" => "REM_3",
+                                                            "Removable" => "PNL_GRIP",
+                                                            "Removable_2" => "PNL_HH",
+                                                            "Removable_3" => "PNL_BSH",
                                                             "Wall" => "PNL", //operational, back, frontLeft, frontRight, up, down, middle
                                                             "DrainTray" => "DRN_TY", //down, middle
                                                             "Hole" => "HOLE", //operational, back, frontLeft, frontRight, up, down, middle
@@ -272,7 +308,7 @@ namespace Klimor.WebApi.DXF.Services
                                                         };
                                                     }
                                                     var text = new Text(wallDescription,
-                                                        new Vector3(c.X - ((el.x2 - el.x1) / 2) - profileOffset, c.Y + 4 * profileOffset, 0), 20);
+                                                        new Vector3(c.X - ((el.x2 - el.x1) / 2) - profileOffset, c.Y + 4 * profileOffset + externalElementsYOffset, 0), 20);
 
                                                     text.Style = new TextStyle("ArialBold", "arialbd.ttf");
                                                     text.Layer = layer;
@@ -316,26 +352,30 @@ namespace Klimor.WebApi.DXF.Services
                             if (!string.IsNullOrEmpty(el.type))
                             {
                                 // elementy zewnętrzne
-                                if (Lab.ExternalElements.Any(l => l == el.type))
+                                if (externalElementShow)
                                 {
                                     widthDim = new LinearDimension(wStart, wEnd, (el.y2 - el.y1) / 2, 0.0, dimStyle);
                                 }
 
+                                // widok operational
                                 if ((el.type == Lab.Wall || el.type == Lab.Door || el.type.Contains(Lab.Removable)) && el.label == Lab.Operational && view.Name == ViewName.Operational)
                                 {
                                     widthDim = new LinearDimension(wStart, wEnd, (el.y2 - el.y1) / 2, 0.0, dimStyle);
                                 }
 
+                                // widok back
                                 if ((el.type == Lab.Wall || el.type == Lab.Door || el.type.Contains(Lab.Removable)) && el.label == Lab.Back && view.Name == ViewName.Back)
                                 {
                                     widthDim = new LinearDimension(wStart, wEnd, (el.y2 - el.y1) / 2, 0.0, dimStyle);
                                 }
 
+                                // widok up
                                 if (el.type == Lab.Wall && el.label == Lab.Up && view.Name == ViewName.Up)
                                 {
                                     widthDim = new LinearDimension(wStart, wEnd, (el.z2 - el.z1) / 2, 0.0, dimStyle);
                                 }
 
+                                // widok down
                                 if ((el.label == Lab.Down_Wall || el.label == Lab.Down_DrainTray) && view.Name == ViewName.Down)
                                 {
                                     widthDim = new LinearDimension(wStart, wEnd, (el.z2 - el.z1) / 2, 0.0, dimStyle);
@@ -360,26 +400,30 @@ namespace Klimor.WebApi.DXF.Services
                             if (!string.IsNullOrEmpty(el.type))
                             {
                                 // elementy zewnętrzne
-                                if (Lab.ExternalElements.Any(l => l == el.type))
+                                if (externalElementShow)
                                 {
                                     heightDim = new LinearDimension(hStart, hEnd, dimOffset, 90.0, dimStyle);
                                 }
 
+                                // widok operational
                                 if ((el.type == Lab.Wall || el.type == Lab.Door || el.type.Contains(Lab.Removable)) && el.label == Lab.Operational && view.Name == ViewName.Operational)
                                 {
                                     heightDim = new LinearDimension(hStart, hEnd, dimOffset, 90.0, dimStyle);
                                 }
 
+                                // widok back
                                 if ((el.type == Lab.Wall || el.type == Lab.Door || el.type.Contains(Lab.Removable)) && el.label == Lab.Back && view.Name == ViewName.Back)
                                 {
                                     heightDim = new LinearDimension(hStart, hEnd, dimOffset, 90.0, dimStyle);
                                 }
 
+                                // widok up
                                 if ((el.type == Lab.Wall || el.type == Lab.Door || el.type.Contains(Lab.Removable)) && el.label == Lab.Up && view.Name == ViewName.Up)
                                 {
                                     heightDim = new LinearDimension(hStart, hEnd, dimOffset, 90.0, dimStyle);
                                 }
 
+                                // widok down
                                 if ((el.label == Lab.Down || el.label == Lab.Down_DrainTray || el.label == Lab.Down_Wall) && view.Name == Lab.Down)
                                 {
                                     heightDim.Layer = layer;
@@ -446,6 +490,7 @@ namespace Klimor.WebApi.DXF.Services
 
             //var yOffset = views.FirstOrDefault(v => v.name == viewName).yOffset;
             var yOffset = Views[viewName].YOffset;
+            var xOffset = Views[viewName].XOffset;
 
             // pełne kontury bloków (profil)
             if (createShape && elementsGroup.Any(g => string.Equals(g, "Block", StringComparison.OrdinalIgnoreCase)))
@@ -458,10 +503,10 @@ namespace Klimor.WebApi.DXF.Services
 
                     var outer2DFull = new List<Vector2>
                         {
-                            new Vector2(rectFull.Z1, rectFull.Y1 + yOffset),
-                            new Vector2(rectFull.Z2, rectFull.Y1 + yOffset),
-                            new Vector2(rectFull.Z2, rectFull.Y2 + yOffset),
-                            new Vector2(rectFull.Z1, rectFull.Y2 + yOffset)
+                            new Vector2(rectFull.Z1 + xOffset, rectFull.Y1 + yOffset),
+                            new Vector2(rectFull.Z2 + xOffset, rectFull.Y1 + yOffset),
+                            new Vector2(rectFull.Z2 + xOffset, rectFull.Y2 + yOffset),
+                            new Vector2(rectFull.Z1 + xOffset, rectFull.Y2 + yOffset)
                         };
 
                     var profile = new Polyline2D(
@@ -501,7 +546,7 @@ namespace Klimor.WebApi.DXF.Services
             // rysowanie widocznych fragmentów
             foreach (var r in visibleRects)
             {
-                var outer2D = r.ToVertices().Select(v => new Vector2(v.X, v.Y + yOffset)).ToList();
+                var outer2D = r.ToVertices().Select(v => new Vector2(v.X + xOffset, v.Y + yOffset)).ToList();
 
                 if (createShape)
                 {
@@ -528,10 +573,10 @@ namespace Klimor.WebApi.DXF.Services
                         {
                             var inner2D = new List<Vector2>
                                 {
-                                    new Vector2(iZ1, iY1 + yOffset),
-                                    new Vector2(iZ2, iY1 + yOffset),
-                                    new Vector2(iZ2, iY2 + yOffset),
-                                    new Vector2(iZ1, iY2 + yOffset)
+                                    new Vector2(iZ1 + xOffset, iY1 + yOffset),
+                                    new Vector2(iZ2 + xOffset, iY1 + yOffset),
+                                    new Vector2(iZ2 + xOffset, iY2 + yOffset),
+                                    new Vector2(iZ1 + xOffset, iY2 + yOffset)
                                 };
 
                             var innerPoly = new Polyline2D(

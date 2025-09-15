@@ -21,7 +21,7 @@ namespace Klimor.WebApi.DXF.Structures
         public int z2 { get; set; }
 
         public string label { get; set; }
-
+        
         public string posUpDown { get; set; }
 
         public string type { get; set; }
@@ -38,6 +38,7 @@ namespace Klimor.WebApi.DXF.Structures
 
         // ikony
         public string iconPosition { get; set; }
+
         public string iconName { get; set; }
 
         // bloki
@@ -46,5 +47,10 @@ namespace Klimor.WebApi.DXF.Structures
         public int positionDown { get; set; }
 
         public int blockNumber { get; set; }
+
+        // external elements
+        public string direction { get; set; }
+
+        public string airPathPosition { get; set; }
     }
 }

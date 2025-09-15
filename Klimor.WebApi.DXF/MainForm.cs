@@ -84,8 +84,24 @@ namespace Klimor.WebApi.DXF
             dxf2D.globalZMin = elements.Min(e => e.z1);
             dxf2D.globalZMax = elements.Max(e => e.z2);
 
-            //Views.Up.XOffset = 10000;
-            //Views.Down.XOffset = -10000;
+            // ISO
+            Views.RightFront.XOffset = -6000;
+            Views.RightFront.YOffset = 0;
+
+            Views.Operational.XOffset = 0;
+            Views.Operational.YOffset = 0;
+
+            Views.LeftFront.XOffset = 13000;
+            Views.LeftFront.YOffset = 0;            
+
+            Views.Back.XOffset = 18000;
+            Views.Back.YOffset = 0;            
+
+            Views.Down.XOffset = 0;
+            Views.Down.YOffset = 6000;
+
+            Views.Up.XOffset = 0;
+            Views.Up.YOffset = -6000;
 
             void GenerateBlocks()
             {
