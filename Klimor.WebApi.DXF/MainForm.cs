@@ -35,7 +35,7 @@ namespace Klimor.WebApi.DXF
         {
             InitializeComponent();
             Views = new ViewsList();
-            dxf2D = new Dxf2DService();
+            dxf2D = new Dxf2DService(Views);
             dxf3D = new Dxf3DService();
         }
 
@@ -55,8 +55,6 @@ namespace Klimor.WebApi.DXF
 
                         elements = elements.Where(e => !string.IsNullOrWhiteSpace(e.label)).ToList();
 
-                        //Views.Up.XOffset = 10000;
-                        //Views.Down.XOffset = -10000;
                         Generate2D(elements, $"{Path.GetFileNameWithoutExtension(ofd.FileName)}.dxf", true);
                         //GenerateViews(elements, "output2D.dxf");
                         dxf3D.Generate3D(elements, "output3D.dxf");
@@ -77,7 +75,17 @@ namespace Klimor.WebApi.DXF
             var icons = DxfDocument.Load("BLOCKS.dxf");
             var dxf = new DxfDocument();
             var cornerLayer = new Layer("CornerFill") { Color = new AciColor(7) };
-            var textLayer = new Layer("Text_Views") { Color = AciColor.Blue };            
+            var textLayer = new Layer("Text_Views") { Color = AciColor.Blue };
+
+            dxf2D.globalXMin = elements.Min(e => e.x1);
+            dxf2D.globalXMax = elements.Max(e => e.x2);
+            dxf2D.globalYMin = elements.Min(e => e.y1);
+            dxf2D.globalYMax = elements.Max(e => e.y2);
+            dxf2D.globalZMin = elements.Min(e => e.z1);
+            dxf2D.globalZMax = elements.Max(e => e.z2);
+
+            //Views.Up.XOffset = 10000;
+            //Views.Down.XOffset = -10000;
 
             void GenerateBlocks()
             {

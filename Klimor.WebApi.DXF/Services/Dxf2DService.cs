@@ -17,18 +17,19 @@ namespace Klimor.WebApi.DXF.Services
     public class Dxf2DService
     {
         ViewsList Views;
-        public Dxf2DService() 
+
+        public Dxf2DService(ViewsList vw) 
         {
-            Views = new ViewsList();
+            Views = vw;
         }
 
         double profileOffset = 50.0;
-        double globalXMin = 0;
-        double globalXMax = 0;
-        double globalYMin = 0;
-        double globalYMax = 0;
-        double globalZMin = 0;
-        double globalZMax = 0;
+        public double globalXMin = 0;
+        public double globalXMax = 0;
+        public double globalYMin = 0;
+        public double globalYMax = 0;
+        public double globalZMin = 0;
+        public double globalZMax = 0;
 
         DimensionStyle dimStyle = new DimensionStyle("MyDimStyle")
         {
@@ -212,10 +213,11 @@ namespace Klimor.WebApi.DXF.Services
                                     dxf.Entities.Add(outerPoly); // &&*
                                 }
 
-                                if ((el.type == "Wall" ||
+                                if ((el.type == "Wall" ||                                    
                                     el.type.Contains("Removable") || 
                                     el.type.Contains("Door")) && el.label == view.Name ||
-                                    el.label.Contains("_"))
+                                    el.label.Contains("_") ||
+                                    el.type == "Hole")
                                 {
                                     var idx = 0;
                                     foreach (var c in outer2D)
@@ -237,7 +239,7 @@ namespace Klimor.WebApi.DXF.Services
                                                 cornerVertices.Add(new Polyline2DVertex(c.X - profileOffset, c.Y + profileOffset, 0));
 
                                                 if (!view.Name.ToLower().Contains("front")
-                                                    && el.label == view.Name || (el.label.Contains("_") && view.Name == "Down"))
+                                                    && el.label == view.Name || el.label == "Hole" || (el.label.Contains("_") && view.Name == "Down"))
                                                 {
                                                     var wallDescription = el.label switch
                                                     {
@@ -309,6 +311,11 @@ namespace Klimor.WebApi.DXF.Services
 
                             if (!string.IsNullOrEmpty(el.type))
                             {
+                                if (el.type == Lab.Hole)
+                                {
+                                    widthDim = new LinearDimension(wStart, wEnd, (el.y2 - el.y1) / 2, 0.0, dimStyle);
+                                }
+
                                 if ((el.type == Lab.Wall || el.type == Lab.Door || el.type.Contains(Lab.Removable)) && el.label == Lab.Operational && view.Name == ViewName.Operational)
                                 {
                                     widthDim = new LinearDimension(wStart, wEnd, (el.y2 - el.y1) / 2, 0.0, dimStyle);
@@ -332,7 +339,7 @@ namespace Klimor.WebApi.DXF.Services
                                 }
                             }
 
-                            if (el.label == view.Name || el.label == Lab.Block)
+                            if (el.label == view.Name || el.label == Lab.Block || el.type == Lab.Hole)
                             {
                                 widthDim.Layer = layer;
                                 dxf.Entities.Add(widthDim);
@@ -347,6 +354,11 @@ namespace Klimor.WebApi.DXF.Services
 
                             if (!string.IsNullOrEmpty(el.type))
                             {
+                                if (el.type == Lab.Hole)
+                                {
+                                    heightDim = new LinearDimension(hStart, hEnd, dimOffset, 90.0, dimStyle);
+                                }
+
                                 if ((el.type == Lab.Wall || el.type == Lab.Door || el.type.Contains(Lab.Removable)) && el.label == Lab.Operational && view.Name == ViewName.Operational)
                                 {
                                     heightDim = new LinearDimension(hStart, hEnd, dimOffset, 90.0, dimStyle);
@@ -370,7 +382,7 @@ namespace Klimor.WebApi.DXF.Services
                                 }
                             }
 
-                            if (el.label == view.Name || el.label == Lab.Block)
+                            if (el.label == view.Name || el.label == Lab.Block || el.type == Lab.Hole)
                             {
                                 heightDim.Layer = layer;
                                 dxf.Entities.Add(heightDim);

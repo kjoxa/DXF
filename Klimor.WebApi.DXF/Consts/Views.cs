@@ -18,7 +18,7 @@ namespace Klimor.WebApi.DXF.Consts
 
     public class ViewElement
     {
-        public string Name { get; init; }
+        public string Name { get; set; }
 
         public int XOffset { get; set; }
 
@@ -30,7 +30,7 @@ namespace Klimor.WebApi.DXF.Consts
 
     public class ViewsList
     {
-        private readonly Dictionary<string, ViewElement> _views = new()
+        private Dictionary<string, ViewElement> _views = new()
         {
             [ViewName.Operational] = new(ViewName.Operational, 0, 0),
             [ViewName.Back] = new(ViewName.Back, 0, 5000),
