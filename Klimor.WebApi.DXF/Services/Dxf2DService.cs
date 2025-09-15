@@ -91,7 +91,7 @@ namespace Klimor.WebApi.DXF.Services
                     .Any(g => string.Equals(g, e.label, StringComparison.OrdinalIgnoreCase)))
                     .ToList();
 
-                // widoki boczne: przycinanie prostokątów
+                // widoki boczne: przycinanie
                 if (view.Name == "LeftFront" || view.Name == "RightFront")
                 {
                     GenerateSideView(dxf, elements, elementsGroup, createDimension, createShape, layer, view.Name);
@@ -208,7 +208,9 @@ namespace Klimor.WebApi.DXF.Services
                             if (!string.IsNullOrEmpty(el.type) && el.label != Lab.Block)
                             {
 
-                                if (el.label == view.Name || el.type == Lab.Hole || (view.Name == ViewName.Down && el.label.Contains("_")))
+                                if (el.label == view.Name || 
+                                    Lab.ExternalElements.Any(l => l == el.type) ||
+                                    (view.Name == ViewName.Down && el.label.Contains("_")))
                                 {
                                     dxf.Entities.Add(outerPoly); // &&*
                                 }
@@ -217,7 +219,7 @@ namespace Klimor.WebApi.DXF.Services
                                     el.type.Contains("Removable") || 
                                     el.type.Contains("Door")) && el.label == view.Name ||
                                     el.label.Contains("_") ||
-                                    el.type == "Hole")
+                                    Lab.ExternalElements.Any(l => l == el.type))
                                 {
                                     var idx = 0;
                                     foreach (var c in outer2D)
@@ -239,7 +241,9 @@ namespace Klimor.WebApi.DXF.Services
                                                 cornerVertices.Add(new Polyline2DVertex(c.X - profileOffset, c.Y + profileOffset, 0));
 
                                                 if (!view.Name.ToLower().Contains("front")
-                                                    && el.label == view.Name || el.label == "Hole" || (el.label.Contains("_") && view.Name == "Down"))
+                                                    && el.label == view.Name ||
+                                                    Lab.ExternalElements.Any(l => l == el.type) // elementy zewnętrzne
+                                                    || (el.label.Contains("_") && view.Name == "Down"))
                                                 {
                                                     var wallDescription = el.label switch
                                                     {
@@ -311,7 +315,8 @@ namespace Klimor.WebApi.DXF.Services
 
                             if (!string.IsNullOrEmpty(el.type))
                             {
-                                if (el.type == Lab.Hole)
+                                // elementy zewnętrzne
+                                if (Lab.ExternalElements.Any(l => l == el.type))
                                 {
                                     widthDim = new LinearDimension(wStart, wEnd, (el.y2 - el.y1) / 2, 0.0, dimStyle);
                                 }
@@ -339,7 +344,7 @@ namespace Klimor.WebApi.DXF.Services
                                 }
                             }
 
-                            if (el.label == view.Name || el.label == Lab.Block || el.type == Lab.Hole)
+                            if (el.label == view.Name || el.label == Lab.Block || Lab.ExternalElements.Any(l => l == el.type))
                             {
                                 widthDim.Layer = layer;
                                 dxf.Entities.Add(widthDim);
@@ -354,7 +359,8 @@ namespace Klimor.WebApi.DXF.Services
 
                             if (!string.IsNullOrEmpty(el.type))
                             {
-                                if (el.type == Lab.Hole)
+                                // elementy zewnętrzne
+                                if (Lab.ExternalElements.Any(l => l == el.type))
                                 {
                                     heightDim = new LinearDimension(hStart, hEnd, dimOffset, 90.0, dimStyle);
                                 }
@@ -382,7 +388,7 @@ namespace Klimor.WebApi.DXF.Services
                                 }
                             }
 
-                            if (el.label == view.Name || el.label == Lab.Block || el.type == Lab.Hole)
+                            if (el.label == view.Name || el.label == Lab.Block || Lab.ExternalElements.Any(l => l == el.type))
                             {
                                 heightDim.Layer = layer;
                                 dxf.Entities.Add(heightDim);

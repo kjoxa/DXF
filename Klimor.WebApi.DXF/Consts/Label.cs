@@ -37,5 +37,7 @@ namespace Klimor.WebApi.DXF.Consts
 
         // drawing
         public const string Icon = "Icon";
+
+        public static string[] ExternalElements = new string[] { Hole, AD, FC, INTK };
     }
 }

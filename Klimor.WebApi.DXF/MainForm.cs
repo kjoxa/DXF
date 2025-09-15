@@ -96,13 +96,13 @@ namespace Klimor.WebApi.DXF
             void GenerateWalls()
             {
                 var layer = dxf.Layers.Add(new Layer("Walls") { Color = AciColor.Default });
-                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Operational, Lab.Up, Lab.Down, Lab.Down_DrainTray, Lab.Down_Wall, Lab.Back, Lab.Hole }, false, true, layer, textLayer);
+                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Operational, Lab.Up, Lab.Down, Lab.Down_DrainTray, Lab.Down_Wall, Lab.Back}, false, true, layer, textLayer);
             }
 
             void GenerateWallsDimensions()
             {
                 var layer = dxf.Layers.Add(new Layer("Walls_dimension") { Color = AciColor.Default });
-                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Operational, Lab.Up, Lab.Down, Lab.Down_DrainTray, Lab.Down_Wall, Lab.Back, Lab.Hole }, true, false, layer, textLayer);
+                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Operational, Lab.Up, Lab.Down, Lab.Down_DrainTray, Lab.Down_Wall, Lab.Back}, true, false, layer, textLayer);
             }
 
             void GenerateBlockDimensions()
@@ -178,10 +178,10 @@ namespace Klimor.WebApi.DXF
             void GenerateExternalElements()
             {
                 var layer = dxf.Layers.Add(new Layer("ExternalElements") { Color = AciColor.Magenta });
-                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.AD, Lab.FC, Lab.INTK }, false, true, layer, textLayer);
+                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Hole, Lab.AD, Lab.FC, Lab.INTK }, false, true, layer, textLayer);
 
                 var layerDim = dxf.Layers.Add(new Layer("ExternalElements_dimensions") { Color = AciColor.Cyan });
-                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.AD, Lab.FC, Lab.INTK }, true, false, layerDim, textLayer);
+                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Hole, Lab.AD, Lab.FC, Lab.INTK }, true, false, layerDim, textLayer);
             }                                    
 
             GenerateBlocks();
@@ -198,6 +198,7 @@ namespace Klimor.WebApi.DXF
             {
                 GenerateWalls();
                 GenerateWallsDimensions();
+                GenerateExternalElements();
             }
 
             dxf.Save(fileOutput);
