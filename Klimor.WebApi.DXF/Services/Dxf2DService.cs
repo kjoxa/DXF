@@ -208,7 +208,7 @@ namespace Klimor.WebApi.DXF.Services
                             if (!string.IsNullOrEmpty(el.type) && el.label != Lab.Block)
                             {
 
-                                if (el.label == view.Name || (view.Name == ViewName.Down && el.label.Contains("_")))
+                                if (el.label == view.Name || el.type == Lab.Hole || (view.Name == ViewName.Down && el.label.Contains("_")))
                                 {
                                     dxf.Entities.Add(outerPoly); // &&*
                                 }
