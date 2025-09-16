@@ -84,24 +84,18 @@ namespace Klimor.WebApi.DXF
             dxf2D.globalZMin = elements.Min(e => e.z1);
             dxf2D.globalZMax = elements.Max(e => e.z2);
 
-            // ISO
-            Views.RightFront.XOffset = -6000;
-            Views.RightFront.YOffset = 0;
-
-            Views.Operational.XOffset = 0;
-            Views.Operational.YOffset = 0;
-
-            Views.LeftFront.XOffset = 13000;
-            Views.LeftFront.YOffset = 0;            
-
-            Views.Back.XOffset = 18000;
-            Views.Back.YOffset = 0;            
-
-            Views.Down.XOffset = 0;
-            Views.Down.YOffset = 6000;
-
-            Views.Up.XOffset = 0;
-            Views.Up.YOffset = -6000;
+            var normType = Norm.ISO;
+            
+            if (normType == Norm.ISO)
+            {
+                // ISO
+                Views.ApplyNorm(Norm.ISO);                              
+            }
+            else
+            {
+                // US
+                Views.ApplyNorm(Norm.US);
+            }
 
             void GenerateBlocks()
             {
@@ -198,6 +192,12 @@ namespace Klimor.WebApi.DXF
 
                 var layerDim = dxf.Layers.Add(new Layer("ExternalElements_dimensions") { Color = AciColor.Cyan });
                 dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Hole, Lab.AD, Lab.FC, Lab.INTK }, true, false, layerDim, textLayer);
+
+                var layerFrame = dxf.Layers.Add(new Layer("Frame") { Color = AciColor.Blue });
+                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Frame }, false, true, layerFrame, textLayer);
+
+                var layerFrameDim = dxf.Layers.Add(new Layer("Frame_dimensions") { Color = AciColor.Blue });
+                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Frame }, true, false, layerFrameDim, textLayer);
             }                                    
 
             GenerateBlocks();

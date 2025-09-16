@@ -30,6 +30,8 @@ namespace Klimor.WebApi.DXF.Consts
 
     public class ViewsList
     {
+        public Norm? CurrentNorm { get; private set; }
+
         private Dictionary<string, ViewElement> _views = new()
         {
             [ViewName.Operational] = new(ViewName.Operational, 0, 0),
@@ -43,14 +45,70 @@ namespace Klimor.WebApi.DXF.Consts
         public ViewElement this[string name] => _views[name];
 
         public ViewElement Operational => _views[ViewName.Operational];
+
         public ViewElement Back => _views[ViewName.Back];
+
         public ViewElement Up => _views[ViewName.Up];
+
         public ViewElement Down => _views[ViewName.Down];
+
         public ViewElement LeftFront => _views[ViewName.LeftFront];
+
         public ViewElement RightFront => _views[ViewName.RightFront];
 
         public IEnumerable<ViewElement> All => _views.Values;
+
+        public void SetView(string name, int x, int y)
+        {
+            if (_views.TryGetValue(name, out var view))
+            {
+                view.XOffset = x;
+                view.YOffset = y;
+            }
+            else
+            {
+                throw new ArgumentException($"View '{name}' does not exist.", nameof(name));
+            }
+        }
+
+        private static readonly Dictionary<Norm, Dictionary<string, (int x, int y)>> _presets =
+        new()
+        {
+            [Norm.ISO] = new()
+            {
+                [ViewName.RightFront] = (-6000, 0),
+                [ViewName.Operational] = (0, 0),
+                [ViewName.LeftFront] = (13000, 0),
+                [ViewName.Back] = (18000, 0),
+                [ViewName.Down] = (0, 6000),
+                [ViewName.Up] = (0, -6000),
+            },
+            [Norm.US] = new()
+            {
+                [ViewName.RightFront] = (13000, 0),
+                [ViewName.Operational] = (0, 0),
+                [ViewName.LeftFront] = (-5500, 0),
+                [ViewName.Back] = (-18500, 0),
+                [ViewName.Down] = (0, -6000),
+                [ViewName.Up] = (0, 6000),
+            }
+        };
+
+        public void ApplyNorm(Norm norm)
+        {
+            if (!_presets.TryGetValue(norm, out var map))
+                throw new ArgumentOutOfRangeException(nameof(norm), $"Unsupported norm: {norm}");
+
+            foreach (var (name, coords) in map)
+                SetView(name, coords.x, coords.y);
+
+            CurrentNorm = norm;
+        }
     }
 
-
+    public enum Norm
+    {
+        ISO,
+        US
+    }
 }
