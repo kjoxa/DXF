@@ -71,14 +71,14 @@ namespace Klimor.WebApi.DXF.Services
         {
             var firstElement = elements.OrderBy(e => e.x1).FirstOrDefault(e => e.label == Lab.Block);
             var lastElement = elements.OrderByDescending(e => e.x1).FirstOrDefault(e => e.label == Lab.Block);
-            var norm = new Text("ISO", new Vector3((lastElement.x2 - firstElement.x1) / 2, 13000, 0), 700)
+            var normTitle = new Text(Views.CurrentNorm.ToString(), new Vector3((lastElement.x2 - firstElement.x1) / 2, 13000, 0), 700)
             {
                 Layer = textLayer,
                 Rotation = 0,
                 Color = AciColor.LightGray,
                 WidthFactor = 1.2,
             };
-            dxf.Entities.Add(norm);
+            dxf.Entities.Add(normTitle);
 
             foreach (var view in Views.All)
             {
@@ -175,7 +175,7 @@ namespace Klimor.WebApi.DXF.Services
                                             cornerVertices.Add(new Polyline2DVertex(c.X + profileOffset, c.Y + profileOffset, 0));
                                             cornerVertices.Add(new Polyline2DVertex(c.X, c.Y + profileOffset, 0));
 
-                                            if (!view.Name.ToLower().Contains("front"))
+                                            if (!view.Name.ToLower().Contains("front") && el.additionalInfos != null)
                                             {
                                                 var text = new Text(el.additionalInfos.blockNumber.ToString(),
                                                 new Vector3(c.X + 2 * profileOffset, c.Y + 2 * profileOffset, 0), 30);
@@ -227,12 +227,19 @@ namespace Klimor.WebApi.DXF.Services
                                 // dopasowywanie elementów zewnętrznych do widoku                                                               
                                 if (Lab.ExternalElements.Any(l => l == el.label))
                                 {
-                                    if (el.additionalInfos.direction == "Front" && el.additionalInfos.direction != "Back" && view.Name == Lab.Operational && el.label != Lab.Hole)
+                                    if (el.label == Lab.Frame && view.Name == Lab.Operational)
+                                    {
                                         externalElementShow = true;
-                                    if (el.additionalInfos.direction == "Back" && view.Name == Lab.Back)
-                                        externalElementShow = true;
-                                    if (el.additionalInfos.direction == "Up" && view.Name == Lab.Back)
-                                        externalElementShow = true;
+                                    }
+                                    else if (el.additionalInfos != null)
+                                    {
+                                        if (el.additionalInfos.direction == "Front" && el.additionalInfos.direction != "Back" && view.Name == Lab.Operational && el.label != Lab.Hole)
+                                            externalElementShow = true;
+                                        if (el.additionalInfos.direction == "Back" && view.Name == Lab.Back)
+                                            externalElementShow = true;
+                                        if (el.additionalInfos.direction == "Up" && view.Name == Lab.Back)
+                                            externalElementShow = true;
+                                    }                                                                       
                                 }
 
                                 if (externalElementShow)
@@ -247,7 +254,7 @@ namespace Klimor.WebApi.DXF.Services
                                 }
 
                                 if (el.label == view.Name || externalElementShow
-                                    || (view.Name == ViewName.Down && el.label.Contains("_")))
+                                    || (view.Name == ViewName.Down && el.label.Contains("_")) || (el.label == Lab.Frame))
                                 {
                                     dxf.Entities.Add(outerPoly); // &&*
                                 }
@@ -364,7 +371,7 @@ namespace Klimor.WebApi.DXF.Services
                                 }
 
                                 // widok back
-                                if ((el.type == Lab.Wall || el.type == Lab.Door || el.type.Contains(Lab.Removable)) && el.label == Lab.Back && view.Name == ViewName.Back)
+                                if ((el.type == Lab.Wall || el.type == Lab.Door || el.type.Contains(Lab.Removable) || el.label == Lab.Frame) && el.label == Lab.Back && view.Name == ViewName.Back)
                                 {
                                     widthDim = new LinearDimension(wStart, wEnd, (el.y2 - el.y1) / 2, 0.0, dimStyle);
                                 }
