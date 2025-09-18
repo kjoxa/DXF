@@ -67,7 +67,7 @@ namespace Klimor.WebApi.DXF.Services
             { "DE", "dropletEliminator" },
         };
 
-        public void GenerateView(DxfDocument dxf, List<Coordinates> elements, List<string> elementsGroup, bool createDimension, bool createShape, Layer layer, Layer textLayer)
+        public void GenerateView(DxfDocument dxf, List<Coordinates> elements, List<string> elementsGroup, bool createDimension, bool createShape, Layer layer, Layer textLayer, IEnumerable<ViewElement> views)
         {
             var firstElement = elements.OrderBy(e => e.x1).FirstOrDefault(e => e.label == Lab.Block);
             var lastElement = elements.OrderByDescending(e => e.x1).FirstOrDefault(e => e.label == Lab.Block);
@@ -80,7 +80,7 @@ namespace Klimor.WebApi.DXF.Services
             };
             dxf.Entities.Add(normTitle);
 
-            foreach (var view in Views.All)
+            foreach (var view in views)
             {
                 // podpis widoku przy elemencie
                 firstElement = elements.OrderBy(e => e.x1).FirstOrDefault(e => e.label == Lab.Block);
@@ -674,6 +674,14 @@ namespace Klimor.WebApi.DXF.Services
                     double newZ1 = globalZMax + globalZMin - z1;
                     double newZ2 = globalZMax + globalZMin - z2;
                     return new List<Vector2> { new Vector2(newZ2, y1), new Vector2(newZ1, y1), new Vector2(newZ1, y2), new Vector2(newZ2, y2) };
+
+                case "Frame": // widok z dołu (XZ, odbicie w Z) - jak dla Down-a
+                    double frameZ1Down = globalZMax + globalZMin - z1;
+                    double frameZ2Down = globalZMax + globalZMin - z2;
+                    return new List<Vector2> { new Vector2(x1, frameZ2Down), new Vector2(x2, frameZ2Down), new Vector2(x2, frameZ1Down), new Vector2(x1, frameZ1Down) };
+
+                case "Roof": // widok z dołu (XZ, odbicie w Z) - jak dla Down-a
+                    return new List<Vector2> { new Vector2(x1, z1), new Vector2(x2, z1), new Vector2(x2, z2), new Vector2(x1, z2) };
 
                 default:
                     return new List<Vector2> { new Vector2(x1, y1), new Vector2(x2, y1), new Vector2(x2, y2), new Vector2(x1, y2) };

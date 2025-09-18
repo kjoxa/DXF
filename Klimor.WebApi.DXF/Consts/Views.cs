@@ -14,6 +14,8 @@ namespace Klimor.WebApi.DXF.Consts
         public const string Down = "Down";
         public const string LeftFront = "LeftFront";
         public const string RightFront = "RightFront";
+        public const string Frame = "Frame";
+        public const string Roof = "Roof";
     }
 
     public class ViewElement
@@ -32,6 +34,12 @@ namespace Klimor.WebApi.DXF.Consts
     {
         public Norm? CurrentNorm { get; private set; }
 
+        public double AhuLength { get; set; }
+
+        public double AhuHeight { get; set; }
+
+        public double AhuWidth { get; set; }
+
         private Dictionary<string, ViewElement> _views = new()
         {
             [ViewName.Operational] = new(ViewName.Operational, 0, 0),
@@ -39,7 +47,9 @@ namespace Klimor.WebApi.DXF.Consts
             [ViewName.Up] = new(ViewName.Up, 0, 10000),
             [ViewName.Down] = new(ViewName.Down, 0, 15000),
             [ViewName.LeftFront] = new(ViewName.LeftFront, 0, 20000),
-            [ViewName.RightFront] = new(ViewName.RightFront, 0, 25000)
+            [ViewName.RightFront] = new(ViewName.RightFront, 0, 25000),
+            [ViewName.Frame] = new(ViewName.Frame, 0, 50000),
+            [ViewName.Roof] = new(ViewName.Roof, 0, -50000)
         };
 
         public ViewElement this[string name] => _views[name];
@@ -55,6 +65,10 @@ namespace Klimor.WebApi.DXF.Consts
         public ViewElement LeftFront => _views[ViewName.LeftFront];
 
         public ViewElement RightFront => _views[ViewName.RightFront];
+
+        public ViewElement Frame => _views[ViewName.Frame];
+
+        public ViewElement Roof => _views[ViewName.Roof];
 
         public IEnumerable<ViewElement> All => _views.Values;
 
@@ -82,6 +96,8 @@ namespace Klimor.WebApi.DXF.Consts
                 [ViewName.Back] = (18000, 0),
                 [ViewName.Down] = (0, 6000),
                 [ViewName.Up] = (0, -6000),
+                [ViewName.Frame] = (0, -12000),
+                [ViewName.Roof] = (0, -17000),
             },
             [Norm.US] = new()
             {
@@ -91,8 +107,14 @@ namespace Klimor.WebApi.DXF.Consts
                 [ViewName.Back] = (-18500, 0),
                 [ViewName.Down] = (0, -6000),
                 [ViewName.Up] = (0, 6000),
+                [ViewName.Frame] = (0, -12000),
+                [ViewName.Roof] = (0, -17000),
             }
         };
+
+        public IEnumerable<ViewElement> Select(params string[] names) => names.Select(n => this[n]);
+
+        public IEnumerable<ViewElement> Except(params string[] names) => _views.Where(kv => !names.Contains(kv.Key)).Select(kv => kv.Value);
 
         public void ApplyNorm(Norm norm)
         {
