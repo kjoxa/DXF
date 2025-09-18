@@ -9,6 +9,7 @@ using netDxf.Tables;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -224,6 +225,13 @@ namespace Klimor.WebApi.DXF.Services
                             }
                             if (!string.IsNullOrEmpty(el.type) && el.label != Lab.Block)
                             {
+                                // dodawanie konektora
+                                if (el.label == Lab.Connector && (view.Name == ViewName.Operational || view.Name == ViewName.Back))
+                                {
+                                    AddCircleConnector(outer2D, dxf, el, layer);
+                                    continue;
+                                }
+
                                 // dopasowywanie elementów zewnętrznych do widoku                                                               
                                 if (Lab.ExternalElements.Any(l => l == el.label))
                                 {
@@ -254,7 +262,7 @@ namespace Klimor.WebApi.DXF.Services
                                 }
 
                                 if (el.label == view.Name || externalElementShow
-                                    || (view.Name == ViewName.Down && el.label.Contains("_")) || (el.label == Lab.Frame))
+                                    || (view.Name == ViewName.Down && el.label.Contains("_")) || el.label == Lab.Frame || el.label == Lab.Connector)
                                 {
                                     dxf.Entities.Add(outerPoly); // &&*
                                 }
@@ -448,6 +456,33 @@ namespace Klimor.WebApi.DXF.Services
                     }
                 }
             }
+        }
+
+        void AddCircleConnector(List<Vector2> outer2D, DxfDocument dxf, Coordinates el, Layer layer)
+        {            
+            // obwiednia kwadratu (outer2D ma 4 narożniki)
+            double minX = outer2D.Min(p => p.X);
+            double maxX = outer2D.Max(p => p.X);
+            double minY = outer2D.Min(p => p.Y);
+            double maxY = outer2D.Max(p => p.Y);
+
+            // środek kwadratu
+            var center = new Vector3((minX + maxX) / 2.0, (minY + maxY) / 2.0, 0.0);
+
+            // promień = połowa boku (gdyby nie był idealnym kwadratem, bierzemy mniejszy wymiar)
+            double radius = Math.Min(maxX - minX, maxY - minY) / 2.0;
+
+            var circle = new Circle(center, radius)
+            {
+                Layer = layer
+            };
+            dxf.Entities.Add(circle);
+
+            // (opcjonalnie) podpis "CONN" albo numer z el.additionalInfos, jeśli potrzebujesz
+            // var text = new Text("CONN", new Vector3(center.X, center.Y - radius - 2 * profileOffset, 0), 20) { Layer = textLayer };
+            // dxf.Entities.Add(text);
+
+            // POMIŃ dalsze rysowanie narożników/wnętrza/itd. dla connectora
         }
 
         public double ReflectZ(double z) => globalZMax + globalZMin - z;

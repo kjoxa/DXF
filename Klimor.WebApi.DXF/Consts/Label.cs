@@ -35,9 +35,12 @@ namespace Klimor.WebApi.DXF.Consts
         public const string FC = "FC";
         public const string INTK = "IO";
 
+        // connectors
+        public const string Connector = "Connector";
+
         // drawing
         public const string Icon = "Icon";
 
-        public static string[] ExternalElements = new string[] { Hole, AD, FC, INTK, Frame, Roof };        
+        public static string[] ExternalElements = new string[] { Hole, AD, FC, INTK, Frame, Roof, Connector };        
     }
 }

@@ -56,7 +56,7 @@ namespace Klimor.WebApi.DXF
 
                         elements = elements.Where(e => !string.IsNullOrWhiteSpace(e.label)).ToList();
 
-                        Generate2D(elements, $"{Path.GetFileNameWithoutExtension(ofd.FileName)}.dxf", true);
+                        Generate2D(elements, $"{Path.GetFileNameWithoutExtension(ofd.FileName)}.dxf", true, Norm.ISO);
                         //GenerateViews(elements, "output2D.dxf");
                         dxf3D.Generate3D(elements, "output3D.dxf");
 
@@ -71,7 +71,7 @@ namespace Klimor.WebApi.DXF
             Application.Exit(); // Zamyka aplikację po zakończeniu
         }
 
-        private void Generate2D(List<Coordinates> elements, string fileOutput, bool advanced2D)
+        private void Generate2D(List<Coordinates> elements, string fileOutput, bool advanced2D, Norm norm)
         {
             Views.AhuLength = elements.Where(el => el.label == Lab.Block).Max(e => e.x2);
             Views.AhuHeight = elements.Where(el => el.label == Lab.Block).Max(e => e.y2);
@@ -89,18 +89,7 @@ namespace Klimor.WebApi.DXF
             dxf2D.globalZMin = elements.Min(e => e.z1);
             dxf2D.globalZMax = elements.Max(e => e.z2);
 
-            var normType = Norm.ISO;
-            
-            if (normType == Norm.ISO)
-            {
-                // ISO
-                Views.ApplyNorm(Norm.ISO);                              
-            }
-            else
-            {
-                // US
-                Views.ApplyNorm(Norm.US);
-            }
+            Views.ApplyNorm(norm);
 
             void GenerateBlocks()
             {
@@ -193,10 +182,10 @@ namespace Klimor.WebApi.DXF
             void GenerateExternalElements()
             {
                 var layer = dxf.Layers.Add(new Layer("ExternalElements") { Color = AciColor.Magenta });
-                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Hole, Lab.AD, Lab.FC, Lab.INTK }, false, true, layer, textLayer, Views.Except(ViewName.Frame, ViewName.Roof));
+                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Hole, Lab.AD, Lab.FC, Lab.INTK, Lab.Connector }, false, true, layer, textLayer, Views.Except(ViewName.Frame, ViewName.Roof));
 
                 var layerDim = dxf.Layers.Add(new Layer("ExternalElements_dimensions") { Color = AciColor.Cyan });
-                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Hole, Lab.AD, Lab.FC, Lab.INTK }, true, false, layerDim, textLayer, Views.Except(ViewName.Frame, ViewName.Roof));                                
+                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Hole, Lab.AD, Lab.FC, Lab.INTK, Lab.Connector }, true, false, layerDim, textLayer, Views.Except(ViewName.Frame, ViewName.Roof));                                
             }                                    
 
             void GenerateFrame()
