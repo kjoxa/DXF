@@ -1,0 +1,2 @@
+﻿Ogromna_69947
+- przesuwanie Up na lewo dla widoku Frame Up powoduje, że na LeftFront ona się pokazuje (rama u góry)

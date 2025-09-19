@@ -188,6 +188,30 @@ namespace Klimor.WebApi.DXF
                 dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Hole, Lab.AD, Lab.FC, Lab.INTK, Lab.Connector }, true, false, layerDim, textLayer, Views.Except(ViewName.Frame, ViewName.Roof));                                
             }                                    
 
+            void GeneratePorthole()
+            {
+                var layer = dxf.Layers.Add(new Layer("Porthole") { Color = AciColor.Magenta });
+                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Porthole }, false, true, layer, textLayer, Views.Except(ViewName.Frame, ViewName.Roof));
+            }
+
+            void GeneratePortholeDimension()
+            {
+                var layerDim = dxf.Layers.Add(new Layer("Porthole_dimensions") { Color = AciColor.Magenta });
+                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Porthole }, true, false, layerDim, textLayer, Views.Except(ViewName.Frame, ViewName.Roof));
+            }
+
+            void GenerateSwitchbox()
+            {
+                var layer = dxf.Layers.Add(new Layer("Switchbox") { Color = new AciColor(4) });
+                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Switchbox }, false, true, layer, textLayer, Views.Select(ViewName.Operational, ViewName.Back));
+            }
+
+            void GenerateSwitchboxDimension()
+            {
+                var layerDim = dxf.Layers.Add(new Layer("Switchbox_dimensions") { Color = new AciColor(4) });
+                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Switchbox }, true, false, layerDim, textLayer, Views.Select(ViewName.Operational, ViewName.Back));
+            }
+
             void GenerateFrame()
             {
                 // górne ramy muszą dostać przesunięcie o X
@@ -218,17 +242,23 @@ namespace Klimor.WebApi.DXF
                 }
 
                 var layerFrame = dxf.Layers.Add(new Layer("Frame") { Color = AciColor.Blue });
-                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Frame, Lab.Roof }, false, true, layerFrame, textLayer, Views.Select(ViewName.Frame));
+                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Frame, Lab.Roof }, false, true, layerFrame, textLayer, Views.Except(ViewName.Up, ViewName.Down, ViewName.Roof));                
+            }
 
+            void GenerateFrameDimensions()
+            {
                 var layerFrameDim = dxf.Layers.Add(new Layer("Frame_dimensions") { Color = AciColor.Blue });
-                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Frame, Lab.Roof }, true, false, layerFrameDim, textLayer, Views.Select(ViewName.Frame));
+                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Frame, Lab.Roof }, true, false, layerFrameDim, textLayer, Views.Except(ViewName.Up, ViewName.Down, ViewName.Roof));
             }
 
             void GenerateRoof()
             {
                 var layerRoof = dxf.Layers.Add(new Layer("Roof") { Color = new AciColor(9) });
-                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Roof }, false, true, layerRoof, textLayer, Views.Select(ViewName.Roof));
+                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Roof }, false, true, layerRoof, textLayer, Views.Select(ViewName.Roof));                
+            }
 
+            void GenerateRoofDimensions()
+            {
                 var layerRoofDim = dxf.Layers.Add(new Layer("Roof_dimensions") { Color = new AciColor(9) });
                 dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Roof }, true, false, layerRoofDim, textLayer, Views.Select(ViewName.Roof));
             }
@@ -249,7 +279,13 @@ namespace Klimor.WebApi.DXF
                 GenerateWallsDimensions();
                 GenerateExternalElements();
                 GenerateFrame();
+                GenerateFrameDimensions();
                 GenerateRoof();
+                GenerateRoofDimensions();
+                GeneratePorthole();
+                GeneratePortholeDimension();
+                GenerateSwitchbox();
+                GenerateSwitchboxDimension();
             }
 
             dxf.Save(fileOutput);

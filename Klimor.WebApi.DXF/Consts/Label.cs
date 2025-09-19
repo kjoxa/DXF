@@ -25,6 +25,8 @@ namespace Klimor.WebApi.DXF.Consts
         public const string Removable_2 = "Removable_2";    // PNL_HH
         public const string Removable_3 = "Removable_3";    // PNL_BSH
 
+        public const string Porthole = "Porthole";
+
         // components
         public const string Roof = "Roof";
         public const string Frame = "Frame";        
@@ -37,10 +39,11 @@ namespace Klimor.WebApi.DXF.Consts
 
         // connectors
         public const string Connector = "Connector";
+        public const string Switchbox = "Switchbox";
 
         // drawing
         public const string Icon = "Icon";
 
-        public static string[] ExternalElements = new string[] { Hole, AD, FC, INTK, Frame, Roof, Connector };        
+        public static string[] ExternalElements = new string[] { Hole, AD, FC, INTK, Frame, Roof, Connector, Switchbox };        
     }
 }
