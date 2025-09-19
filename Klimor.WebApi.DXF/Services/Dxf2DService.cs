@@ -400,7 +400,7 @@ namespace Klimor.WebApi.DXF.Services
                                 }
                             }
 
-                            if (el.label == view.Name || el.label == Lab.Block || Lab.ExternalElements.Any(l => l == el.type))
+                            if (el.label == view.Name || el.label == Lab.Block || Lab.ExternalElements.Any(l => l == el.label))
                             {
                                 widthDim.Layer = layer;
                                 dxf.Entities.Add(widthDim);
@@ -448,7 +448,7 @@ namespace Klimor.WebApi.DXF.Services
                                 }
                             }
 
-                            if (el.label == view.Name || el.label == Lab.Block || Lab.ExternalElements.Any(l => l == el.type))
+                            if (el.label == view.Name || el.label == Lab.Block || Lab.ExternalElements.Any(l => l == el.label))
                             {
                                 heightDim.Layer = layer;
                                 dxf.Entities.Add(heightDim);
