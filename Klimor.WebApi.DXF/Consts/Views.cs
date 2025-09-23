@@ -32,6 +32,8 @@ namespace Klimor.WebApi.DXF.Consts
 
     public class ViewsList
     {
+        private string waterMarkText = "Klimor";
+
         public Norm? CurrentNorm { get; private set; }
 
         public double AhuLength { get; set; }
@@ -109,12 +111,26 @@ namespace Klimor.WebApi.DXF.Consts
                 [ViewName.Up] = (0, 6000),
                 [ViewName.Frame] = (0, -12000),
                 [ViewName.Roof] = (0, -17000),
+            },
+            [Norm.PROD] = new()
+            {
+                [ViewName.RightFront] = (13000, 0),
+                [ViewName.Operational] = (0, 0),
+                [ViewName.LeftFront] = (-5500, 0),
+                [ViewName.Back] = (-18500, 0),
+                [ViewName.Down] = (0, -6000),
+                [ViewName.Up] = (0, 6000),
+                [ViewName.Frame] = (0, -12000),
+                [ViewName.Roof] = (0, -17000),
             }
         };
 
         public IEnumerable<ViewElement> Select(params string[] names) => names.Select(n => this[n]);
 
         public IEnumerable<ViewElement> Except(params string[] names) => _views.Where(kv => !names.Contains(kv.Key)).Select(kv => kv.Value);
+
+        public void SetWaterMark(string text) => waterMarkText = text;
+        public string GetWaterMark() => waterMarkText;
 
         public void ApplyNorm(Norm norm)
         {
@@ -131,6 +147,7 @@ namespace Klimor.WebApi.DXF.Consts
     public enum Norm
     {
         ISO,
-        US
+        US,
+        PROD
     }
 }

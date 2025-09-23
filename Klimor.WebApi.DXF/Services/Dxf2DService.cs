@@ -68,7 +68,7 @@ namespace Klimor.WebApi.DXF.Services
             { "DE", "dropletEliminator" },
         };
 
-        public void GenerateView(DxfDocument dxf, List<Coordinates> elements, List<string> elementsGroup, bool createDimension, bool createShape, Layer layer, Layer textLayer, IEnumerable<ViewElement> views, string watermarkText)
+        public void GenerateView(DxfDocument dxf, List<Coordinates> elements, List<string> elementsGroup, bool createDimension, bool createShape, Layer layer, Layer textLayer, IEnumerable<ViewElement> views)
         {
             var firstElement = elements.OrderBy(e => e.x1).FirstOrDefault(e => e.label == Lab.Block);
             var lastElement = elements.OrderByDescending(e => e.x1).FirstOrDefault(e => e.label == Lab.Block);
@@ -140,7 +140,7 @@ namespace Klimor.WebApi.DXF.Services
                             {
                                 if (view.Name == ViewName.Operational)
                                 {
-                                    AddWatermarkText(dxf, textLayer, elements, view, watermarkText);
+                                    AddWatermarkText(dxf, textLayer, elements, view, Views.GetWaterMark());
                                 }
 
                                 dxf.Entities.Add(outerPoly); // &&*

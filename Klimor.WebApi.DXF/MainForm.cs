@@ -77,6 +77,19 @@ namespace Klimor.WebApi.DXF
             Views.AhuHeight = elements.Where(el => el.label == Lab.Block).Max(e => e.y2);
             Views.AhuWidth = elements.Where(el => el.label == Lab.Block).Max(e => e.z2);
 
+            var blockOffsetX = 500 + (int)(Views.AhuLength + (Views.AhuLength * 0.1));
+            var blockOffsetY = 1000 + (int)(Views.AhuHeight + (Views.AhuHeight * 0.3));
+            var blockOffsetZ = 1000 + (int)(Views.AhuWidth + (Views.AhuWidth * 0.3));
+
+            Views.ApplyNorm(norm);
+            Views.SetView(ViewName.Back, (int)(500 + Views.AhuLength + Views.AhuLength * 0.3 + Views.AhuWidth), 0);
+            Views.SetView(ViewName.Up, 0, -blockOffsetY);
+            Views.SetView(ViewName.Down, 0, blockOffsetY);
+            Views.SetView(ViewName.Frame, 0, 2 * blockOffsetY);
+            Views.SetView(ViewName.Roof, 0, -2 * blockOffsetY);
+            Views.SetView(ViewName.LeftFront, (int)(-1000 - Views.AhuWidth), 0);
+            Views.SetView(ViewName.RightFront, blockOffsetX, 0);
+
             var icons = DxfDocument.Load("BLOCKS.dxf");
             var dxf = new DxfDocument();
             var cornerLayer = new Layer("CornerFill") { Color = new AciColor(7) };
@@ -90,6 +103,7 @@ namespace Klimor.WebApi.DXF
             dxf2D.globalZMax = elements.Max(e => e.z2);
 
             Views.ApplyNorm(norm);
+            Views.SetWaterMark("Klimor");
 
             void GenerateBlocks()
             {
