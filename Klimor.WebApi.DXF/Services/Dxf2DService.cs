@@ -68,7 +68,7 @@ namespace Klimor.WebApi.DXF.Services
             { "DE", "dropletEliminator" },
         };
 
-        public void GenerateView(DxfDocument dxf, List<Coordinates> elements, List<string> elementsGroup, bool createDimension, bool createShape, Layer layer, Layer textLayer, IEnumerable<ViewElement> views)
+        public void GenerateView(DxfDocument dxf, List<Coordinates> elements, List<string> elementsGroup, bool createDimension, bool createShape, Layer layer, Layer textLayer, IEnumerable<ViewElement> views, string watermarkText)
         {
             var firstElement = elements.OrderBy(e => e.x1).FirstOrDefault(e => e.label == Lab.Block);
             var lastElement = elements.OrderByDescending(e => e.x1).FirstOrDefault(e => e.label == Lab.Block);
@@ -89,7 +89,7 @@ namespace Klimor.WebApi.DXF.Services
                 if (firstElement != null)
                 {
                     //double elementCenterY = (firstElement.y1 + firstElement.y2) - 500 + view.YOffset;
-                    var text = new Text(view.Name, new Vector3(view.XOffset + 400, view.YOffset - 400, 0), 100)
+                    var text = new Text(view.Name, new Vector3(view.XOffset + 200, view.YOffset - 400, 0), 100)
                     {
                         Layer = textLayer,
                         Rotation = 0,
@@ -138,6 +138,11 @@ namespace Klimor.WebApi.DXF.Services
                         {
                             if (el.label == Lab.Block)
                             {
+                                if (view.Name == ViewName.Operational)
+                                {
+                                    AddWatermarkText(dxf, textLayer, elements, view, watermarkText);
+                                }
+
                                 dxf.Entities.Add(outerPoly); // &&*
 
                                 var left = inner2D.Min(p => p.X);
@@ -235,6 +240,12 @@ namespace Klimor.WebApi.DXF.Services
                                 // dopasowywanie elementów zewnętrznych do widoku                                                               
                                 if (Lab.ExternalElements.Any(l => l == el.label))
                                 {
+                                    // AD, FC na widokach up, down, back, operational
+                                    if (el.label != Lab.Hole && Lab.ExternalElements.Any(l => l == el.label))
+                                    {
+                                        externalElementShow = true;
+                                    }
+                                    
                                     if (el.label == Lab.Frame && view.Name == Lab.Operational)
                                     {
                                         externalElementShow = true;
@@ -261,7 +272,7 @@ namespace Klimor.WebApi.DXF.Services
                                     };
                                 }
 
-                                if (el.label == view.Name || externalElementShow
+                                if (el.label == view.Name || el.label == Lab.Function || externalElementShow
                                     || (view.Name == ViewName.Down && el.label.Contains("_")) || el.label == Lab.Frame || el.type == Lab.Switchbox || el.label == Lab.Connector)
                                 {
                                     dxf.Entities.Add(outerPoly); // &&*
@@ -400,7 +411,7 @@ namespace Klimor.WebApi.DXF.Services
                                 }
                             }
 
-                            if (el.label == view.Name || el.label == Lab.Block || Lab.ExternalElements.Any(l => l == el.label))
+                            if (el.label == view.Name || el.label == Lab.Function || el.label == Lab.Block || Lab.ExternalElements.Any(l => l == el.label))
                             {
                                 widthDim.Layer = layer;
                                 dxf.Entities.Add(widthDim);
@@ -448,7 +459,7 @@ namespace Klimor.WebApi.DXF.Services
                                 }
                             }
 
-                            if (el.label == view.Name || el.label == Lab.Block || Lab.ExternalElements.Any(l => l == el.label))
+                            if (el.label == view.Name || el.label == Lab.Function || el.label == Lab.Block || Lab.ExternalElements.Any(l => l == el.label))
                             {
                                 heightDim.Layer = layer;
                                 dxf.Entities.Add(heightDim);
@@ -480,30 +491,6 @@ namespace Klimor.WebApi.DXF.Services
             dxf.Entities.Add(circle);
             
             var text = new Text(el.label, new Vector3(center.X + profileOffset, center.Y - 10, 0), 20) { Layer = layer };
-            dxf.Entities.Add(text);
-        }
-
-        void AddPorthole(List<Vector2> outer2D, DxfDocument dxf, Coordinates el, Layer layer)
-        {
-            // obwiednia kwadratu (outer2D ma 4 narożniki)
-            double minX = outer2D.Min(p => p.X);
-            double maxX = outer2D.Max(p => p.X);
-            double minY = outer2D.Min(p => p.Y);
-            double maxY = outer2D.Max(p => p.Y);
-
-            // środek kwadratu
-            var center = new Vector3((minX + maxX) / 2.0, (minY + maxY) / 2.0, 0.0);
-
-            // promień = połowa boku (ew mniejszy wymiar)
-            double radius = Math.Min(maxX - minX, maxY - minY) / 2.0;
-
-            var circle = new Circle(center, radius)
-            {
-                Layer = layer
-            };
-            dxf.Entities.Add(circle);
-
-            var text = new Text("PORTHOLE", new Vector3(center.X + profileOffset, center.Y - 10, 0), 20) { Layer = layer };
             dxf.Entities.Add(text);
         }
 
@@ -743,6 +730,62 @@ namespace Klimor.WebApi.DXF.Services
                 default:
                     return new List<Vector2> { new Vector2(x1, y1), new Vector2(x2, y1), new Vector2(x2, y2), new Vector2(x1, y2) };
             }
+        }
+
+        // Wstawia tekst na środku całej jednostki (po X) i "w profilu" (na górnym profilu – w połowie jego grubości)
+        private void AddWatermarkText(
+            DxfDocument dxf,
+            Layer textLayer,
+            IEnumerable<Coordinates> allElements,
+            ViewElement view,
+            string textValue,
+            double textHeight = 35)
+        {
+            var blocks = allElements.Where(e => e.label == Lab.Block).ToList();
+            if (blocks.Count == 0) return;
+
+            var xMin = blocks.Min(b => b.x1);
+            var xMax = blocks.Max(b => b.x2);
+            var yMin = blocks.Min(b => b.y1);
+            var yMax = blocks.Max(b => b.y2);
+            var zMin = blocks.Min(b => b.z1);
+            var zMax = blocks.Max(b => b.z2);
+
+            var assembly = new Coordinates
+            {
+                x1 = xMin,
+                x2 = xMax,
+                y1 = yMin,
+                y2 = yMax,
+                z1 = zMin,
+                z2 = zMax,
+                label = Lab.Block
+            };
+
+            var rect2D = GenerateViewVertices(assembly, view.Name, globalXMin, globalXMax, globalYMin, globalYMax, globalZMin, globalZMax);
+
+            // offset widoku
+            rect2D = rect2D.Select(p => new Vector2(p.X + view.XOffset, p.Y + view.YOffset)).ToList();
+
+            // wyliczamy środek po X oraz „górę” prostokąta po Y,
+            // a następnie schodzimy o połowę grubości profilu
+            double leftX = rect2D.Min(p => p.X);
+            double rightX = rect2D.Max(p => p.X);
+            double topY = rect2D.Max(p => p.Y);
+
+            double midX = (leftX + rightX) / 2.0;
+            double yInProfile = topY - (profileOffset / 2.0);
+
+            var text = new Text(textValue, new Vector3(midX - 100, yInProfile - 17, 0), textHeight)
+            {
+                Layer = textLayer,
+                Color = AciColor.LightGray,
+                Rotation = 0,
+                WidthFactor = 1.2,
+                Style = new TextStyle("ArialBold", "arialbd.ttf")
+            };
+
+            dxf.Entities.Add(text);
         }
 
         public class Rect2D
