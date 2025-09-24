@@ -170,16 +170,22 @@ namespace Klimor.WebApi.DXF.Services
                                 dxf.Entities.Add(innerPoly);
 
                                 var idx = 0;
+                                var extra = 20.0;              // długość „wysunięcia” do wnętrza
+                                var w = profileOffset;         // szerokość profilu (dotychczasowe 50)
+
                                 foreach (var c in outer2D)
                                 {
                                     var cornerVertices = new List<Polyline2DVertex>();
+
                                     switch (idx)
                                     {
-                                        case 0: // lewy dół
+                                        case 0: // lewy dół – rozsunięcie: w prawo (X+) i w górę (Y+)
                                             cornerVertices.Add(new Polyline2DVertex(c.X, c.Y, 0));
-                                            cornerVertices.Add(new Polyline2DVertex(c.X + profileOffset, c.Y, 0));
-                                            cornerVertices.Add(new Polyline2DVertex(c.X + profileOffset, c.Y + profileOffset, 0));
-                                            cornerVertices.Add(new Polyline2DVertex(c.X, c.Y + profileOffset, 0));
+                                            cornerVertices.Add(new Polyline2DVertex(c.X + w + extra, c.Y, 0));
+                                            cornerVertices.Add(new Polyline2DVertex(c.X + w + extra, c.Y + w, 0));
+                                            cornerVertices.Add(new Polyline2DVertex(c.X + w, c.Y + w, 0));
+                                            cornerVertices.Add(new Polyline2DVertex(c.X + w, c.Y + w + extra, 0));
+                                            cornerVertices.Add(new Polyline2DVertex(c.X, c.Y + w + extra, 0));
 
                                             if (!view.Name.ToLower().Contains("front") && el.additionalInfos != null)
                                             {
@@ -193,35 +199,37 @@ namespace Klimor.WebApi.DXF.Services
                                             }
                                             break;
 
-                                        case 1: // prawy dół
-                                            cornerVertices.Add(new Polyline2DVertex(c.X - profileOffset, c.Y, 0));
+                                        case 1: // prawy dół – rozsunięcie: w lewo (X−) i w górę (Y+)
                                             cornerVertices.Add(new Polyline2DVertex(c.X, c.Y, 0));
-                                            cornerVertices.Add(new Polyline2DVertex(c.X, c.Y + profileOffset, 0));
-                                            cornerVertices.Add(new Polyline2DVertex(c.X - profileOffset, c.Y + profileOffset, 0));
+                                            cornerVertices.Add(new Polyline2DVertex(c.X - w - extra, c.Y, 0));
+                                            cornerVertices.Add(new Polyline2DVertex(c.X - w - extra, c.Y + w, 0));
+                                            cornerVertices.Add(new Polyline2DVertex(c.X - w, c.Y + w, 0));
+                                            cornerVertices.Add(new Polyline2DVertex(c.X - w, c.Y + w + extra, 0));
+                                            cornerVertices.Add(new Polyline2DVertex(c.X, c.Y + w + extra, 0));
                                             break;
 
-                                        case 2: // prawy góra
-                                            cornerVertices.Add(new Polyline2DVertex(c.X - profileOffset, c.Y - profileOffset, 0));
-                                            cornerVertices.Add(new Polyline2DVertex(c.X, c.Y - profileOffset, 0));
+                                        case 2: // prawy góra – rozsunięcie: w lewo (X−) i w dół (Y−)
                                             cornerVertices.Add(new Polyline2DVertex(c.X, c.Y, 0));
-                                            cornerVertices.Add(new Polyline2DVertex(c.X - profileOffset, c.Y, 0));
+                                            cornerVertices.Add(new Polyline2DVertex(c.X - w - extra, c.Y, 0));
+                                            cornerVertices.Add(new Polyline2DVertex(c.X - w - extra, c.Y - w, 0));
+                                            cornerVertices.Add(new Polyline2DVertex(c.X - w, c.Y - w, 0));
+                                            cornerVertices.Add(new Polyline2DVertex(c.X - w, c.Y - w - extra, 0));
+                                            cornerVertices.Add(new Polyline2DVertex(c.X, c.Y - w - extra, 0));
                                             break;
 
-                                        case 3: // lewy góra
+                                        case 3: // lewy góra – rozsunięcie: w prawo (X+) i w dół (Y−)
                                             cornerVertices.Add(new Polyline2DVertex(c.X, c.Y, 0));
-                                            cornerVertices.Add(new Polyline2DVertex(c.X + profileOffset, c.Y, 0));
-                                            cornerVertices.Add(new Polyline2DVertex(c.X + profileOffset, c.Y - profileOffset, 0));
-                                            cornerVertices.Add(new Polyline2DVertex(c.X, c.Y - profileOffset, 0));
+                                            cornerVertices.Add(new Polyline2DVertex(c.X + w + extra, c.Y, 0));
+                                            cornerVertices.Add(new Polyline2DVertex(c.X + w + extra, c.Y - w, 0));
+                                            cornerVertices.Add(new Polyline2DVertex(c.X + w, c.Y - w, 0));
+                                            cornerVertices.Add(new Polyline2DVertex(c.X + w, c.Y - w - extra, 0));
+                                            cornerVertices.Add(new Polyline2DVertex(c.X, c.Y - w - extra, 0));
                                             break;
                                     }
 
-                                    var cornerPoly = new Polyline2D(cornerVertices, true);
-                                    cornerPoly.Layer = layer;
-
-                                    var hatch = new Hatch(HatchPattern.Solid, true);
+                                    var cornerPoly = new Polyline2D(cornerVertices, true) { Layer = layer };
+                                    var hatch = new Hatch(HatchPattern.Solid, true) { Layer = layer, Color = new AciColor(7) };
                                     hatch.BoundaryPaths.Add(new HatchBoundaryPath(new List<EntityObject> { cornerPoly }));
-                                    hatch.Layer = layer;
-                                    hatch.Color = new AciColor(7);
 
                                     dxf.Entities.Add(hatch);
                                     idx++;
@@ -316,7 +324,7 @@ namespace Klimor.WebApi.DXF.Services
                                                         "Down_Wall" => "DOWN",
                                                         "Down_DrainTray" => "DRN_TRY",
                                                         "Frame" => "",
-                                                        _ => el.label
+                                                        _ => ""
                                                     };
 
                                                     if (wallDescription == "INS")
