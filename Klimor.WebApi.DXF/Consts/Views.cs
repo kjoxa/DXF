@@ -125,6 +125,19 @@ namespace Klimor.WebApi.DXF.Consts
             }
         };
 
+        public void ApplyNormOnGrid(Norm norm, ViewGrid grid, int localDx = 0, int localDy = 0)
+        {
+            if (!GridPresets.Cells.TryGetValue(norm, out var cellMap))
+                throw new ArgumentOutOfRangeException(nameof(norm), $"Unsupported norm: {norm}");
+
+            var layout = new ViewGridLayout(grid);
+            foreach (var (name, cell) in cellMap)
+                layout.At(name, cell.col, cell.row, localDx, localDy);
+
+            layout.ApplyTo(this);
+            CurrentNorm = norm;            
+        }
+
         public IEnumerable<ViewElement> Select(params string[] names) => names.Select(n => this[n]);
 
         public IEnumerable<ViewElement> Except(params string[] names) => _views.Where(kv => !names.Contains(kv.Key)).Select(kv => kv.Value);

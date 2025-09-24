@@ -105,6 +105,21 @@ namespace Klimor.WebApi.DXF
             Views.ApplyNorm(norm);
             Views.SetWaterMark("Klimor");
 
+            var grid = new ViewGrid(columns: 5, rows: 10, cellWidth: (int)Views.AhuLength, cellHeight: 1000 + (int)Views.AhuHeight);
+            grid.AlignCellToPoint(col: 1, row: 5, worldX: 0, worldY: 0);
+            
+            // Użycie presetów siatkowych:
+            Views.ApplyNormOnGrid(Norm.ISO, grid);            
+            var drawer = new GridDrawer(dxf);
+            drawer.Draw(grid);
+
+            //var centerFront = Views.AhuLength / 2 - Views.AhuLength;
+            if (norm == Norm.ISO)
+            {
+                Views.SetView(ViewName.LeftFront, Views.LeftFront.XOffset + (Views.LeftFront.XOffset / 2) - ((int)Views.AhuWidth / 2), Views.LeftFront.YOffset);
+                Views.SetView(ViewName.RightFront, Views.RightFront.XOffset - (Views.RightFront.XOffset / 2) - ((int)Views.AhuWidth / 2), Views.RightFront.YOffset);
+            }            
+
             void GenerateBlocks()
             {
                 var layer = dxf.Layers.Add(new Layer(Lab.Block) { Color = AciColor.Default });
