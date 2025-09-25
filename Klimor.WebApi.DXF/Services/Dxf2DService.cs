@@ -138,7 +138,7 @@ namespace Klimor.WebApi.DXF.Services
                         {
                             if (el.label == Lab.Block)
                             {
-                                if (view.Name == ViewName.Operational)
+                                //if (view.Name == ViewName.Operational)
                                 {
                                     AddWatermarkText(dxf, textLayer, elements, view, Views.GetWaterMark());
                                 }
@@ -575,6 +575,8 @@ namespace Klimor.WebApi.DXF.Services
                     {
                         Layer = layer
                     };
+
+                    AddWatermarkText(dxf, layer, elements, Views[viewName], Views.GetWaterMark());
                     dxf.Entities.Add(profile);
                 }
             }

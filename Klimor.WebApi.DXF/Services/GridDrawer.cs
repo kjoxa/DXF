@@ -16,12 +16,11 @@ namespace Klimor.WebApi.DXF.Services
         public double CellLabelOffsetX { get; set; } = 150;
         public double CellLabelOffsetY { get; set; } = 150;
 
-        // UWAGA: jeżeli u Ciebie warstwy robi się inaczej, możesz pominąć cały fragment z Layer.
         public GridDrawer(DxfDocument document, string layerName = "GRID")
         {
             _doc = document;
             _layer = _doc.Layers.FirstOrDefault(l => l.Name == layerName)
-                     ?? new Layer(layerName) { Color = AciColor.LightGray, Linetype = Linetype.DashDot };
+                     ?? new Layer(layerName) { Color = AciColor.LightGray, Linetype = Linetype.DashDot, IsVisible = false };
             if (!_doc.Layers.Contains(_layer))
                 _doc.Layers.Add(_layer);
         }
