@@ -29,6 +29,7 @@ namespace Klimor.WebApi.DXF
     public partial class MainFrm : Form
     {
         ViewsList Views;
+        CornerService cornerService;
         Dxf2DService dxf2D;
         Dxf3DService dxf3D;
 
@@ -105,7 +106,7 @@ namespace Klimor.WebApi.DXF
             {
                 Views.SetView(ViewName.LeftFront, Views.LeftFront.XOffset + (Views.LeftFront.XOffset / 2) - ((int)Views.AhuWidth / 2), Views.LeftFront.YOffset);
                 Views.SetView(ViewName.RightFront, Views.RightFront.XOffset - (Views.RightFront.XOffset / 2) - ((int)Views.AhuWidth / 2), Views.RightFront.YOffset);
-            }            
+            }                        
 
             void GenerateBlocks()
             {

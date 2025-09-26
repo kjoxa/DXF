@@ -286,6 +286,25 @@ namespace Klimor.WebApi.DXF.Services
                                     dxf.Entities.Add(outerPoly); // &&*
                                 }
 
+                                // dodajemy kwadraciki - Up/Down ożebrowanie
+                                if (!externalElementShow
+                                    && (el.type == "Wall" || el.type.Contains("Removable"))
+                                    && (view.Name == "Up" || view.Name == "Down")
+                                    && (el.label == "Operational" || el.label == "Back"))
+                                {
+                                    if (el.x2 + 50 < Views.AhuLength)
+                                    {
+                                        var cornerService = new CornerService(dxf, layer);
+                                        cornerService.AddFilledCorner(
+                                            outer2D[1].X + 50,
+                                            outer2D[1].Y,
+                                            size: 50,
+                                            anchor: AnchorPos.BottomRight
+                                        );
+                                    }
+                                    
+                                }
+
                                 if ((el.type == "Wall" ||                                    
                                     el.type.Contains("Removable") || 
                                     el.type.Contains("Door")) && el.label == view.Name ||
