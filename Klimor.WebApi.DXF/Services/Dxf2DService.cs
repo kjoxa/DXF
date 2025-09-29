@@ -32,6 +32,7 @@ namespace Klimor.WebApi.DXF.Services
         public double globalYMax = 0;
         public double globalZMin = 0;
         public double globalZMax = 0;
+        bool frameXYmoved = false;
 
         DimensionStyle dimStyle = new DimensionStyle("MyDimStyle")
         {
@@ -238,12 +239,22 @@ namespace Klimor.WebApi.DXF.Services
                             }
                             if (!string.IsNullOrEmpty(el.type) && el.label != Lab.Block)
                             {
+                                // ramy FRAME
+                                if (view.Name == ViewName.Frame && el.label == Lab.Frame)
+                                {
+                                    if (!frameXYmoved)
+                                    {
+                                        PrepareFrameToDraw(elements, textLayer, dxf, false);
+                                        frameXYmoved = true;
+                                    }                                    
+                                }
+
                                 // dodawanie konektora
                                 if ((el.label == Lab.Connector || el.type == Lab.Porthole) && (view.Name == ViewName.Operational || view.Name == ViewName.Back))
                                 {
                                     AddCircle(outer2D, dxf, el, layer);
                                     continue;
-                                }
+                                }                                
 
                                 // dopasowywanie elementów zewnętrznych do widoku                                                               
                                 if (Lab.ExternalElements.Any(l => l == el.label))
@@ -269,6 +280,7 @@ namespace Klimor.WebApi.DXF.Services
                                     }                                                                       
                                 }
 
+                                // przesunięcie dla elementów zewnętrznych w Y, żeby się nie nakładały
                                 if (externalElementShow)
                                 {
                                     externalElementsYOffset = el.label switch
@@ -286,7 +298,7 @@ namespace Klimor.WebApi.DXF.Services
                                     dxf.Entities.Add(outerPoly); // &&*
                                 }
 
-                                // dodajemy kwadraciki - Up/Down ożebrowanie
+                                // dodajemy kwadraciki - Up/Down ożebrowanie / znaczniki płyt na Up/Down
                                 if (!externalElementShow
                                     && (el.type == "Wall" || el.type.Contains("Removable"))
                                     && (view.Name == "Up" || view.Name == "Down")
@@ -301,8 +313,7 @@ namespace Klimor.WebApi.DXF.Services
                                             size: 50,
                                             anchor: AnchorPos.BottomRight
                                         );
-                                    }
-                                    
+                                    }                                    
                                 }
 
                                 if ((el.type == "Wall" ||                                    
@@ -390,6 +401,11 @@ namespace Klimor.WebApi.DXF.Services
                                     }
                                     idx = 0;
                                 }
+
+                                if (view.Name != ViewName.Frame && el.label == Lab.Frame && frameXYmoved)
+                                {
+                                    PrepareFrameToDraw(elements, textLayer, dxf, true);
+                                }
                             }
                         }
 
@@ -439,7 +455,7 @@ namespace Klimor.WebApi.DXF.Services
                             }
 
                             if (el.label == view.Name || el.label == Lab.Function || el.label == Lab.Block || Lab.ExternalElements.Any(l => l == el.label))
-                            {
+                            {                                
                                 widthDim.Layer = layer;
                                 dxf.Entities.Add(widthDim);
                             }
@@ -491,8 +507,61 @@ namespace Klimor.WebApi.DXF.Services
                                 heightDim.Layer = layer;
                                 dxf.Entities.Add(heightDim);
                             }
+
+                            if (view.Name != ViewName.Frame && el.label == Lab.Frame && frameXYmoved)
+                            {
+                                dxf.Entities.Remove(heightDim);
+                                dxf.Entities.Remove(widthDim);
+                            }
                         }
                     }
+                }
+            }
+        }
+
+        void PrepareFrameToDraw(List<Coordinates> elements, Layer textLayer, DxfDocument dxf, bool backToDefault)
+        {
+            // przywracamy poprzednie rozsunięcie
+            if (backToDefault)
+            {
+                for (int i = 0; i < elements.Count; i++)
+                {
+                    if (elements[i].label == Lab.Frame && elements[i].y1 > 200)
+                    {
+                        var tmp = elements[i];
+                        tmp.x1 -= 10000;
+                        tmp.x2 -= 10000;
+                        elements[i] = tmp;
+                    }
+                }
+            }
+            else
+            {
+                //górne ramy muszą dostać przesunięcie o X
+                bool upFrameExist = false;
+                for (int i = 0; i < elements.Count; i++)
+                {
+                    if (elements[i].label == Lab.Frame && elements[i].y1 > 200)
+                    {
+                        var tmp = elements[i];
+                        tmp.x1 += 10000;
+                        tmp.x2 += 10000;
+                        elements[i] = tmp;
+                        upFrameExist = true;
+                    }
+                }
+
+                if (upFrameExist)
+                {
+                    var firstUpFrame = elements.FirstOrDefault(e => e.label == Lab.Frame && e.y1 > 200);
+                    var text = new Text("Frame Up", new Vector3(firstUpFrame.x1 + Views.Frame.XOffset, firstUpFrame.z1 - 440 + Views.Frame.YOffset, 0), 100)
+                    {
+                        Layer = textLayer,
+                        Rotation = 0,
+                        Color = AciColor.LightGray,
+                        WidthFactor = 1.2,
+                    };
+                    dxf.Entities.Add(text);
                 }
             }
         }

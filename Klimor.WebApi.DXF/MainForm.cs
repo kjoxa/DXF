@@ -230,34 +230,7 @@ namespace Klimor.WebApi.DXF
             }
 
             void GenerateFrame()
-            {
-                // górne ramy muszą dostać przesunięcie o X
-                bool upFrameExist = false;
-                for (int i = 0; i < elements.Count; i++)
-                {
-                    if (elements[i].label == Lab.Frame && elements[i].y1 > 200)
-                    {
-                        var tmp = elements[i];
-                        tmp.x1 += 10000;
-                        tmp.x2 += 10000;
-                        elements[i] = tmp;
-                        upFrameExist = true;
-                    }
-                }
-
-                if (upFrameExist)
-                {
-                    var firstUpFrame = elements.FirstOrDefault(e => e.label == Lab.Frame && e.y1 > 200);
-                    var text = new Text("Frame Up", new Vector3(firstUpFrame.x1 + Views.Frame.XOffset, firstUpFrame.z1 - 440 + Views.Frame.YOffset, 0), 100)
-                    {
-                        Layer = textLayer,
-                        Rotation = 0,
-                        Color = AciColor.LightGray,
-                        WidthFactor = 1.2,
-                    };
-                    dxf.Entities.Add(text);
-                }
-
+            {                
                 var layerFrame = dxf.Layers.Add(new Layer("Frame") { Color = AciColor.Blue });
                 dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Frame, Lab.Roof }, false, true, layerFrame, textLayer, Views.Except(ViewName.Up, ViewName.Down, ViewName.Roof));                
             }
@@ -306,7 +279,7 @@ namespace Klimor.WebApi.DXF
             }
 
             dxf.Save(fileOutput);
-        }        
+        }                
 
         private void MainFrm_Load(object sender, EventArgs e)
         {
