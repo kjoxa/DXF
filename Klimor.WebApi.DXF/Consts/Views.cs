@@ -15,7 +15,9 @@ namespace Klimor.WebApi.DXF.Consts
         public const string LeftFront = "LeftFront";
         public const string RightFront = "RightFront";
         public const string Frame = "Frame";
+        public const string FrameUp = "FrameUp";
         public const string Roof = "Roof";
+        public const string RoofUp = "RoofUp";
     }
 
     public class ViewElement
