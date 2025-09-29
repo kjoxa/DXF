@@ -739,6 +739,7 @@ namespace Klimor.WebApi.DXF.Services
                         }
 
                         // narożniki do środka
+                        // narożniki do środka
                         for (int i = 0; i < outer2D.Count; i++)
                         {
                             var c = outer2D[i];
@@ -751,19 +752,24 @@ namespace Klimor.WebApi.DXF.Services
                                 case 3: dx = profileThickness; dy = -profileThickness; break;
                             }
 
+                            var extra = 20.0;          // długość „wysunięcia” do wnętrza
+
+                            int sx = Math.Sign(dx);    // kierunek do środka po X: -1 lub +1
+                            int sy = Math.Sign(dy);    // kierunek do środka po Y: -1 lub +1
+
                             var cornerVertices = new List<Polyline2DVertex>
-                                {
-                                    new Polyline2DVertex(c.X,       c.Y,       0),
-                                    new Polyline2DVertex(c.X + dx,  c.Y,       0),
-                                    new Polyline2DVertex(c.X + dx,  c.Y + dy,  0),
-                                    new Polyline2DVertex(c.X,       c.Y + dy,  0)
-                                };
+                            {
+                                new Polyline2DVertex(c.X,                        c.Y,                        0),
+                                new Polyline2DVertex(c.X + dx + extra * sx,      c.Y,                        0),
+                                new Polyline2DVertex(c.X + dx + extra * sx,      c.Y + dy,                   0),
+                                new Polyline2DVertex(c.X + dx,                   c.Y + dy,                   0),
+                                new Polyline2DVertex(c.X + dx,                   c.Y + dy + extra * sy,      0),
+                                new Polyline2DVertex(c.X,                        c.Y + dy + extra * sy,      0),
+                            };
 
                             var cornerPoly = new Polyline2D(cornerVertices, true) { Layer = layer };
-                            var hatch = new Hatch(HatchPattern.Solid, true);
+                            var hatch = new Hatch(HatchPattern.Solid, true) { Layer = layer, Color = new AciColor(7) };
                             hatch.BoundaryPaths.Add(new HatchBoundaryPath(new List<EntityObject> { cornerPoly }));
-                            hatch.Layer = layer;
-                            hatch.Color = new AciColor(7);
                             dxf.Entities.Add(hatch);
                         }
                     }
