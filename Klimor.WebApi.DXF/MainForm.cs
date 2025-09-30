@@ -50,7 +50,7 @@ namespace Klimor.WebApi.DXF
 
                 if (ofd.ShowDialog() == DialogResult.OK)
                 {
-                    try
+                    //try
                     {
                         string json = File.ReadAllText(ofd.FileName);
                         List<Coordinates> elements = JsonSerializer.Deserialize<List<Coordinates>>(json);
@@ -63,10 +63,10 @@ namespace Klimor.WebApi.DXF
 
                         //MessageBox.Show("Pliki DXF zostały wygenerowane.", "Sukces", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("Błąd podczas wczytywania: " + ex.Message);
-                    }
+                    //catch (Exception ex)
+                    //{
+                     //   MessageBox.Show("Błąd podczas wczytywania: " + ex.Message);
+                   // }
                 }
             }
             Application.Exit(); // Zamyka aplikację po zakończeniu
@@ -253,8 +253,8 @@ namespace Klimor.WebApi.DXF
                 dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Roof }, true, false, layerRoofDim, textLayer, Views.Select(ViewName.Roof));
             }
 
-            GenerateBlocks();
-            GenerateBlockDimensions();
+           // GenerateBlocks();
+           // GenerateBlockDimensions();
 
             if (!advanced2D)
             {

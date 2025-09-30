@@ -11,7 +11,9 @@ namespace Klimor.WebApi.DXF.Consts
         public const string Operational = "Operational";
         public const string Back = "Back";
         public const string Up = "Up";
+        public const string UpUp = "UpUp";
         public const string Down = "Down";
+        public const string DownUp = "DownUp";
         public const string LeftFront = "LeftFront";
         public const string RightFront = "RightFront";
         public const string Frame = "Frame";
@@ -49,7 +51,9 @@ namespace Klimor.WebApi.DXF.Consts
             [ViewName.Operational] = new(ViewName.Operational, 0, 0),
             [ViewName.Back] = new(ViewName.Back, 0, 5000),
             [ViewName.Up] = new(ViewName.Up, 0, 10000),
+            [ViewName.UpUp] = new(ViewName.UpUp, 0, 8000),
             [ViewName.Down] = new(ViewName.Down, 0, 15000),
+            [ViewName.DownUp] = new(ViewName.DownUp, 0, 17000),
             [ViewName.LeftFront] = new(ViewName.LeftFront, 0, 20000),
             [ViewName.RightFront] = new(ViewName.RightFront, 0, 25000),
             [ViewName.Frame] = new(ViewName.Frame, 0, 50000),
@@ -64,7 +68,11 @@ namespace Klimor.WebApi.DXF.Consts
 
         public ViewElement Up => _views[ViewName.Up];
 
+        public ViewElement UpUp => _views[ViewName.UpUp];
+
         public ViewElement Down => _views[ViewName.Down];
+
+        public ViewElement DownUp => _views[ViewName.DownUp];
 
         public ViewElement LeftFront => _views[ViewName.LeftFront];
 
@@ -99,7 +107,9 @@ namespace Klimor.WebApi.DXF.Consts
                 [ViewName.LeftFront] = (13000, 0),
                 [ViewName.Back] = (18000, 0),
                 [ViewName.Down] = (0, 6000),
+                [ViewName.DownUp] = (0, 13000),
                 [ViewName.Up] = (0, -6000),
+                [ViewName.UpUp] = (0, -16000),
                 [ViewName.Frame] = (0, -12000),
                 [ViewName.Roof] = (0, -17000),
             },
@@ -110,7 +120,9 @@ namespace Klimor.WebApi.DXF.Consts
                 [ViewName.LeftFront] = (-5500, 0),
                 [ViewName.Back] = (-18500, 0),
                 [ViewName.Down] = (0, -6000),
+                [ViewName.DownUp] = (0, 13000),
                 [ViewName.Up] = (0, 6000),
+                [ViewName.UpUp] = (0, -16000),
                 [ViewName.Frame] = (0, -12000),
                 [ViewName.Roof] = (0, -17000),
             },
@@ -121,7 +133,9 @@ namespace Klimor.WebApi.DXF.Consts
                 [ViewName.LeftFront] = (-5500, 0),
                 [ViewName.Back] = (-18500, 0),
                 [ViewName.Down] = (0, -6000),
+                [ViewName.DownUp] = (0, 13000),
                 [ViewName.Up] = (0, 6000),
+                [ViewName.UpUp] = (0, -16000),
                 [ViewName.Frame] = (0, -12000),
                 [ViewName.Roof] = (0, -17000),
             }

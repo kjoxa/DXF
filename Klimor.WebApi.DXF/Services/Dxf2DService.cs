@@ -11,11 +11,34 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Emit;
 using System.Text;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Linq;
 
 namespace Klimor.WebApi.DXF.Services
 {
+    /*
+        DXF API 2025
+        ----------------------------------
+
+        => bloki z narożnikami i wymiarami
+        => funkcje z ikonami i wymiarami z BLOCKS.dxf
+        => dachy
+        => ramy / ramy up, osobny view
+        => Hole, AD, FC, INTK
+        => DT Conny z okrągłymi na operationalu, a normalnymi na innych
+        => wycinanie left/right
+        => rzutowanie z perspektywami ISO/ANSI(US) + dynamiczne rozstawianie do przetestowania jak będzie to się sprawdzać
+        => switchboxy
+        => wallsy z nazewnictwem
+        => watermark
+        => odwracanie ikony wenta i przesuwanie
+        => portholes
+        => podzialy basic/advanced
+        => DownUp/UpUp na osobnych rzutach
+    */
+
     public class Dxf2DService
     {
         ViewsList Views;
@@ -69,6 +92,35 @@ namespace Klimor.WebApi.DXF.Services
             { "DE", "dropletEliminator" },
         };
 
+        public void GenerateChannelNumbers(List<Coordinates> elements, DxfDocument dxf, ViewElement view, Layer textLayer)
+        {
+            var upChannel = elements.OrderBy(e => e.x1).FirstOrDefault(e => e.label == Lab.Block && e.y1 > 120);
+            var downChannel = elements.OrderBy(e => e.x1).FirstOrDefault(e => e.label == Lab.Block && e.y1 <= 120);
+
+            if (upChannel != null || downChannel != null)
+            {
+                var numberUp = new Text("2", new Vector3(view.XOffset - 500, view.YOffset + upChannel.y2 - (upChannel.y2 - upChannel.y1) / 2 - 300 / 2, 0), 300)
+                {
+                    Layer = textLayer,
+                    Rotation = 0,
+                    Color = AciColor.Red,
+                    WidthFactor = 1.2,
+                    Style = new TextStyle("ArialBold", "arialbd.ttf")
+                };
+                dxf.Entities.Add(numberUp);
+
+                var numberDown = new Text("1", new Vector3(view.XOffset - 500, view.YOffset + downChannel.y2 - (downChannel.y2 - downChannel.y1) / 2 - 300 / 2, 0), 300)
+                {
+                    Layer = textLayer,
+                    Rotation = 0,
+                    Color = AciColor.Red,
+                    WidthFactor = 1.2,
+                    Style = new TextStyle("ArialBold", "arialbd.ttf")
+                };
+                dxf.Entities.Add(numberDown);
+            }            
+        }
+
         public void GenerateView(DxfDocument dxf, List<Coordinates> elements, List<string> elementsGroup, bool createDimension, bool createShape, Layer layer, Layer textLayer, IEnumerable<ViewElement> views)
         {
             var firstElement = elements.OrderBy(e => e.x1).FirstOrDefault(e => e.label == Lab.Block);
@@ -98,6 +150,12 @@ namespace Klimor.WebApi.DXF.Services
                         WidthFactor = 1.2,
                     };
                     dxf.Entities.Add(text);
+                }
+
+                // numery kanałów                
+                if (view.Name == ViewName.Operational)
+                {
+                    GenerateChannelNumbers(elements, dxf, view, textLayer);
                 }
 
                 // wyodrębnienie elementów dla grupy
@@ -738,7 +796,6 @@ namespace Klimor.WebApi.DXF.Services
                             dxf.Entities.Add(innerPoly);
                         }
 
-                        // narożniki do środka
                         // narożniki do środka
                         for (int i = 0; i < outer2D.Count; i++)
                         {
