@@ -8,6 +8,7 @@ using netDxf.Entities;
 using netDxf.Tables;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection.Emit;
 using System.Text;
@@ -96,36 +97,69 @@ namespace Klimor.WebApi.DXF.Services
         {
             var upChannel = elements.OrderBy(e => e.x1).FirstOrDefault(e => e.label == Lab.Block && e.y1 > 120);
             var downChannel = elements.OrderBy(e => e.x1).FirstOrDefault(e => e.label == Lab.Block && e.y1 <= 120);
+            var upUpChannel = elements.OrderBy(e => e.x1).FirstOrDefault(e => e.label == ViewName.UpUp);
+            var downUpChannel = elements.OrderBy(e => e.x1).FirstOrDefault(e => e.label == ViewName.DownUp);
 
-            if (upChannel != null || downChannel != null)
+            if (upChannel != null && (view.Name == ViewName.Operational || view.Name == ViewName.Back))
             {
                 var numberUp = new Text("2", new Vector3(view.XOffset - 500, view.YOffset + upChannel.y2 - (upChannel.y2 - upChannel.y1) / 2 - 300 / 2, 0), 300)
                 {
                     Layer = textLayer,
                     Rotation = 0,
-                    Color = AciColor.Red,
+                    Color = AciColor.DarkGray,
                     WidthFactor = 1.2,
                     Style = new TextStyle("ArialBold", "arialbd.ttf")
                 };
-                dxf.Entities.Add(numberUp);
+                dxf.Entities.Add(numberUp);                
+            }
 
+            if (downChannel != null && (view.Name == ViewName.Operational || view.Name == ViewName.Back || view.Name == ViewName.Up || view.Name == ViewName.Down))
+            {
                 var numberDown = new Text("1", new Vector3(view.XOffset - 500, view.YOffset + downChannel.y2 - (downChannel.y2 - downChannel.y1) / 2 - 300 / 2, 0), 300)
                 {
                     Layer = textLayer,
                     Rotation = 0,
-                    Color = AciColor.Red,
+                    Color = AciColor.DarkGray,
                     WidthFactor = 1.2,
                     Style = new TextStyle("ArialBold", "arialbd.ttf")
                 };
                 dxf.Entities.Add(numberDown);
-            }            
+            }
+
+            if (view.Name == ViewName.UpUp && upUpChannel != null)
+            {
+                var x1 = upUpChannel.x1 - 400;
+                var numberUp = new Text("2", new Vector3(view.XOffset + x1, view.YOffset + 500, 0), 300)
+                {
+                    Layer = textLayer,
+                    Rotation = 0,
+                    Color = AciColor.DarkGray,
+                    WidthFactor = 1.2,
+                    Style = new TextStyle("ArialBold", "arialbd.ttf")
+                };
+                dxf.Entities.Add(numberUp);
+            }
+
+            if (view.Name == ViewName.DownUp && downUpChannel != null)
+            {
+                var x1 = downUpChannel.x1 - 400;
+                var numberUp = new Text("2", new Vector3(view.XOffset + x1, view.YOffset + 500, 0), 300)
+                {
+                    Layer = textLayer,
+                    Rotation = 0,
+                    Color = AciColor.DarkGray,
+                    WidthFactor = 1.2,
+                    Style = new TextStyle("ArialBold", "arialbd.ttf")
+                };
+                dxf.Entities.Add(numberUp);
+            }
         }
 
         public void GenerateView(DxfDocument dxf, List<Coordinates> elements, List<string> elementsGroup, bool createDimension, bool createShape, Layer layer, Layer textLayer, IEnumerable<ViewElement> views)
         {
             var firstElement = elements.OrderBy(e => e.x1).FirstOrDefault(e => e.label == Lab.Block);
             var lastElement = elements.OrderByDescending(e => e.x1).FirstOrDefault(e => e.label == Lab.Block);
-            var normTitle = new Text(Views.CurrentNorm.ToString(), new Vector3((lastElement.x2 - firstElement.x1) / 2, 13000, 0), 700)
+            var normTitle = new Text(Views.CurrentNorm.ToString(), new Vector3((lastElement.x2 - firstElement.x1) / 2, 20000, 0), 700)
             {
                 Layer = textLayer,
                 Rotation = 0,
@@ -153,9 +187,16 @@ namespace Klimor.WebApi.DXF.Services
                 }
 
                 // numery kanałów                
-                if (view.Name == ViewName.Operational)
+                switch (view.Name)
                 {
-                    GenerateChannelNumbers(elements, dxf, view, textLayer);
+                    case ViewName.Operational:
+                    case ViewName.Back:
+                    case ViewName.Up:
+                    case ViewName.UpUp:
+                    case ViewName.Down:
+                    case ViewName.DownUp:
+                        GenerateChannelNumbers(elements, dxf, view, textLayer);
+                        break;
                 }
 
                 // wyodrębnienie elementów dla grupy
@@ -163,6 +204,11 @@ namespace Klimor.WebApi.DXF.Services
                     .Where(e => elementsGroup
                     .Any(g => string.Equals(g, e.label, StringComparison.OrdinalIgnoreCase)))
                     .ToList();
+
+                if (view.Name == ViewName.DownUp || view.Name == ViewName.UpUp)
+                {
+                    groupElements = elements.Where(e => e.label == ViewName.UpUp || e.label == ViewName.DownUp).ToList();
+                }
 
                 bool externalElementShow = false;
                 int externalElementsYOffset = 0;
@@ -191,10 +237,10 @@ namespace Klimor.WebApi.DXF.Services
                         var outerPoly = new Polyline2D(outer2D.Select(v => new Polyline2DVertex(v.X, v.Y, 0)).ToList(), true)
                         {
                             Layer = layer
-                        };
+                        };                        
 
                         if (createShape)
-                        {
+                        {                            
                             if (el.label == Lab.Block)
                             {
                                 //if (view.Name == ViewName.Operational)
@@ -295,8 +341,8 @@ namespace Klimor.WebApi.DXF.Services
                                 }
                                 idx = 0;
                             }
-                            if (!string.IsNullOrEmpty(el.type) && el.label != Lab.Block)
-                            {
+                            if (!string.IsNullOrEmpty(el.type) && el.label != Lab.Block && (view.Name != ViewName.UpUp || view.Name != ViewName.DownUp))
+                            {                                
                                 // ramy FRAME
                                 if (view.Name == ViewName.Frame && el.label == Lab.Frame)
                                 {
@@ -406,14 +452,18 @@ namespace Klimor.WebApi.DXF.Services
                                                     var wallDescription = el.label switch
                                                     {
                                                         "Up" => "UP",
+                                                        "UpUp" => "UP",
                                                         "Operational" => "INS",
                                                         "Back" => "BACK",
                                                         "Down" => "Down",
+                                                        "DownUp" => "Down",
                                                         "Down_Wall" => "DOWN",
                                                         "Down_DrainTray" => "DRN_TRY",
                                                         "Frame" => "",
                                                         _ => ""
                                                     };
+
+                                                    //Debug.WriteLine($"Wall description before: {wallDescription}, type: {el.type}");
 
                                                     if (wallDescription == "INS")
                                                     {
@@ -467,7 +517,7 @@ namespace Klimor.WebApi.DXF.Services
                             }
                         }
 
-                        if (createDimension)
+                        if (createDimension && (view.Name != ViewName.UpUp || view.Name != ViewName.DownUp))
                         {
                             double dimOffset = 30.0;
                             var wStart = outer2D[0];
@@ -864,10 +914,12 @@ namespace Klimor.WebApi.DXF.Services
                     double newX2 = globalXMax + globalXMin - x2;
                     return new List<Vector2> { new Vector2(newX2, y1), new Vector2(newX1, y1), new Vector2(newX1, y2), new Vector2(newX2, y2) };
 
-                case "Up": // widok z góry (XZ)                    
+                case "Up": // widok z góry (XZ)
+                case "UpUp":
                     return new List<Vector2> { new Vector2(x1, z1), new Vector2(x2, z1), new Vector2(x2, z2), new Vector2(x1, z2) };
 
                 case "Down": // widok z dołu (XZ, odbicie w Z)
+                case "DownUp": 
                     double newZ1Down = globalZMax + globalZMin - z1;
                     double newZ2Down = globalZMax + globalZMin - z2;
                     return new List<Vector2> { new Vector2(x1, newZ2Down), new Vector2(x2, newZ2Down), new Vector2(x2, newZ1Down), new Vector2(x1, newZ1Down) };

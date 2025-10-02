@@ -1,2 +1,3 @@
-﻿Ogromna_69947
-- przesuwanie Up na lewo dla widoku Frame Up powoduje, że na LeftFront ona się pokazuje (rama u góry)
+﻿DownUp i UpUp
+
+1. Elements otrzymuje nowe pole: View i będzie w nim opcja 

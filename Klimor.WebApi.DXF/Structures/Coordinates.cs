@@ -20,8 +20,12 @@ namespace Klimor.WebApi.DXF.Structures
 
         public int z2 { get; set; }
 
+        public int PositionUp { get; set; }
+
+        public int PositionDown { get; set; }
+
         public string label { get; set; }
-        
+
         public string posUpDown { get; set; }
 
         public string type { get; set; }

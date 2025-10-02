@@ -69,7 +69,94 @@ namespace Klimor.WebApi.DXF
                    // }
                 }
             }
-            Application.Exit(); // Zamyka aplikację po zakończeniu
+            if (!Debugger.IsAttached)               
+                Application.Exit(); 
+        }
+
+        private void AddElementsForUpChannel(List<Coordinates> elements)
+        {
+            // wyciągamy UP-y
+            var upWalls = elements
+                .Where(e => e.label == ViewName.Up)
+                .ToList();
+
+            if (upWalls.Count == 0)
+                return;
+
+            // różne poziomy Y2
+            var levels = upWalls
+                .Select(e => e.y2)
+                .Distinct()
+                .OrderBy(v => v)
+                .ToList();
+
+            // jeśli więcej niż jeden poziom, bierzemy najwyższy
+            if (levels.Count > 1)
+            {
+                // bierzemy wszystkie poziomy poza najniższym
+                var upperLevels = levels.Skip(1).ToList();
+
+                var upperWalls = upWalls
+                    .Where(e => upperLevels.Contains(e.y2))
+                    .ToList();
+
+                elements.AddRange(upperWalls.Select(w => new Coordinates
+                {
+                    label = ViewName.UpUp,
+                    type = w.type,
+                    x1 = w.x1,
+                    x2 = w.x2,
+                    y1 = w.y1,
+                    y2 = w.y2,
+                    z1 = w.z1,
+                    z2 = w.z2,
+                    posUpDown = "up"
+                }));
+            }
+        }
+
+        private void AddElementsForDownChannel(List<Coordinates> elements)
+        {
+            // wyciągamy UP-y
+            var downWalls = elements
+                .Where(e => e.label == Lab.Down_Wall || e.label == Lab.Down_DrainTray)
+                .ToList();
+
+            if (downWalls.Count == 0)
+                return;
+
+            // różne poziomy Y2
+            var levels = downWalls
+                .Select(e => e.y1)
+                .Distinct()
+                .OrderBy(v => v)
+                .ToList();
+
+            // jeśli więcej niż jeden poziom, bierzemy najwyższy
+            if (levels.Count > 1)
+            {
+                // zamiast levels.Count - 1 => C# 8 [^1]
+                var topLevel = levels[^1]; // najwyższy Y1
+
+                // bierzemy tylko ściany z najwyższego poziomu
+                var topLevelWalls = downWalls
+                    .Where(e => e.y1.Equals(topLevel))
+                    .ToList();
+
+                // dokładamy kopie z label = UpUp
+                elements.AddRange(topLevelWalls.Select(w => new Coordinates
+                {
+                    label = ViewName.DownUp,
+                    type = w.type,
+                    x1 = w.x1,
+                    x2 = w.x2,
+                    y1 = w.y1,
+                    y2 = w.y2,
+                    z1 = w.z1,
+                    z2 = w.z2,
+                    posUpDown = "DownUp"
+                }));
+            }
         }
 
         private void Generate2D(List<Coordinates> elements, string fileOutput, bool advanced2D, Norm norm)
@@ -253,8 +340,12 @@ namespace Klimor.WebApi.DXF
                 dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Roof }, true, false, layerRoofDim, textLayer, Views.Select(ViewName.Roof));
             }
 
-           // GenerateBlocks();
-           // GenerateBlockDimensions();
+            // rozdzielenie dla widoków UpUp i DownUp
+            AddElementsForUpChannel(elements);
+            AddElementsForDownChannel(elements);
+
+            GenerateBlocks();
+            GenerateBlockDimensions();
 
             if (!advanced2D)
             {
@@ -277,7 +368,7 @@ namespace Klimor.WebApi.DXF
                 GenerateSwitchbox();
                 GenerateSwitchboxDimension();
             }
-
+            
             dxf.Save(fileOutput);
         }                
 

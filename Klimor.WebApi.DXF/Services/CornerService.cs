@@ -88,7 +88,7 @@ namespace Klimor.WebApi.DXF.Services
 
             hatch.BoundaryPaths.Add(new HatchBoundaryPath(new List<EntityObject> { cornerPoly }));
 
-            // WAŻNE: tylko hatch trafia do dokumentu (tak jak chciałeś)
+            // WAŻNE: tylko hatch trafia do dokumentu
             _dxf.Entities.Add(hatch);
         }
     }
