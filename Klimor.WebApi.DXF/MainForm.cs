@@ -77,7 +77,7 @@ namespace Klimor.WebApi.DXF
         {
             // wyciągamy UP-y
             var upWalls = elements
-                .Where(e => e.label == ViewName.Up)
+                .Where(e => e.label == ViewName.Up || e.label == Lab.Block)
                 .ToList();
 
             if (upWalls.Count == 0)
@@ -110,8 +110,11 @@ namespace Klimor.WebApi.DXF
                     y2 = w.y2,
                     z1 = w.z1,
                     z2 = w.z2,
-                    posUpDown = "up"
+                    posUpDown = "Up"
                 }));
+
+                // usuwamy oryginały
+                elements.RemoveAll(e => e.y1 == upperLevels.FirstOrDefault() && (e.label == Lab.Up || e.label == Lab.Block));
             }
         }
 
@@ -119,7 +122,7 @@ namespace Klimor.WebApi.DXF
         {
             // wyciągamy UP-y
             var downWalls = elements
-                .Where(e => e.label == Lab.Down_Wall || e.label == Lab.Down_DrainTray)
+                .Where(e => e.label == Lab.Down_Wall || e.label == Lab.Down_DrainTray || e.label == Lab.Block)
                 .ToList();
 
             if (downWalls.Count == 0)
@@ -135,15 +138,15 @@ namespace Klimor.WebApi.DXF
             // jeśli więcej niż jeden poziom, bierzemy najwyższy
             if (levels.Count > 1)
             {
-                // zamiast levels.Count - 1 => C# 8 [^1]
+                // zamiast levels.Count - 1 => C# 8 [^1]                
                 var topLevel = levels[^1]; // najwyższy Y1
 
                 // bierzemy tylko ściany z najwyższego poziomu
                 var topLevelWalls = downWalls
                     .Where(e => e.y1.Equals(topLevel))
-                    .ToList();
+                    .ToList();                
 
-                // dokładamy kopie z label = UpUp
+                // dokładamy kopie z label = DownUp
                 elements.AddRange(topLevelWalls.Select(w => new Coordinates
                 {
                     label = ViewName.DownUp,
@@ -156,6 +159,9 @@ namespace Klimor.WebApi.DXF
                     z2 = w.z2,
                     posUpDown = "DownUp"
                 }));
+
+                // usuwamy oryginały
+                //elements.RemoveAll(e => e.y1 == topLevel && (e.label == Lab.Down_Wall || e.label == Lab.Down_DrainTray || e.label == Lab.Block));
             }
         }
 

@@ -342,7 +342,10 @@ namespace Klimor.WebApi.DXF.Services
                                 idx = 0;
                             }
                             if (!string.IsNullOrEmpty(el.type) && el.label != Lab.Block && (view.Name != ViewName.UpUp || view.Name != ViewName.DownUp))
-                            {                                
+                            {
+                                if (el.label == "DownUp" && view.Name == ViewName.DownUp)
+                                    Debug.WriteLine($"Wall description before: {el.label}");
+
                                 // ramy FRAME
                                 if (view.Name == ViewName.Frame && el.label == Lab.Frame)
                                 {
@@ -420,7 +423,7 @@ namespace Klimor.WebApi.DXF.Services
                                     }                                    
                                 }
 
-                                if ((el.type == "Wall" ||                                    
+                                if ((el.type == "Wall" || el.type == "DrainTray" ||
                                     el.type.Contains("Removable") || 
                                     el.type.Contains("Door")) && el.label == view.Name ||
                                     el.label.Contains("_") || externalElementShow)
@@ -462,8 +465,12 @@ namespace Klimor.WebApi.DXF.Services
                                                         "Frame" => "",
                                                         _ => ""
                                                     };
-
-                                                    //Debug.WriteLine($"Wall description before: {wallDescription}, type: {el.type}");
+                                                    
+                                                    // nadpisanie przesuniętych Down, które jako label mają ustawione DownUp, ale trzymają typ
+                                                    if (el.type == "DrainTray" && el.label == ViewName.DownUp)
+                                                    {
+                                                        wallDescription = "DRN_TRY";
+                                                    }
 
                                                     if (wallDescription == "INS")
                                                     {
