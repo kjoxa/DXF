@@ -73,11 +73,11 @@ namespace Klimor.WebApi.DXF
                 Application.Exit(); 
         }
 
-        private void AddElementsForUpChannel(List<Coordinates> elements)
+        private void SelectElementsUpChannel(List<Coordinates> elements)
         {
             // wyciągamy UP-y
             var upWalls = elements
-                .Where(e => e.label == ViewName.Up || e.label == Lab.Block)
+                .Where(e => e.label == ViewName.Up)
                 .ToList();
 
             if (upWalls.Count == 0)
@@ -102,8 +102,9 @@ namespace Klimor.WebApi.DXF
 
                 elements.AddRange(upperWalls.Select(w => new Coordinates
                 {
-                    label = ViewName.UpUp,
+                    label = w.label,
                     type = w.type,
+                    View = ViewName.UpUp,
                     x1 = w.x1,
                     x2 = w.x2,
                     y1 = w.y1,
@@ -114,15 +115,15 @@ namespace Klimor.WebApi.DXF
                 }));
 
                 // usuwamy oryginały
-                elements.RemoveAll(e => e.y1 == upperLevels.FirstOrDefault() && (e.label == Lab.Up || e.label == Lab.Block));
+                elements.RemoveAll(e => e.y1 == upperLevels.FirstOrDefault() && (e.label == Lab.Up));
             }
         }
 
-        private void AddElementsForDownChannel(List<Coordinates> elements)
+        private void SelectElementsDownChannel(List<Coordinates> elements)
         {
             // wyciągamy UP-y
             var downWalls = elements
-                .Where(e => e.label == Lab.Down_Wall || e.label == Lab.Down_DrainTray || e.label == Lab.Block)
+                .Where(e => (e.label == Lab.Down_Wall || e.label == Lab.Down_DrainTray) || (e.View == ViewName.Down && e.label == Lab.Block))
                 .ToList();
 
             if (downWalls.Count == 0)
@@ -149,8 +150,9 @@ namespace Klimor.WebApi.DXF
                 // dokładamy kopie z label = DownUp
                 elements.AddRange(topLevelWalls.Select(w => new Coordinates
                 {
-                    label = ViewName.DownUp,
+                    label = w.label,
                     type = w.type,
+                    View = ViewName.DownUp,
                     x1 = w.x1,
                     x2 = w.x2,
                     y1 = w.y1,
@@ -161,7 +163,41 @@ namespace Klimor.WebApi.DXF
                 }));
 
                 // usuwamy oryginały
-                //elements.RemoveAll(e => e.y1 == topLevel && (e.label == Lab.Down_Wall || e.label == Lab.Down_DrainTray || e.label == Lab.Block));
+                elements.RemoveAll(e => e.y1 == topLevel && e.View == ViewName.Down);
+            }
+        }
+
+        private void GenerateBlocksWithViews(List<Coordinates> elements)
+        {
+            var blocks = elements.Where(e => e.label == Lab.Block).ToList();
+            foreach (var block in blocks)
+            {
+                foreach (var vw in Views.Except("Frame", "Roof", "DownUp", "UpUp"))
+                {
+                    if (vw.Name == ViewName.Operational)
+                    {
+                        block.View = ViewName.Operational;
+                    }
+                    else
+                    {
+                        var addBlock = new Coordinates
+                        {
+                            View = vw.Name,
+                            label = block.label,
+                            type = block.type,
+                            x1 = block.x1,
+                            x2 = block.x2,
+                            y1 = block.y1,
+                            y2 = block.y2,
+                            z1 = block.z1,
+                            z2 = block.z2,
+                            PositionUp = block.PositionUp,
+                            PositionDown = block.PositionDown,
+                            posUpDown = ""
+                        };
+                        elements.Add(addBlock);
+                    }                        
+                }
             }
         }
 
@@ -346,9 +382,16 @@ namespace Klimor.WebApi.DXF
                 dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Roof }, true, false, layerRoofDim, textLayer, Views.Select(ViewName.Roof));
             }
 
+            // tworzenie bloków z przypisanymi widokami
+            GenerateBlocksWithViews(elements);
+
             // rozdzielenie dla widoków UpUp i DownUp
-            AddElementsForUpChannel(elements);
-            AddElementsForDownChannel(elements);
+            SelectElementsUpChannel(elements);
+            SelectElementsDownChannel(elements);
+
+            var elin = elements.Where(e => e.View == ViewName.DownUp
+            || e.label == ViewName.DownUp
+            || e.View == ViewName.UpUp).ToList();
 
             GenerateBlocks();
             GenerateBlockDimensions();

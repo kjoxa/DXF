@@ -113,7 +113,8 @@ namespace Klimor.WebApi.DXF.Services
                 dxf.Entities.Add(numberUp);                
             }
 
-            if (downChannel != null && (view.Name == ViewName.Operational || view.Name == ViewName.Back || view.Name == ViewName.Up || view.Name == ViewName.Down))
+            if (downChannel != null && (view.Name == ViewName.Operational || view.Name == ViewName.Back 
+                || view.Name == ViewName.Up || view.Name == ViewName.Down))
             {
                 var numberDown = new Text("1", new Vector3(view.XOffset - 500, view.YOffset + downChannel.y2 - (downChannel.y2 - downChannel.y1) / 2 - 300 / 2, 0), 300)
                 {
@@ -207,7 +208,7 @@ namespace Klimor.WebApi.DXF.Services
 
                 if (view.Name == ViewName.DownUp || view.Name == ViewName.UpUp)
                 {
-                    groupElements = elements.Where(e => e.label == ViewName.UpUp || e.label == ViewName.DownUp).ToList();
+                    groupElements = elements.Where(e => e.View == ViewName.UpUp || e.View == ViewName.DownUp).ToList();
                 }
 
                 bool externalElementShow = false;
@@ -241,7 +242,7 @@ namespace Klimor.WebApi.DXF.Services
 
                         if (createShape)
                         {                            
-                            if (el.label == Lab.Block)
+                            if (el.label == Lab.Block && el.View == view.Name)
                             {
                                 //if (view.Name == ViewName.Operational)
                                 {
@@ -341,11 +342,8 @@ namespace Klimor.WebApi.DXF.Services
                                 }
                                 idx = 0;
                             }
-                            if (!string.IsNullOrEmpty(el.type) && el.label != Lab.Block && (view.Name != ViewName.UpUp || view.Name != ViewName.DownUp))
+                            if (!string.IsNullOrEmpty(el.type) && el.label != Lab.Block)
                             {
-                                if (el.label == "DownUp" && view.Name == ViewName.DownUp)
-                                    Debug.WriteLine($"Wall description before: {el.label}");
-
                                 // ramy FRAME
                                 if (view.Name == ViewName.Frame && el.label == Lab.Frame)
                                 {
@@ -399,8 +397,12 @@ namespace Klimor.WebApi.DXF.Services
                                     };
                                 }
 
-                                if (el.label == view.Name || el.label == Lab.Function || externalElementShow
-                                    || (view.Name == ViewName.Down && el.label.Contains("_")) || el.label == Lab.Frame || el.type == Lab.Switchbox || el.label == Lab.Connector)
+                                if (el.label == view.Name 
+                                    || el.label == Lab.Function 
+                                    || externalElementShow
+                                    || (view.Name == ViewName.Down && el.label.Contains("_")) 
+                                    || (el.label == Lab.Frame || el.type == Lab.Switchbox || el.label == Lab.Connector)
+                                    || (view.Name == ViewName.DownUp && el.type == Lab.Wall && el.label != Lab.Block))
                                 {
                                     dxf.Entities.Add(outerPoly); // &&*
                                 }
