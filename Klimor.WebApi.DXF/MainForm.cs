@@ -65,26 +65,26 @@ namespace Klimor.WebApi.DXF
                     }
                     //catch (Exception ex)
                     //{
-                     //   MessageBox.Show("Błąd podczas wczytywania: " + ex.Message);
-                   // }
+                    //   MessageBox.Show("Błąd podczas wczytywania: " + ex.Message);
+                    // }
                 }
             }
-            if (!Debugger.IsAttached)               
-                Application.Exit(); 
+            if (!Debugger.IsAttached)
+                Application.Exit();
         }
 
-        private void SelectElementsUpChannel(List<Coordinates> elements)
+        private void SelectBlockUpChannel(List<Coordinates> elements)
         {
             // wyciągamy UP-y
             var upWalls = elements
-                .Where(e => e.label == ViewName.Up)
+                .Where(e => e.label == ViewName.Up || (e.label.Contains("icon") && e.View == ViewName.Up))
                 .ToList();
 
             if (upWalls.Count == 0)
                 return;
 
             // różne poziomy Y2
-            var levels = upWalls
+            var levels = upWalls.Where(e => !e.label.Contains("icon"))
                 .Select(e => e.y2)
                 .Distinct()
                 .OrderBy(v => v)
@@ -100,26 +100,100 @@ namespace Klimor.WebApi.DXF
                     .Where(e => upperLevels.Contains(e.y2))
                     .ToList();
 
-                elements.AddRange(upperWalls.Select(w => new Coordinates
-                {
-                    label = w.label,
-                    type = w.type,
-                    View = ViewName.UpUp,
-                    x1 = w.x1,
-                    x2 = w.x2,
-                    y1 = w.y1,
-                    y2 = w.y2,
-                    z1 = w.z1,
-                    z2 = w.z2,
-                    posUpDown = "Up"
-                }));
-
                 // usuwamy oryginały
-                elements.RemoveAll(e => e.y1 == upperLevels.FirstOrDefault() && (e.label == Lab.Up));
+                elements.RemoveAll(e => e.y2 == upperLevels.FirstOrDefault() || e.y2 == upperLevels.LastOrDefault() && (e.label == Lab.Up || e.label == Lab.Block) && e.View == ViewName.Up);
+                elements.RemoveAll(e => e.y2 == levels.Take(1).FirstOrDefault() && !e.label.Contains("icon") && (e.label == Lab.Up || e.label == Lab.Block) && e.View == ViewName.UpUp);
+                
+                // IKONY
+                levels = upWalls
+                    .Where(e => e.label.Contains("icon"))
+                    .Select(e => e.y2)
+                    .Distinct()
+                    .OrderBy(v => v)
+                    .ToList();
+                upperLevels = levels.Skip(1).ToList();
+
+                upperWalls = upWalls
+                    .Where(e => upperLevels.Contains(e.y2))
+                    .ToList();
+
+                var iconsUpUp = upperWalls
+                    .Where(e => (e.label.Contains("icon") && (e.y2 == upperLevels.FirstOrDefault() || e.y2 == upperLevels.LastOrDefault())))
+                    .ToList();
+                foreach (var item in iconsUpUp)
+                {
+                    item.View = ViewName.UpUp;
+                    item.additionalInfos.iconPosition = ViewName.UpUp;
+                }
             }
         }
 
-        private void SelectElementsDownChannel(List<Coordinates> elements)
+        private void SelectExternalElementsUpChannel(List<Coordinates> elements, string extrLabel)
+        {
+            // wyciągamy UP-y
+            var upWalls = elements
+                .Where(e => e.label == ViewName.Up || (e.label == extrLabel && e.View == ViewName.Up))
+                .ToList();
+
+            if (upWalls.Count == 0)
+                return;
+
+            // różne poziomy Y2
+            var levels = upWalls.Where(e => e.label == extrLabel)
+                .Select(e => e.y2)
+                .Distinct()
+                .OrderBy(v => v)
+                .ToList();
+
+            // jeśli więcej niż jeden poziom, bierzemy najwyższy
+            if (levels.Count > 1)
+            {
+                // bierzemy wszystkie poziomy poza najniższym
+                var upperLevels = levels.Skip(1).ToList();
+
+                var upperWalls = upWalls
+                    .Where(e => upperLevels.Contains(e.y2))
+                    .ToList();
+
+                // usuwamy oryginały
+                elements.RemoveAll(e => e.y2 == upperLevels.FirstOrDefault() && (e.label == extrLabel) && e.View == ViewName.Up);
+                elements.RemoveAll(e => e.y2 == levels.Take(1).FirstOrDefault() && (e.label == extrLabel) && e.View == ViewName.UpUp);                
+            }
+        }
+
+        private void SelectExternalElementsDownChannel(List<Coordinates> elements, string extrLabel)
+        {
+            var downEls = elements
+                .Where(e => e.label == ViewName.Down || (e.label == extrLabel && e.View == ViewName.Down))
+                .ToList();
+
+            if (downEls.Count == 0)
+                return;
+
+            // różne poziomy Y2
+            var levels = downEls
+                .Select(e => e.y1)
+                .Distinct()
+                .OrderBy(v => v)
+                .ToList();
+
+            // jeśli więcej niż jeden poziom, bierzemy najwyższy
+            if (levels.Count > 1)
+            {
+                // zamiast levels.Count - 1 => C# 8 [^1]                
+                var topLevel = levels[^1]; // najwyższy Y1
+
+                // bierzemy tylko ściany z najwyższego poziomu
+                var topLevelWalls = downEls
+                    .Where(e => e.y1.Equals(topLevel))
+                    .ToList();
+
+                elements.RemoveAll(e => e.y1 == topLevel && e.View == ViewName.Down && e.label == extrLabel);
+                elements.RemoveAll(e => e.y1 != topLevel && e.View == ViewName.DownUp && e.label == extrLabel);
+            }
+        }
+
+        private void SelectBlockDownChannel(List<Coordinates> elements)
         {
             // wyciągamy UP-y
             var downWalls = elements
@@ -145,59 +219,226 @@ namespace Klimor.WebApi.DXF
                 // bierzemy tylko ściany z najwyższego poziomu
                 var topLevelWalls = downWalls
                     .Where(e => e.y1.Equals(topLevel))
-                    .ToList();                
+                    .ToList();
 
-                // dokładamy kopie z label = DownUp
-                elements.AddRange(topLevelWalls.Select(w => new Coordinates
-                {
-                    label = w.label,
-                    type = w.type,
-                    View = ViewName.DownUp,
-                    x1 = w.x1,
-                    x2 = w.x2,
-                    y1 = w.y1,
-                    y2 = w.y2,
-                    z1 = w.z1,
-                    z2 = w.z2,
-                    posUpDown = "DownUp"
-                }));
-
-                // usuwamy oryginały
-                elements.RemoveAll(e => e.y1 == topLevel && e.View == ViewName.Down);
+                elements.RemoveAll(e => e.y1 == topLevel && e.View == ViewName.Down && e.label == Lab.Block);
+                elements.RemoveAll(e => e.y1 != topLevel && e.View == ViewName.DownUp && e.label == Lab.Block);
             }
         }
 
-        private void GenerateBlocksWithViews(List<Coordinates> elements)
+        private void SelectFunctionUpChannel(List<Coordinates> elements)
         {
-            var blocks = elements.Where(e => e.label == Lab.Block).ToList();
-            foreach (var block in blocks)
+            // wyciągamy UP-y
+            var upWalls = elements
+                .Where(e => e.label == Lab.Function && e.View == ViewName.Up)
+                .ToList();
+
+            if (upWalls.Count == 0)
+                return;
+
+            // różne poziomy Y2
+            var levels = upWalls
+                .Select(e => e.y2)
+                .Distinct()
+                .OrderBy(v => v)
+                .ToList();
+
+            // jeśli więcej niż jeden poziom, bierzemy najwyższy
+            if (levels.Count > 1)
             {
-                foreach (var vw in Views.Except("Frame", "Roof", "DownUp", "UpUp"))
+                // bierzemy wszystkie poziomy poza najniższym
+                var upperLevels = levels.Skip(1).ToList();
+
+                var upperWalls = upWalls
+                    .Where(e => upperLevels.Contains(e.y2))
+                    .ToList();
+
+                // usuwamy oryginały
+                elements.RemoveAll(e => e.y2 == upperLevels.FirstOrDefault() || e.y2 == upperLevels.LastOrDefault() && (e.label == Lab.Function) && e.View == ViewName.Up);
+                elements.RemoveAll(e => e.y2 == levels.Take(1).FirstOrDefault() && (e.label == Lab.Function) && e.View == ViewName.UpUp);                            
+            }
+        }
+
+        private void SelectFunctionDownChannel(List<Coordinates> elements)
+        {
+            var downWalls = elements
+                .Where(e => e.label == Lab.Function && e.View == ViewName.Down)
+                .ToList();
+
+            if (downWalls.Count == 0)
+                return;
+
+            // różne poziomy Y2
+            var levels = downWalls
+                .Select(e => e.y1)
+                .Distinct()
+                .OrderBy(v => v)
+                .ToList();
+
+            // jeśli więcej niż jeden poziom, bierzemy najwyższy
+            if (levels.Count > 1)
+            {
+                // zamiast levels.Count - 1 => C# 8 [^1]                
+                var topLevel = levels[^1]; // najwyższy Y1
+
+                // bierzemy tylko ściany z najwyższego poziomu
+                var topLevelWalls = downWalls
+                    .Where(e => e.y1.Equals(topLevel))
+                    .ToList();
+
+                elements.RemoveAll(e => e.y1 == topLevel && e.View == ViewName.Down && e.label == Lab.Function);
+                elements.RemoveAll(e => e.y1 != topLevel && e.View == ViewName.DownUp && e.label == Lab.Function);
+            }
+        }
+
+        // przypisanie connectorów do funkcji
+        private void AssignDrainTrayConnectorsToFunctions(List<Coordinates> elements)
+        {
+            // usuwanie duplikatów connectorów
+            elements = elements
+                .Where(e => e.label != "Connector")
+                .Concat(elements
+                .Where(e => e.label == "Connector")
+                .DistinctBy(e => new { e.x1, e.x2, e.y1, e.y2, e.z1, e.z2, e.PositionUp, e.PositionDown }))
+                .ToList();
+
+            var connectors = elements.Where(e => e.label == Lab.Connector).ToList();
+            var functions = elements.Where(e => e.label == Lab.Function 
+            && (e.View == ViewName.UpUp || e.View == ViewName.DownUp
+            || e.View == ViewName.Up || e.View == ViewName.Down)).ToList();
+
+            foreach (var connector in connectors)
+            {
+                var function = functions.FirstOrDefault(f => f.PositionUp == connector.PositionUp
+                                                        && f.PositionDown == connector.PositionDown);
+                if (function != null)
                 {
-                    if (vw.Name == ViewName.Operational)
-                    {
-                        block.View = ViewName.Operational;
-                    }
-                    else
+                    connector.View = function.View;                   
+                }
+            }
+        }
+
+        private void AssignExternalElementsToFunctions(List<Coordinates> elements)
+        {
+            var functions = elements.Where(e => e.label == Lab.Function
+                                     && (e.View == ViewName.UpUp || e.View == ViewName.DownUp
+                                     || e.View == ViewName.Up || e.View == ViewName.Down)).ToList();
+
+            foreach (var ex in elements.Where(e => e.label == Lab.AD).ToList())
+            {
+                var function = functions.Where(f => f.PositionUp == ex.PositionUp
+                                                        && f.PositionDown == ex.PositionDown
+                                                        && f.View == ex.View);
+                foreach (var fnc in function)
+                {
+                    ex.View = fnc.View;
+                }
+            }
+
+            foreach (var ex in elements.Where(e => e.label == Lab.FC).ToList())
+            {
+                var function = functions.Where(f => f.PositionUp == ex.PositionUp
+                                                        && f.PositionDown == ex.PositionDown
+                                                        && f.View == ex.View);
+                foreach (var fnc in function)
+                {
+                    ex.View = fnc.View;
+                }
+            }
+
+            foreach (var ex in elements.Where(e => e.label == Lab.INTK).ToList())
+            {
+                var function = functions.Where(f => f.PositionUp == ex.PositionUp
+                                                        && f.PositionDown == ex.PositionDown
+                                                        && f.View == ex.View);
+                foreach (var fnc in function)
+                {
+                    ex.View = fnc.View;
+                }
+            }
+        }
+
+        private void SetGlobalViews(List<Coordinates> elements)
+        {
+            var views = Views.Except("Frame", "Roof", "Connector");
+
+            foreach (var el in elements.ToList())
+            {
+                foreach (var vw in views)
+                {
+                    if (el.label == vw.Name || el.label == Lab.Block)
                     {
                         var addBlock = new Coordinates
                         {
                             View = vw.Name,
-                            label = block.label,
-                            type = block.type,
-                            x1 = block.x1,
-                            x2 = block.x2,
-                            y1 = block.y1,
-                            y2 = block.y2,
-                            z1 = block.z1,
-                            z2 = block.z2,
-                            PositionUp = block.PositionUp,
-                            PositionDown = block.PositionDown,
-                            posUpDown = ""
+                            label = el.label,
+                            type = el.type,
+                            x1 = el.x1,
+                            x2 = el.x2,
+                            y1 = el.y1,
+                            y2 = el.y2,
+                            z1 = el.z1,
+                            z2 = el.z2,
+                            PositionUp = el.PositionUp,
+                            PositionDown = el.PositionDown,
+                            posUpDown = el.posUpDown,
+                            additionalInfos = el.additionalInfos,
                         };
                         elements.Add(addBlock);
-                    }                        
+                    }
+                    
+                    if (el.label == Lab.Function)
+                    {
+                        var addBlock = new Coordinates
+                        {
+                            View = vw.Name,
+                            label = el.label,
+                            type = el.type,
+                            x1 = el.x1,
+                            x2 = el.x2,
+                            y1 = el.y1,
+                            y2 = el.y2,
+                            z1 = el.z1,
+                            z2 = el.z2,
+                            PositionUp = el.PositionUp,
+                            PositionDown = el.PositionDown,
+                            posUpDown = el.posUpDown,
+                            additionalInfos = el.additionalInfos,
+                        };
+                        elements.Add(addBlock);
+                    }
+
+                    if (el.label == Lab.AD || el.label == Lab.FC || el.label == Lab.INTK)
+                    {
+                        var addBlock = new Coordinates
+                        {
+                            View = vw.Name,
+                            label = el.label,
+                            type = el.type,
+                            x1 = el.x1,
+                            x2 = el.x2,
+                            y1 = el.y1,
+                            y2 = el.y2,
+                            z1 = el.z1,
+                            z2 = el.z2,
+                            PositionUp = el.PositionUp,
+                            PositionDown = el.PositionDown,
+                            posUpDown = el.posUpDown,
+                            additionalInfos = el.additionalInfos,
+                        };
+                        elements.Add(addBlock);
+                    }
                 }
+            }
+            elements.RemoveAll(e => string.IsNullOrWhiteSpace(e.View) && e.label == Lab.Block);
+            elements.RemoveAll(e => string.IsNullOrWhiteSpace(e.View) && e.label == Lab.Function);
+            elements.RemoveAll(e => string.IsNullOrWhiteSpace(e.View) && (e.label == Lab.AD || e.label == Lab.FC || e.label == Lab.INTK));
+
+            // ikony
+            var icons = elements.Where(e => e.label.Contains("icon")).ToList();
+            foreach (var icon in icons)
+            {
+                icon.View = icon.additionalInfos.iconPosition;
             }
         }
 
@@ -224,9 +465,9 @@ namespace Klimor.WebApi.DXF
 
             var grid = new ViewGrid(columns: 5, rows: 10, cellWidth: (int)Views.AhuLength, cellHeight: 1000 + (int)Views.AhuHeight);
             grid.AlignCellToPoint(col: 1, row: 5, worldX: 0, worldY: 0);
-            
+
             // Użycie presetów siatkowych:
-            Views.ApplyNormOnGrid(Norm.ISO, grid);            
+            Views.ApplyNormOnGrid(Norm.ISO, grid);
             var drawer = new GridDrawer(dxf);
             drawer.Draw(grid);
 
@@ -235,9 +476,9 @@ namespace Klimor.WebApi.DXF
             {
                 Views.SetView(ViewName.LeftFront, Views.LeftFront.XOffset + (Views.LeftFront.XOffset / 2) - ((int)Views.AhuWidth / 2), Views.LeftFront.YOffset);
                 Views.SetView(ViewName.RightFront, Views.RightFront.XOffset - (Views.RightFront.XOffset / 2) - ((int)Views.AhuWidth / 2), Views.RightFront.YOffset);
-            }                        
+            }
 
-            void GenerateBlocks()
+            void DrawBlocks()
             {
                 var layer = dxf.Layers.Add(new Layer(Lab.Block) { Color = AciColor.Default });
                 dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Block }, false, true, layer, textLayer, Views.Except(ViewName.Frame, ViewName.Roof));
@@ -246,24 +487,25 @@ namespace Klimor.WebApi.DXF
             void GenerateWalls()
             {
                 var layer = dxf.Layers.Add(new Layer("Walls") { Color = AciColor.Default });
-                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Operational, Lab.Up, Lab.Down, Lab.Down_DrainTray, Lab.Down_Wall, Lab.Back}, false, true, layer, textLayer, Views.Except(ViewName.Frame, ViewName.Roof));
+                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Operational, Lab.Up, Lab.Down, Lab.Down_DrainTray, Lab.Down_Wall, Lab.Back }, false, true, layer, textLayer, Views.Except(ViewName.Frame, ViewName.Roof));
             }
 
             void GenerateWallsDimensions()
             {
                 var layer = dxf.Layers.Add(new Layer("Walls_dimension") { Color = AciColor.Default });
-                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Operational, Lab.Up, Lab.Down, Lab.Down_DrainTray, Lab.Down_Wall, Lab.Back}, true, false, layer, textLayer, Views.Except(ViewName.Frame, ViewName.Roof));
+                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Operational, Lab.Up, Lab.Down, Lab.Down_DrainTray, Lab.Down_Wall, Lab.Back }, true, false, layer, textLayer, Views.Except(ViewName.Frame, ViewName.Roof));
             }
 
-            void GenerateBlockDimensions()
+            void DrawBlockDimensions()
             {
                 var layer = dxf.Layers.Add(new Layer("Block_dimensions") { Color = AciColor.DarkGray });
                 dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Block }, true, false, layer, textLayer, Views.Except(ViewName.Frame, ViewName.Roof));
             }
 
-            void GenerateFunctionsWithIcons()
+            void DrawFunctionsWithIcons()
             {
-                var upOffset = Views.Up.YOffset; //views.FirstOrDefault(v => v.name == ViewName.Up).yOffset;
+                var upOffset = Views.Up.YOffset;
+                var upUpOffset = Views.UpUp.YOffset;
                 var iconsList = icons.Blocks.ToList();
                 var layer = dxf.Layers.Add(new Layer(Lab.Function) { Color = new AciColor(4) });
                 dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Function }, false, true, layer, textLayer, Views.Except(ViewName.Frame, ViewName.Roof));
@@ -312,6 +554,21 @@ namespace Klimor.WebApi.DXF
                                 dxf.Entities.Add(insertIconUp);
                                 break;
 
+                            case ViewName.UpUp:
+                                var insertIconUpUp = new Insert(insertIcon)
+                                {
+                                    Position = new Vector3(icon.x1, icon.z1 + upUpOffset, 0),
+                                    Layer = layer,
+                                };
+                                if (!isExhaust && icon.additionalInfos.sName == "VF")
+                                {
+                                    insertIconUpUp.Position = new Vector3(icon.x1 + (icon.x2 - icon.x1), icon.z1 + upUpOffset, 0);
+                                    insertIconUpUp.Scale = new Vector3(-1, 1, 1);
+                                }
+
+                                dxf.Entities.Add(insertIconUpUp);
+                                break;
+
                             default:
                                 break;
                         }
@@ -319,20 +576,20 @@ namespace Klimor.WebApi.DXF
                 }
             }
 
-            void GenerateFunctionsDimensions()
+            void DrawFunctionsDimensions()
             {
                 var layer = dxf.Layers.Add(new Layer("Function_dimensions") { Color = AciColor.Green });
                 dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Function }, true, false, layer, textLayer, Views.Except(ViewName.Frame, ViewName.Roof));
             }
 
-            void GenerateExternalElements()
+            void DrawExternalElements()
             {
                 var layer = dxf.Layers.Add(new Layer("ExternalElements") { Color = AciColor.Magenta });
                 dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Hole, Lab.AD, Lab.FC, Lab.INTK, Lab.Connector }, false, true, layer, textLayer, Views.Except(ViewName.Frame, ViewName.Roof));
 
                 var layerDim = dxf.Layers.Add(new Layer("ExternalElements_dimensions") { Color = AciColor.Cyan });
-                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Hole, Lab.AD, Lab.FC, Lab.INTK, Lab.Connector }, true, false, layerDim, textLayer, Views.Except(ViewName.Frame, ViewName.Roof));                                
-            }                                    
+                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Hole, Lab.AD, Lab.FC, Lab.INTK, Lab.Connector }, true, false, layerDim, textLayer, Views.Except(ViewName.Frame, ViewName.Roof));
+            }
 
             void GeneratePorthole()
             {
@@ -359,9 +616,9 @@ namespace Klimor.WebApi.DXF
             }
 
             void GenerateFrame()
-            {                
+            {
                 var layerFrame = dxf.Layers.Add(new Layer("Frame") { Color = AciColor.Blue });
-                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Frame, Lab.Roof }, false, true, layerFrame, textLayer, Views.Except(ViewName.Up, ViewName.Down, ViewName.Roof));                
+                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Frame, Lab.Roof }, false, true, layerFrame, textLayer, Views.Except(ViewName.Up, ViewName.Down, ViewName.Roof));
             }
 
             void GenerateFrameDimensions()
@@ -373,7 +630,7 @@ namespace Klimor.WebApi.DXF
             void GenerateRoof()
             {
                 var layerRoof = dxf.Layers.Add(new Layer("Roof") { Color = new AciColor(9) });
-                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Roof }, false, true, layerRoof, textLayer, Views.Select(ViewName.Roof));                
+                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Roof }, false, true, layerRoof, textLayer, Views.Select(ViewName.Roof));
             }
 
             void GenerateRoofDimensions()
@@ -382,44 +639,59 @@ namespace Klimor.WebApi.DXF
                 dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Roof }, true, false, layerRoofDim, textLayer, Views.Select(ViewName.Roof));
             }
 
-            // tworzenie bloków z przypisanymi widokami
-            GenerateBlocksWithViews(elements);
+            // rozszerzanie listy elementów o widoki globalne
+            SetGlobalViews(elements);
 
-            // rozdzielenie dla widoków UpUp i DownUp
-            SelectElementsUpChannel(elements);
-            SelectElementsDownChannel(elements);
+            // przypisywanie DownUp i UpUp, wybór górnych i dolnych kanałów
+            SelectBlockUpChannel(elements);
+            SelectBlockDownChannel(elements);
+            SelectFunctionDownChannel(elements);
+            SelectFunctionUpChannel(elements);
 
-            var elin = elements.Where(e => e.View == ViewName.DownUp
-            || e.label == ViewName.DownUp
-            || e.View == ViewName.UpUp).ToList();
+            SelectExternalElementsUpChannel(elements, Lab.AD);
+            SelectExternalElementsUpChannel(elements, Lab.FC);
+            SelectExternalElementsUpChannel(elements, Lab.INTK);
+            SelectExternalElementsDownChannel(elements, Lab.AD);
+            SelectExternalElementsDownChannel(elements, Lab.FC);
+            SelectExternalElementsDownChannel(elements, Lab.INTK);
 
-            GenerateBlocks();
-            GenerateBlockDimensions();
+            // powiązanie connectorów z funkcjami
+            AssignDrainTrayConnectorsToFunctions(elements);
 
-            if (!advanced2D)
-            {
-                GenerateFunctionsWithIcons();
-                GenerateFunctionsDimensions();
-                GenerateExternalElements();
-            }
+            // powiązanie external elements z funkcjami
+            AssignExternalElementsToFunctions(elements);
 
-            if (advanced2D)
-            {
-                GenerateWalls();
-                GenerateWallsDimensions();
-                GenerateExternalElements();
-                GenerateFrame();
-                GenerateFrameDimensions();
-                GenerateRoof();
-                GenerateRoofDimensions();
-                GeneratePorthole();
-                GeneratePortholeDimension();
-                GenerateSwitchbox();
-                GenerateSwitchboxDimension();
-            }
-            
+            // rysowanie
+            DrawBlocks();
+            DrawBlockDimensions();
+            DrawFunctionsWithIcons();
+            DrawFunctionsDimensions();
+            DrawExternalElements();
+
+            //if (!advanced2D)
+            //{
+            //    GenerateFunctionsWithIcons();
+            //    GenerateFunctionsDimensions();
+            //    GenerateExternalElements();
+            //}
+
+            //if (advanced2D)
+            //{
+            //    GenerateWalls();
+            //    GenerateWallsDimensions();
+            //    GenerateExternalElements();
+            //    GenerateFrame();
+            //    GenerateFrameDimensions();
+            //    GenerateRoof();
+            //    GenerateRoofDimensions();
+            //    GeneratePorthole();
+            //    GeneratePortholeDimension();
+            //    GenerateSwitchbox();
+            //    GenerateSwitchboxDimension();
+            //}
+
             dxf.Save(fileOutput);
-        }                
+        }
 
         private void MainFrm_Load(object sender, EventArgs e)
         {

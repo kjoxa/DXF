@@ -97,8 +97,8 @@ namespace Klimor.WebApi.DXF.Services
         {
             var upChannel = elements.OrderBy(e => e.x1).FirstOrDefault(e => e.label == Lab.Block && e.y1 > 120);
             var downChannel = elements.OrderBy(e => e.x1).FirstOrDefault(e => e.label == Lab.Block && e.y1 <= 120);
-            var upUpChannel = elements.OrderBy(e => e.x1).FirstOrDefault(e => e.label == ViewName.UpUp);
-            var downUpChannel = elements.OrderBy(e => e.x1).FirstOrDefault(e => e.label == ViewName.DownUp);
+            var upUpChannel = elements.OrderBy(e => e.x1).FirstOrDefault(e => e.View == ViewName.UpUp);
+            var downUpChannel = elements.OrderBy(e => e.x1).FirstOrDefault(e => e.View == ViewName.DownUp);
 
             if (upChannel != null && (view.Name == ViewName.Operational || view.Name == ViewName.Back))
             {
@@ -106,7 +106,7 @@ namespace Klimor.WebApi.DXF.Services
                 {
                     Layer = textLayer,
                     Rotation = 0,
-                    Color = AciColor.DarkGray,
+                    Color = AciColor.LightGray,
                     WidthFactor = 1.2,
                     Style = new TextStyle("ArialBold", "arialbd.ttf")
                 };
@@ -129,12 +129,12 @@ namespace Klimor.WebApi.DXF.Services
 
             if (view.Name == ViewName.UpUp && upUpChannel != null)
             {
-                var x1 = upUpChannel.x1 - 400;
+                var x1 = upUpChannel.x1 - 600;
                 var numberUp = new Text("2", new Vector3(view.XOffset + x1, view.YOffset + 500, 0), 300)
                 {
                     Layer = textLayer,
                     Rotation = 0,
-                    Color = AciColor.DarkGray,
+                    Color = AciColor.LightGray,
                     WidthFactor = 1.2,
                     Style = new TextStyle("ArialBold", "arialbd.ttf")
                 };
@@ -143,12 +143,12 @@ namespace Klimor.WebApi.DXF.Services
 
             if (view.Name == ViewName.DownUp && downUpChannel != null)
             {
-                var x1 = downUpChannel.x1 - 400;
+                var x1 = downUpChannel.x1 - 600;
                 var numberUp = new Text("2", new Vector3(view.XOffset + x1, view.YOffset + 500, 0), 300)
                 {
                     Layer = textLayer,
                     Rotation = 0,
-                    Color = AciColor.DarkGray,
+                    Color = AciColor.LightGray,
                     WidthFactor = 1.2,
                     Style = new TextStyle("ArialBold", "arialbd.ttf")
                 };
@@ -205,11 +205,6 @@ namespace Klimor.WebApi.DXF.Services
                     .Where(e => elementsGroup
                     .Any(g => string.Equals(g, e.label, StringComparison.OrdinalIgnoreCase)))
                     .ToList();
-
-                if (view.Name == ViewName.DownUp || view.Name == ViewName.UpUp)
-                {
-                    groupElements = elements.Where(e => e.View == ViewName.UpUp || e.View == ViewName.DownUp).ToList();
-                }
 
                 bool externalElementShow = false;
                 int externalElementsYOffset = 0;
@@ -296,7 +291,7 @@ namespace Klimor.WebApi.DXF.Services
                                             if (!view.Name.ToLower().Contains("front") && el.additionalInfos != null)
                                             {
                                                 var text = new Text(el.additionalInfos.blockNumber.ToString(),
-                                                new Vector3(c.X + 2 * profileOffset, c.Y + 2 * profileOffset, 0), 30);
+                                                new Vector3(c.X + 2 * profileOffset, c.Y + 2 * profileOffset, 0), 70);
 
                                                 text.Style = new TextStyle("ArialBold", "arialbd.ttf");
                                                 text.Layer = layer;
@@ -365,7 +360,7 @@ namespace Klimor.WebApi.DXF.Services
                                 if (Lab.ExternalElements.Any(l => l == el.label))
                                 {
                                     // AD, FC na widokach up, down, back, operational
-                                    if (el.label != Lab.Hole && Lab.ExternalElements.Any(l => l == el.label))
+                                    if (el.label != Lab.Hole && Lab.ExternalElements.Any(l => l == el.label) && el.View == view.Name)
                                     {
                                         externalElementShow = true;
                                     }
@@ -388,22 +383,36 @@ namespace Klimor.WebApi.DXF.Services
                                 // przesunięcie dla elementów zewnętrznych w Y, żeby się nie nakładały
                                 if (externalElementShow)
                                 {
-                                    externalElementsYOffset = el.label switch
+                                    if (view.Name == ViewName.Operational || view.Name == ViewName.Back)
                                     {
-                                        Lab.AD => 30,
-                                        Lab.FC => 60,
-                                        Lab.INTK => 90,
-                                        _ => 0
-                                    };
+                                        externalElementsYOffset = el.label switch
+                                        {
+                                            Lab.AD => 30,
+                                            Lab.FC => 60,
+                                            Lab.INTK => 90,
+                                            _ => 0
+                                        };
+                                    }
+                                    // Up/Down/UpUp/DownUp
+                                    else
+                                    {
+                                        externalElementsYOffset = -150;
+                                    }                                    
                                 }
 
-                                if (el.label == view.Name 
-                                    || el.label == Lab.Function 
-                                    || externalElementShow
-                                    || (view.Name == ViewName.Down && el.label.Contains("_")) 
-                                    || (el.label == Lab.Frame || el.type == Lab.Switchbox || el.label == Lab.Connector)
-                                    || (view.Name == ViewName.DownUp && el.type == Lab.Wall && el.label != Lab.Block))
-                                {
+                                //if (el.label == view.Name 
+                                //    || el.label == Lab.Function 
+                                //    || externalElementShow
+                                //    || (view.Name == ViewName.Down && el.label.Contains("_")) 
+                                //    || (el.label == Lab.Frame || el.type == Lab.Switchbox || el.label == Lab.Connector)
+                                //    || (view.Name == ViewName.DownUp && el.type == Lab.Wall && el.label != Lab.Block)
+                                //    || (el.label == Lab.Function && el.View == view.Name))
+                                //{
+                                //    dxf.Entities.Add(outerPoly); // &&*
+                                //}
+
+                                if (el.View == view.Name || (el.View == view.Name && externalElementShow))
+                                {                                    
                                     dxf.Entities.Add(outerPoly); // &&*
                                 }
 
@@ -465,7 +474,7 @@ namespace Klimor.WebApi.DXF.Services
                                                         "Down_Wall" => "DOWN",
                                                         "Down_DrainTray" => "DRN_TRY",
                                                         "Frame" => "",
-                                                        _ => ""
+                                                        _ => el.label
                                                     };
                                                     
                                                     // nadpisanie przesuniętych Down, które jako label mają ustawione DownUp, ale trzymają typ
@@ -526,7 +535,7 @@ namespace Klimor.WebApi.DXF.Services
                             }
                         }
 
-                        if (createDimension && (view.Name != ViewName.UpUp || view.Name != ViewName.DownUp))
+                        if (createDimension)
                         {
                             double dimOffset = 30.0;
                             var wStart = outer2D[0];
@@ -571,7 +580,7 @@ namespace Klimor.WebApi.DXF.Services
                                 }
                             }
 
-                            if (el.label == view.Name || el.label == Lab.Function || el.label == Lab.Block || Lab.ExternalElements.Any(l => l == el.label))
+                            if (el.View == view.Name && (el.label == Lab.Function || el.label == Lab.Block || Lab.ExternalElements.Any(l => l == el.label)))
                             {                                
                                 widthDim.Layer = layer;
                                 dxf.Entities.Add(widthDim);
@@ -619,7 +628,7 @@ namespace Klimor.WebApi.DXF.Services
                                 }
                             }
 
-                            if (el.label == view.Name || el.label == Lab.Function || el.label == Lab.Block || Lab.ExternalElements.Any(l => l == el.label))
+                            if (el.View == view.Name && (el.label == Lab.Function || el.label == Lab.Block || Lab.ExternalElements.Any(l => l == el.label)))
                             {
                                 heightDim.Layer = layer;
                                 dxf.Entities.Add(heightDim);

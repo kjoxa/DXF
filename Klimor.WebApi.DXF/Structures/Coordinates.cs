@@ -33,6 +33,8 @@ namespace Klimor.WebApi.DXF.Structures
         public AdditionalInfo additionalInfos { get; set; }
 
         public string View {  get; set; } = string.Empty;
+
+        public bool ShowDimension { get; set; } = true;        
     }
 
     public class AdditionalInfo
