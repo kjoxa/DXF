@@ -361,7 +361,7 @@ namespace Klimor.WebApi.DXF.Services
                                 if (Lab.ExternalElements.Any(l => l == el.label))
                                 {
                                     // AD, FC na widokach up, down, back, operational
-                                    if (el.label != Lab.Hole && Lab.ExternalElements.Any(l => l == el.label) && el.View == view.Name)
+                                    if (el.label != Lab.Hole && Lab.ExternalElements.Any(l => l == el.label) && (el.View == view.Name))
                                     {
                                         externalElementShow = true;
                                     }
@@ -401,21 +401,15 @@ namespace Klimor.WebApi.DXF.Services
                                     }                                    
                                 }
 
-                                //if (el.label == view.Name 
-                                //    || el.label == Lab.Function 
-                                //    || externalElementShow
-                                //    || (view.Name == ViewName.Down && el.label.Contains("_")) 
-                                //    || (el.label == Lab.Frame || el.type == Lab.Switchbox || el.label == Lab.Connector)
-                                //    || (view.Name == ViewName.DownUp && el.type == Lab.Wall && el.label != Lab.Block)
-                                //    || (el.label == Lab.Function && el.View == view.Name))
+                                //if ((el.View == view.Name && el.type != Lab.Wall)
+                                //    || (el.View == view.Name && externalElementShow) // el.zewnetrzne
+                                //    || (el.type == Lab.Wall && el.View == view.Name))
                                 //{
                                 //    dxf.Entities.Add(outerPoly); // &&*
                                 //}
 
-                                if ((el.View == view.Name && el.type != Lab.Wall) 
-                                    || (el.View == view.Name && externalElementShow) // el.zewnetrzne
-                                    || (el.type == Lab.Wall && el.View == view.Name))
-                                {                                      
+                                if ((el.type != Lab.Wall) || externalElementShow || (el.type == Lab.Wall || el.type == Lab.Div))
+                                {
                                     dxf.Entities.Add(outerPoly); // &&*
                                 }
 

@@ -255,7 +255,7 @@ namespace Klimor.WebApi.DXF
                     .ToList();
 
                 // usuwamy oryginały
-                elements.RemoveAll(e => e.y2 == upperLevels.FirstOrDefault() || e.y2 == upperLevels.LastOrDefault() && (e.label == Lab.Function) && e.View == ViewName.Up);
+                elements.RemoveAll(e => (e.y2 == upperLevels.FirstOrDefault() || e.y2 == upperLevels.LastOrDefault()) && e.View == ViewName.Up && (e.label == Lab.Function) && e.View == ViewName.Up);
                 elements.RemoveAll(e => e.y2 == levels.Take(1).FirstOrDefault() && (e.label == Lab.Function) && e.View == ViewName.UpUp);                            
             }
         }
@@ -295,29 +295,55 @@ namespace Klimor.WebApi.DXF
         // przypisanie connectorów do funkcji
         private void AssignDrainTrayConnectorsToFunctions(List<Coordinates> elements)
         {
-            // usuwanie duplikatów connectorów
-            elements = elements
+            var filtered = elements
                 .Where(e => e.label != "Connector")
                 .Concat(elements
-                .Where(e => e.label == "Connector")
-                .DistinctBy(e => new { e.x1, e.x2, e.y1, e.y2, e.z1, e.z2, e.PositionUp, e.PositionDown }))
+                    .Where(e => e.label == "Connector")
+                    .DistinctBy(e => new { e.x1, e.x2, e.y1, e.y2, e.z1, e.z2, e.PositionUp, e.PositionDown }))
                 .ToList();
 
+            elements.Clear();
+            elements.AddRange(filtered);
+
             var connectors = elements.Where(e => e.label == Lab.Connector).ToList();
-            var functions = elements.Where(e => e.label == Lab.Function 
-            && (e.View == ViewName.UpUp || e.View == ViewName.DownUp
-            || e.View == ViewName.Up || e.View == ViewName.Down)).ToList();
+            var functions = elements.Where(e => e.label == Lab.Function
+                && (e.View == ViewName.UpUp || e.View == ViewName.DownUp
+                    || e.View == ViewName.Up || e.View == ViewName.Down)).ToList();
 
             foreach (var connector in connectors)
             {
                 var function = functions.FirstOrDefault(f => f.PositionUp == connector.PositionUp
-                                                        && f.PositionDown == connector.PositionDown);
+                                                          && f.PositionDown == connector.PositionDown);
                 if (function != null)
                 {
-                    connector.View = function.View;                   
+                    connector.View = function.View;
+                }
+            }
+
+            foreach (var view in Views.Except("Frame", "FrameUp", "Roof", "RoofUp", "RightFront", "LeftFront", "DownUp", "UpUp", "Back", "Up"))
+            {                
+                foreach (var c in connectors)
+                {
+                    elements.Add(new Coordinates
+                    {
+                        View = view.Name,
+                        label = c.label,
+                        type = c.type,
+                        x1 = c.x1,
+                        x2 = c.x2,
+                        y1 = c.y1,
+                        y2 = c.y2,
+                        z1 = c.z1,
+                        z2 = c.z2,
+                        PositionUp = c.PositionUp,
+                        PositionDown = c.PositionDown,
+                        posUpDown = c.posUpDown,
+                        additionalInfos = c.additionalInfos,
+                    });
                 }
             }
         }
+
 
         private void AssignExternalElementsToFunctions(List<Coordinates> elements)
         {
@@ -478,7 +504,7 @@ namespace Klimor.WebApi.DXF
                         elements.Add(addBlock);
                     }
 
-                    if (el.label is Lab.AD or Lab.FC or Lab.INTK)
+                    if (el.label is (Lab.AD or Lab.FC or Lab.INTK))
                     {
                         var addBlock = new Coordinates
                         {
@@ -540,13 +566,36 @@ namespace Klimor.WebApi.DXF
                         };
                         elements.Add(addBlock);
                     }
+
+                    if (el.label is Lab.Back && el.type is Lab.Wall)
+                    {
+                        var addBlock = new Coordinates
+                        {
+                            View = vw.Name,
+                            label = el.label,
+                            type = el.type,
+                            x1 = el.x1,
+                            x2 = el.x2,
+                            y1 = el.y1,
+                            y2 = el.y2,
+                            z1 = el.z1,
+                            z2 = el.z2,
+                            PositionUp = el.PositionUp,
+                            PositionDown = el.PositionDown,
+                            posUpDown = el.posUpDown,
+                            additionalInfos = el.additionalInfos,
+                        };
+                        elements.Add(addBlock);
+                    }
                 }
             }
-            elements.RemoveAll(e => string.IsNullOrWhiteSpace(e.View) && e.label == Lab.Block);
-            elements.RemoveAll(e => string.IsNullOrWhiteSpace(e.View) && e.label == Lab.Function);
+            
+            elements.RemoveAll(e => string.IsNullOrWhiteSpace(e.View) && e.label is (Lab.Operational or Lab.Back));
+            elements.RemoveAll(e => string.IsNullOrWhiteSpace(e.View) && e.label is (Lab.Block or Lab.Function));            
             elements.RemoveAll(e => string.IsNullOrWhiteSpace(e.View) && (e.label is Lab.AD or Lab.FC or Lab.INTK));            
             elements.RemoveAll(e => string.IsNullOrWhiteSpace(e.View) && e.label == Lab.Up && (e.type == Lab.Wall || e.type == Lab.Div));
             elements.RemoveAll(e => string.IsNullOrWhiteSpace(e.View) && e.label is (Lab.Down_Wall or Lab.Down_Div or Lab.Down_DrainTray or Lab.Up) && (e.type is Lab.Wall or Lab.Div or Lab.Down_DrainTray or Lab.Down_DrainTray));
+            elements.RemoveAll(e => e.type is (Lab.Div or Lab.Wall) && e.label != e.View && e.label is not (Lab.Down_Wall or Lab.Down_Div or Lab.Down_DrainTray or Lab.Up));
 
             // ikony
             var icons = elements.Where(e => e.label.Contains("icon")).ToList();
@@ -753,6 +802,7 @@ namespace Klimor.WebApi.DXF
                 dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Roof }, true, false, layerRoofDim, textLayer, Views.Select(ViewName.Roof));
             }
 
+            var opCnt = elements.Where(e => e.label == Lab.Operational).Count();
             // rozszerzanie listy elementów o widoki globalne
             SetGlobalViews(elements);
 
