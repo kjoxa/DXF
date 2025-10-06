@@ -1,0 +1,455 @@
+﻿Coordinates;Coordinates.x1;Coordinates.x2;Coordinates.y1;Coordinates.y2;Coordinates.z1;Coordinates.z2;Coordinates.PositionUp;Coordinates.PositionDown;Coordinates.label;Coordinates.posUpDown;Coordinates.type;Coordinates.additionalInfos;Coordinates.View;Coordinates.ShowDimension
+Klimor.WebApi.DXF.Structures.Coordinates;0;2900;0;120;0;50;0;0;Frame;"";Frame;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;0;2900;0;120;3650;3700;0;0;Frame;"";Frame;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;0;50;0;120;50;3650;0;0;Frame;"";Frame;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;2850;2900;0;120;50;3650;0;0;Frame;"";Frame;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;950;1000;0;120;50;3650;0;0;Frame;"";Frame;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;1900;1950;0;120;50;3650;0;0;Frame;"";Frame;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;50;950;0;120;1825;1875;0;0;Frame;"";Frame;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;1000;1900;0;120;1825;1875;0;0;Frame;"";Frame;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;1950;2850;0;120;1825;1875;0;0;Frame;"";Frame;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;50;950;170;2070;0;50;1;1;Operational;"";Removable_2;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;1000;1900;170;2070;0;50;2;2;Operational;"";Removable_2;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;1950;2850;170;2070;0;50;3;3;Operational;"";Removable_2;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;50;1050;120;170;50;1825;1;1;Down_Wall;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;50;1050;120;170;1875;3650;1;1;Down_Wall;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;1100;2000;120;170;50;1825;2;2;Down_Wall;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;1100;2000;120;170;1875;3650;2;2;Down_Wall;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;2050;2850;120;170;50;1825;3;3;Down_Wall;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;2050;2850;120;170;1875;3650;3;3;Down_Wall;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;50;1450;2070;2120;50;1250;1;1;Up;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;50;1450;2070;2120;1300;2400;1;1;Up;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;50;1450;2070;2120;2450;3650;1;1;Up;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;1500;2850;2070;2120;50;1250;2;2;Up;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;1500;2850;2070;2120;1300;2400;2;2;Up;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;1500;2850;2070;2120;2450;3650;2;2;Up;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;0;50;170;1095;50;1250;1;1;FrontLeft;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;0;50;170;1095;1300;2400;1;1;FrontLeft;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;0;50;170;1095;2450;3650;1;1;FrontLeft;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;0;50;1145;2070;50;1250;1;1;FrontLeft;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;0;50;1145;2070;1300;2400;1;1;FrontLeft;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;0;50;1145;2070;2450;3650;1;1;FrontLeft;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;2900;4400;0;120;0;50;0;0;Frame;"";Frame;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;2900;4400;0;120;3650;3700;0;0;Frame;"";Frame;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;2900;2950;0;120;50;3650;0;0;Frame;"";Frame;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;4350;4400;0;120;50;3650;0;0;Frame;"";Frame;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;3625;3675;0;120;50;3650;0;0;Frame;"";Frame;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;50;3625;0;120;1825;1875;0;0;Frame;"";Frame;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;3675;1450;0;120;1825;1875;0;0;Frame;"";Frame;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;2950;3150;170;2070;0;50;1;1;Operational;"";Removable_2;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;3200;3600;170;2070;0;50;2;2;Operational;"";Removable_2;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;3650;4350;170;2070;0;50;3;3;Operational;"";Removable_2;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;2950;4350;170;1095;3650;3700;1;1;Back;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;2950;4350;1145;2070;3650;3700;1;1;Back;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;2950;3150;120;170;50;1825;1;1;Down_DrainTray;"";DrainTray;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;2950;3150;120;170;1875;3650;1;1;Down_DrainTray;"";DrainTray;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;3200;4350;120;170;50;1825;2;2;Down_Wall;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;3200;4350;120;170;1875;3650;2;2;Down_Wall;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;2950;4350;2070;2120;50;1250;1;1;Up;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;2950;4350;2070;2120;1300;2400;1;1;Up;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;2950;4350;2070;2120;2450;3650;1;1;Up;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;4400;6100;0;120;0;50;0;0;Frame;"";Frame;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;4400;6100;0;120;3650;3700;0;0;Frame;"";Frame;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;4400;4450;0;120;50;3650;0;0;Frame;"";Frame;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;6050;6100;0;120;50;3650;0;0;Frame;"";Frame;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;5225;5275;0;120;50;3650;0;0;Frame;"";Frame;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;50;5225;0;120;1825;1875;0;0;Frame;"";Frame;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;5275;1650;0;120;1825;1875;0;0;Frame;"";Frame;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;4450;4950;170;2070;0;50;1;1;Operational;"";Removable_3;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;5000;5400;170;2070;0;50;2;2;Operational;"";Removable_2;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;5450;6050;170;2070;0;50;3;3;Operational;"";Removable_2;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;4450;6050;170;1095;3650;3700;1;1;Back;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;4450;6050;1145;2070;3650;3700;1;1;Back;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;4450;5250;120;170;50;1825;1;1;Down_Wall;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;4450;5250;120;170;1875;3650;1;1;Down_Wall;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;5300;6050;120;170;50;1825;2;2;Down_Wall;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;5300;6050;120;170;1875;3650;2;2;Down_Wall;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;4450;6050;2070;2120;50;1250;1;1;Up;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;4450;6050;2070;2120;1300;2400;1;1;Up;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;4450;6050;2070;2120;2450;3650;1;1;Up;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;10370;11720;0;120;0;50;0;0;Frame;"";Frame;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;10370;11720;0;120;3650;3700;0;0;Frame;"";Frame;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;10370;10420;0;120;50;3650;0;0;Frame;"";Frame;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;11670;11720;0;120;50;3650;0;0;Frame;"";Frame;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;11020;11070;0;120;50;3650;0;0;Frame;"";Frame;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;50;11020;0;120;1825;1875;0;0;Frame;"";Frame;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;11070;1300;0;120;1825;1875;0;0;Frame;"";Frame;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;10420;11020;170;2070;0;50;1;1;Operational;"";Removable_2;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;11070;11670;170;2070;0;50;2;2;Operational;"";Removable_2;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;10420;11120;120;170;50;1825;1;1;Down_Wall;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;10420;11120;120;170;1875;3650;1;1;Down_Wall;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;11170;11670;120;170;50;1825;2;2;Down_Wall;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;11170;11670;120;170;1875;3650;2;2;Down_Wall;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;10420;11670;2070;2120;50;1250;1;1;Up;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;10420;11670;2070;2120;1300;2400;1;1;Up;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;10420;11670;2070;2120;2450;3650;1;1;Up;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;11670;11720;170;1095;50;1250;1;1;FrontRight;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;11670;11720;170;1095;1300;2400;1;1;FrontRight;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;11670;11720;170;1095;2450;3650;1;1;FrontRight;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;11670;11720;1145;2070;50;1250;1;1;FrontRight;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;11670;11720;1145;2070;1300;2400;1;1;FrontRight;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;11670;11720;1145;2070;2450;3650;1;1;FrontRight;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;2450;4400;2120;2240;0;50;0;0;Frame;"";Frame;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;2450;4400;2120;2240;3650;3700;0;0;Frame;"";Frame;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;2450;2500;2120;2240;50;3650;0;0;Frame;"";Frame;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;4350;4400;2120;2240;50;3650;0;0;Frame;"";Frame;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;3400;3450;0;120;50;3650;0;0;Frame;"";Frame;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;50;3400;0;120;1825;1875;0;0;Frame;"";Frame;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;3450;1900;0;120;1825;1875;0;0;Frame;"";Frame;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;2500;3000;2290;4190;0;50;1;1;Operational;"";Removable_2;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;3050;3450;2290;4190;0;50;2;2;Operational;"";Removable_3;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;3500;3700;2290;4190;0;50;3;3;Operational;"";Removable_2;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;3750;4350;2290;4190;0;50;4;4;Operational;"";Removable_3;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;2500;3500;2290;3215;3650;3700;1;1;Back;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;2500;3500;3265;4190;3650;3700;1;1;Back;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;3550;4350;2290;3215;3650;3700;2;2;Back;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;3550;4350;3265;4190;3650;3700;2;2;Back;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;2500;3450;2240;2290;50;1825;1;1;Down_Wall;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;2500;3450;2240;2290;1875;3650;1;1;Down_Wall;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;3500;3700;2240;2290;50;1825;2;2;Down_DrainTray;"";DrainTray;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;3500;3700;2240;2290;1875;3650;2;2;Down_DrainTray;"";DrainTray;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;3750;4350;2240;2290;50;1825;3;3;Down_DrainTray;"";DrainTray;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;3750;4350;2240;2290;1875;3650;3;3;Down_DrainTray;"";DrainTray;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;2500;3500;4190;4240;50;1250;1;1;Up;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;2500;3500;4190;4240;1300;2400;1;1;Up;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;2500;3500;4190;4240;2450;3650;1;1;Up;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;3550;4350;4190;4240;50;1250;2;2;Up;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;3550;4350;4190;4240;1300;2400;2;2;Up;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;3550;4350;4190;4240;2450;3650;2;2;Up;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;4400;6100;2120;2240;0;50;0;0;Frame;"";Frame;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;4400;6100;2120;2240;3650;3700;0;0;Frame;"";Frame;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;4400;4450;2120;2240;50;3650;0;0;Frame;"";Frame;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;6050;6100;2120;2240;50;3650;0;0;Frame;"";Frame;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;5225;5275;0;120;50;3650;0;0;Frame;"";Frame;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;50;5225;0;120;1825;1875;0;0;Frame;"";Frame;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;5275;1650;0;120;1825;1875;0;0;Frame;"";Frame;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;4450;5050;2290;4190;0;50;1;1;Operational;"";Removable_2;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;5100;5500;2290;4190;0;50;2;2;Operational;"";Removable_2;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;5550;6050;2290;4190;0;50;3;3;Operational;"";Removable_3;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;4450;6050;2290;3215;3650;3700;1;1;Back;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;4450;6050;3265;4190;3650;3700;1;1;Back;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;4450;5250;2240;2290;50;1825;1;1;Down_Wall;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;4450;5250;2240;2290;1875;3650;1;1;Down_Wall;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;5300;6050;2240;2290;50;1825;2;2;Down_Wall;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;5300;6050;2240;2290;1875;3650;2;2;Down_Wall;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;4450;6050;4190;4240;50;1250;1;1;Up;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;4450;6050;4190;4240;1300;2400;1;1;Up;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;4450;6050;4190;4240;2450;3650;1;1;Up;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;6100;10370;0;120;0;50;0;0;Frame;"";Frame;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;6100;10370;0;120;3650;3700;0;0;Frame;"";Frame;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;6100;6150;0;120;50;3650;0;0;Frame;"";Frame;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;10320;10370;0;120;50;3650;0;0;Frame;"";Frame;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;7175;7225;0;120;50;3650;0;0;Frame;"";Frame;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;8250;8300;0;120;50;3650;0;0;Frame;"";Frame;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;9325;9375;0;120;50;3650;0;0;Frame;"";Frame;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;6150;6350;2205;4190;0;50;6;0;Operational;"";Removable_2;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;6400;7100;2205;4190;0;50;5;0;Operational;"";Removable_3;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;7150;8010;2205;4190;0;50;4;0;Operational;"";Removable_3;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;8060;8920;2205;4190;0;50;3;0;Operational;"";Removable_3;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;8970;9670;2205;4190;0;50;2;0;Operational;"";Removable_3;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;9720;10320;2205;4190;0;50;1;0;Operational;"";Removable_2;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;6150;7055;170;1095;3650;3700;0;0;Back;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;6150;7055;3265;4190;3650;3700;0;0;Back;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;6150;7055;2205;3215;3650;3700;0;0;Back;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;7105;8010;170;1095;3650;3700;0;0;Back;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;7105;8010;2205;3215;3650;3700;0;0;Back;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;7105;8010;3265;4190;3650;3700;0;0;Back;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;8060;9165;2205;3215;3650;3700;0;0;Back;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;8060;9165;3265;4190;3650;3700;0;0;Back;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;8060;9165;170;1095;3650;3700;0;0;Back;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;9215;10320;2205;3215;3650;3700;0;0;Back;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;9215;10320;170;1095;3650;3700;0;0;Back;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;9215;10320;3265;4190;3650;3700;0;0;Back;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;6150;7055;120;170;50;1800;0;0;Down_DrainTray;"";DrainTray;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;6100;10370;120;170;1850;1850;0;0;Down_Div;"";Div;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;6150;7055;120;170;1900;3650;0;0;Down_DrainTray;"";DrainTray;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;7105;8010;120;170;50;1800;0;0;Down_DrainTray;"";DrainTray;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;6100;10370;120;170;1850;1850;0;0;Down_Div;"";Div;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;7105;8010;120;170;1900;3650;0;0;Down_DrainTray;"";DrainTray;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;6100;10370;120;170;1850;1850;0;0;Down_Div;"";Div;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;8060;9165;120;170;50;1800;0;0;Down_Wall;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;8060;9165;120;170;1900;3650;0;0;Down_Wall;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;9215;10320;120;170;1900;3650;0;0;Down_Wall;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;6100;10370;120;170;1850;1850;0;0;Down_Div;"";Div;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;9215;10320;120;170;50;1800;0;0;Down_Wall;"";Wall;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;500;540;120;160;0;-150;0;1;Connector;"DrainTray: AhuEmptySectionOutput / Up: 0, Down: 1";DrainTrayConnector;"";Up;True
+Klimor.WebApi.DXF.Structures.Coordinates;1400;1440;120;160;0;-150;0;1;Connector;"DrainTray: AhuEmptySectionOutput / Up: 0, Down: 1";DrainTrayConnector;"";Up;True
+Klimor.WebApi.DXF.Structures.Coordinates;1400;1440;120;160;0;-150;0;1;Connector;"DrainTray: AhuEmptySectionOutput / Up: 0, Down: 1";DrainTrayConnector;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;3050;3090;120;160;0;-150;0;2;Connector;"DrainTray: AhuEmptySectionOutput / Up: 0, Down: 2";DrainTrayConnector;"";Up;True
+Klimor.WebApi.DXF.Structures.Coordinates;10720;10760;120;160;0;-150;0;8;Connector;"DrainTray: AhuEmptySectionOutput / Up: 0, Down: 8";DrainTrayConnector;"";Up;True
+Klimor.WebApi.DXF.Structures.Coordinates;11320;11360;120;160;0;-150;0;8;Connector;"DrainTray: AhuEmptySectionOutput / Up: 0, Down: 8";DrainTrayConnector;"";Up;True
+Klimor.WebApi.DXF.Structures.Coordinates;3600;3640;2240;2280;0;-150;3;0;Connector;"DrainTray: AhuWaterCoolerOutput / Up: 3, Down: 0";DrainTrayConnector;"";UpUp;True
+Klimor.WebApi.DXF.Structures.Coordinates;4000;4040;2240;2280;0;-150;3;0;Connector;"DrainTray: AhuWaterCoolerOutput / Up: 3, Down: 0";DrainTrayConnector;"";UpUp;True
+Klimor.WebApi.DXF.Structures.Coordinates;6602;6642;120;160;0;-150;5;6;Connector;"DrainTray: AhuPlateRecuperatorOutput / Up: 5, Down: 6";DrainTrayConnector;"";UpUp;True
+Klimor.WebApi.DXF.Structures.Coordinates;6602;6642;120;160;0;-150;5;6;Connector;"DrainTray: AhuPlateRecuperatorOutput / Up: 5, Down: 6";DrainTrayConnector;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;7557;7597;120;160;0;-150;5;6;Connector;"DrainTray: AhuPlateRecuperatorOutput / Up: 5, Down: 6";DrainTrayConnector;"";UpUp;True
+Klimor.WebApi.DXF.Structures.Coordinates;7557;7597;120;160;0;-150;5;6;Connector;"DrainTray: AhuPlateRecuperatorOutput / Up: 5, Down: 6";DrainTrayConnector;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;0;1300;2120;2130;0;3700;0;0;Roof;"";Roof;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;1300;2150;2120;2130;0;3700;0;0;Roof;"";Roof;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;2150;2450;2120;2130;0;3700;0;0;Roof;"";Roof;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;2450;3750;4240;4250;0;3700;0;0;Roof;"";Roof;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;3750;5050;4240;4250;0;3700;0;0;Roof;"";Roof;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;5050;6350;4240;4250;0;3700;0;0;Roof;"";Roof;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;6350;7650;4240;4250;0;3700;0;0;Roof;"";Roof;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;7650;8950;4240;4250;0;3700;0;0;Roof;"";Roof;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;8950;9920;4240;4250;0;3700;0;0;Roof;"";Roof;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;9920;10370;4240;4250;0;3700;0;0;Roof;"";Roof;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;10370;11370;2120;2130;0;3700;0;0;Roof;"";Roof;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;11370;11720;2120;2130;0;3700;0;0;Roof;"";Roof;"";"";True
+Klimor.WebApi.DXF.Structures.Coordinates;10420;11670;170;2070;3700;3705;0;8;Hole;"";Hole;Klimor.WebApi.DXF.Structures.AdditionalInfo;"";True
+Klimor.WebApi.DXF.Structures.Coordinates;2450;2455;2290;4190;50;3650;1;0;Hole;"";Hole;Klimor.WebApi.DXF.Structures.AdditionalInfo;"";True
+Klimor.WebApi.DXF.Structures.Coordinates;50;1300;170;2070;3700;3705;0;1;Hole;"";Hole;Klimor.WebApi.DXF.Structures.AdditionalInfo;"";True
+Klimor.WebApi.DXF.Structures.Coordinates;10370;10375;2205;4105;50;3650;5;6;Hole;"";Hole;Klimor.WebApi.DXF.Structures.AdditionalInfo;"";True
+Klimor.WebApi.DXF.Structures.Coordinates;1400;1500;1333;1433;-1;-1;0;0;icon_emptysection;"Icon: ES";Icon;Klimor.WebApi.DXF.Structures.AdditionalInfo;Operational;True
+Klimor.WebApi.DXF.Structures.Coordinates;1400;1500;1333;1433;3701;3701;0;0;icon_emptysection;"Icon: ES";Icon;Klimor.WebApi.DXF.Structures.AdditionalInfo;Back;True
+Klimor.WebApi.DXF.Structures.Coordinates;1400;1500;2121;2121;1800;1900;0;0;icon_emptysection;"Icon: ES";Icon;Klimor.WebApi.DXF.Structures.AdditionalInfo;Up;True
+Klimor.WebApi.DXF.Structures.Coordinates;3000;3100;1333;1433;-1;-1;0;0;icon_emptysection;"Icon: ES";Icon;Klimor.WebApi.DXF.Structures.AdditionalInfo;Operational;True
+Klimor.WebApi.DXF.Structures.Coordinates;3000;3100;1333;1433;3701;3701;0;0;icon_emptysection;"Icon: ES";Icon;Klimor.WebApi.DXF.Structures.AdditionalInfo;Back;True
+Klimor.WebApi.DXF.Structures.Coordinates;3000;3100;2121;2121;1800;1900;0;0;icon_emptysection;"Icon: ES";Icon;Klimor.WebApi.DXF.Structures.AdditionalInfo;Up;True
+Klimor.WebApi.DXF.Structures.Coordinates;3350;3450;1333;1433;-1;-1;0;0;icon_filter;"Icon: PF";Icon;Klimor.WebApi.DXF.Structures.AdditionalInfo;Operational;True
+Klimor.WebApi.DXF.Structures.Coordinates;3350;3450;1333;1433;3701;3701;0;0;icon_filter;"Icon: PF";Icon;Klimor.WebApi.DXF.Structures.AdditionalInfo;Back;True
+Klimor.WebApi.DXF.Structures.Coordinates;3350;3450;2121;2121;1800;1900;0;0;icon_filter;"Icon: PF";Icon;Klimor.WebApi.DXF.Structures.AdditionalInfo;Up;True
+Klimor.WebApi.DXF.Structures.Coordinates;3950;4050;1333;1433;-1;-1;0;0;icon_silencer;"Icon: SL";Icon;Klimor.WebApi.DXF.Structures.AdditionalInfo;Operational;True
+Klimor.WebApi.DXF.Structures.Coordinates;3950;4050;1333;1433;3701;3701;0;0;icon_silencer;"Icon: SL";Icon;Klimor.WebApi.DXF.Structures.AdditionalInfo;Back;True
+Klimor.WebApi.DXF.Structures.Coordinates;3950;4050;2121;2121;1800;1900;0;0;icon_silencer;"Icon: SL";Icon;Klimor.WebApi.DXF.Structures.AdditionalInfo;Up;True
+Klimor.WebApi.DXF.Structures.Coordinates;5200;5300;1333;1433;-1;-1;0;0;icon_fan;"Icon: VF";Icon;Klimor.WebApi.DXF.Structures.AdditionalInfo;Operational;True
+Klimor.WebApi.DXF.Structures.Coordinates;5200;5300;1333;1433;3701;3701;0;0;icon_fan;"Icon: VF";Icon;Klimor.WebApi.DXF.Structures.AdditionalInfo;Back;True
+Klimor.WebApi.DXF.Structures.Coordinates;5200;5300;2121;2121;1800;1900;0;0;icon_fan;"Icon: VF";Icon;Klimor.WebApi.DXF.Structures.AdditionalInfo;Up;True
+Klimor.WebApi.DXF.Structures.Coordinates;10995;11095;1333;1433;-1;-1;0;0;icon_emptysection;"Icon: ES";Icon;Klimor.WebApi.DXF.Structures.AdditionalInfo;Operational;True
+Klimor.WebApi.DXF.Structures.Coordinates;10995;11095;1333;1433;3701;3701;0;0;icon_emptysection;"Icon: ES";Icon;Klimor.WebApi.DXF.Structures.AdditionalInfo;Back;True
+Klimor.WebApi.DXF.Structures.Coordinates;10995;11095;2121;2121;1800;1900;0;0;icon_emptysection;"Icon: ES";Icon;Klimor.WebApi.DXF.Structures.AdditionalInfo;Up;True
+Klimor.WebApi.DXF.Structures.Coordinates;2700;2800;2907;3007;-1;-1;0;0;icon_filter;"Icon: SF";Icon;Klimor.WebApi.DXF.Structures.AdditionalInfo;Operational;True
+Klimor.WebApi.DXF.Structures.Coordinates;2700;2800;2907;3007;3701;3701;0;0;icon_filter;"Icon: SF";Icon;Klimor.WebApi.DXF.Structures.AdditionalInfo;Back;True
+Klimor.WebApi.DXF.Structures.Coordinates;2700;2800;4241;4241;1800;1900;0;0;GAD_icon_filter;"Icon: SF";Icon;Klimor.WebApi.DXF.Structures.AdditionalInfo;UpUp;True
+Klimor.WebApi.DXF.Structures.Coordinates;3200;3300;2907;3007;-1;-1;0;0;icon_waterheater;"Icon: WH";Icon;Klimor.WebApi.DXF.Structures.AdditionalInfo;Operational;True
+Klimor.WebApi.DXF.Structures.Coordinates;3200;3300;2907;3007;3701;3701;0;0;icon_waterheater;"Icon: WH";Icon;Klimor.WebApi.DXF.Structures.AdditionalInfo;Back;True
+Klimor.WebApi.DXF.Structures.Coordinates;3200;3300;4241;4241;1800;1900;0;0;icon_waterheater;"Icon: WH";Icon;Klimor.WebApi.DXF.Structures.AdditionalInfo;UpUp;True
+Klimor.WebApi.DXF.Structures.Coordinates;3950;4050;2807;2907;-1;-1;0;0;icon_watercooler;"Icon: WC";Icon;Klimor.WebApi.DXF.Structures.AdditionalInfo;Operational;True
+Klimor.WebApi.DXF.Structures.Coordinates;3950;4050;2807;2907;3701;3701;0;0;icon_watercooler;"Icon: WC";Icon;Klimor.WebApi.DXF.Structures.AdditionalInfo;Back;True
+Klimor.WebApi.DXF.Structures.Coordinates;3950;4050;4241;4241;1800;1900;0;0;icon_watercooler;"Icon: WC";Icon;Klimor.WebApi.DXF.Structures.AdditionalInfo;UpUp;True
+Klimor.WebApi.DXF.Structures.Coordinates;3550;3650;2807;2907;-1;-1;0;0;icon_watercooler;"Icon: DE";Icon;Klimor.WebApi.DXF.Structures.AdditionalInfo;Operational;True
+Klimor.WebApi.DXF.Structures.Coordinates;3550;3650;2807;2907;3701;3701;0;0;icon_watercooler;"Icon: DE";Icon;Klimor.WebApi.DXF.Structures.AdditionalInfo;Back;True
+Klimor.WebApi.DXF.Structures.Coordinates;3550;3650;4241;4241;1800;1900;0;0;icon_watercooler;"Icon: DE";Icon;Klimor.WebApi.DXF.Structures.AdditionalInfo;UpUp;True
+Klimor.WebApi.DXF.Structures.Coordinates;5200;5300;2907;3007;-1;-1;0;0;icon_fan;"Icon: VF";Icon;Klimor.WebApi.DXF.Structures.AdditionalInfo;Operational;True
+Klimor.WebApi.DXF.Structures.Coordinates;5200;5300;2907;3007;3701;3701;0;0;icon_fan;"Icon: VF";Icon;Klimor.WebApi.DXF.Structures.AdditionalInfo;Back;True
+Klimor.WebApi.DXF.Structures.Coordinates;5200;5300;4241;4241;1800;1900;0;0;icon_fan;"Icon: VF";Icon;Klimor.WebApi.DXF.Structures.AdditionalInfo;UpUp;True
+Klimor.WebApi.DXF.Structures.Coordinates;10070;10170;1333;1433;-1;-1;0;0;icon_filter;"Icon: PF";Icon;Klimor.WebApi.DXF.Structures.AdditionalInfo;Operational;True
+Klimor.WebApi.DXF.Structures.Coordinates;10070;10170;1333;1433;3701;3701;0;0;icon_filter;"Icon: PF";Icon;Klimor.WebApi.DXF.Structures.AdditionalInfo;Back;True
+Klimor.WebApi.DXF.Structures.Coordinates;10070;10170;2206;2206;1800;1900;0;0;icon_filter;"Icon: PF";Icon;Klimor.WebApi.DXF.Structures.AdditionalInfo;UpUp;True
+Klimor.WebApi.DXF.Structures.Coordinates;8185;8285;2000;2100;-1;-1;0;0;icon_plate;"Icon: PR";Icon;Klimor.WebApi.DXF.Structures.AdditionalInfo;Operational;True
+Klimor.WebApi.DXF.Structures.Coordinates;8185;8285;2000;2100;3701;3701;0;0;icon_plate;"Icon: PR";Icon;Klimor.WebApi.DXF.Structures.AdditionalInfo;Back;True
+Klimor.WebApi.DXF.Structures.Coordinates;8185;8285;4241;4241;1800;1900;0;0;icon_plate;"Icon: PR";Icon;Klimor.WebApi.DXF.Structures.AdditionalInfo;UpUp;True
+Klimor.WebApi.DXF.Structures.Coordinates;10170;10270;2787;2887;-1;-1;0;0;icon_plate;"Icon: DE";Icon;Klimor.WebApi.DXF.Structures.AdditionalInfo;Operational;True
+Klimor.WebApi.DXF.Structures.Coordinates;10170;10270;2787;2887;3701;3701;0;0;icon_plate;"Icon: DE";Icon;Klimor.WebApi.DXF.Structures.AdditionalInfo;Back;True
+Klimor.WebApi.DXF.Structures.Coordinates;50;950;170;2070;0;50;1;1;Operational;"";Removable_2;"";Operational;True
+Klimor.WebApi.DXF.Structures.Coordinates;1000;1900;170;2070;0;50;2;2;Operational;"";Removable_2;"";Operational;True
+Klimor.WebApi.DXF.Structures.Coordinates;1950;2850;170;2070;0;50;3;3;Operational;"";Removable_2;"";Operational;True
+Klimor.WebApi.DXF.Structures.Coordinates;50;1450;2070;2120;50;1250;1;1;Up;"";Wall;"";Up;True
+Klimor.WebApi.DXF.Structures.Coordinates;50;1450;2070;2120;1300;2400;1;1;Up;"";Wall;"";Up;True
+Klimor.WebApi.DXF.Structures.Coordinates;50;1450;2070;2120;2450;3650;1;1;Up;"";Wall;"";Up;True
+Klimor.WebApi.DXF.Structures.Coordinates;1500;2850;2070;2120;50;1250;2;2;Up;"";Wall;"";Up;True
+Klimor.WebApi.DXF.Structures.Coordinates;1500;2850;2070;2120;1300;2400;2;2;Up;"";Wall;"";Up;True
+Klimor.WebApi.DXF.Structures.Coordinates;1500;2850;2070;2120;2450;3650;2;2;Up;"";Wall;"";Up;True
+Klimor.WebApi.DXF.Structures.Coordinates;2950;3150;170;2070;0;50;1;1;Operational;"";Removable_2;"";Operational;True
+Klimor.WebApi.DXF.Structures.Coordinates;3200;3600;170;2070;0;50;2;2;Operational;"";Removable_2;"";Operational;True
+Klimor.WebApi.DXF.Structures.Coordinates;3650;4350;170;2070;0;50;3;3;Operational;"";Removable_2;"";Operational;True
+Klimor.WebApi.DXF.Structures.Coordinates;2950;4350;170;1095;3650;3700;1;1;Back;"";Wall;"";Back;True
+Klimor.WebApi.DXF.Structures.Coordinates;2950;4350;1145;2070;3650;3700;1;1;Back;"";Wall;"";Back;True
+Klimor.WebApi.DXF.Structures.Coordinates;2950;4350;2070;2120;50;1250;1;1;Up;"";Wall;"";Up;True
+Klimor.WebApi.DXF.Structures.Coordinates;2950;4350;2070;2120;1300;2400;1;1;Up;"";Wall;"";Up;True
+Klimor.WebApi.DXF.Structures.Coordinates;2950;4350;2070;2120;2450;3650;1;1;Up;"";Wall;"";Up;True
+Klimor.WebApi.DXF.Structures.Coordinates;4450;4950;170;2070;0;50;1;1;Operational;"";Removable_3;"";Operational;True
+Klimor.WebApi.DXF.Structures.Coordinates;5000;5400;170;2070;0;50;2;2;Operational;"";Removable_2;"";Operational;True
+Klimor.WebApi.DXF.Structures.Coordinates;5450;6050;170;2070;0;50;3;3;Operational;"";Removable_2;"";Operational;True
+Klimor.WebApi.DXF.Structures.Coordinates;4450;6050;170;1095;3650;3700;1;1;Back;"";Wall;"";Back;True
+Klimor.WebApi.DXF.Structures.Coordinates;4450;6050;1145;2070;3650;3700;1;1;Back;"";Wall;"";Back;True
+Klimor.WebApi.DXF.Structures.Coordinates;4450;6050;2070;2120;50;1250;1;1;Up;"";Wall;"";Up;True
+Klimor.WebApi.DXF.Structures.Coordinates;4450;6050;2070;2120;1300;2400;1;1;Up;"";Wall;"";Up;True
+Klimor.WebApi.DXF.Structures.Coordinates;4450;6050;2070;2120;2450;3650;1;1;Up;"";Wall;"";Up;True
+Klimor.WebApi.DXF.Structures.Coordinates;10420;11020;170;2070;0;50;1;1;Operational;"";Removable_2;"";Operational;True
+Klimor.WebApi.DXF.Structures.Coordinates;11070;11670;170;2070;0;50;2;2;Operational;"";Removable_2;"";Operational;True
+Klimor.WebApi.DXF.Structures.Coordinates;10420;11670;2070;2120;50;1250;1;1;Up;"";Wall;"";Up;True
+Klimor.WebApi.DXF.Structures.Coordinates;10420;11670;2070;2120;1300;2400;1;1;Up;"";Wall;"";Up;True
+Klimor.WebApi.DXF.Structures.Coordinates;10420;11670;2070;2120;2450;3650;1;1;Up;"";Wall;"";Up;True
+Klimor.WebApi.DXF.Structures.Coordinates;2500;3000;2290;4190;0;50;1;1;Operational;"";Removable_2;"";Operational;True
+Klimor.WebApi.DXF.Structures.Coordinates;3050;3450;2290;4190;0;50;2;2;Operational;"";Removable_3;"";Operational;True
+Klimor.WebApi.DXF.Structures.Coordinates;3500;3700;2290;4190;0;50;3;3;Operational;"";Removable_2;"";Operational;True
+Klimor.WebApi.DXF.Structures.Coordinates;3750;4350;2290;4190;0;50;4;4;Operational;"";Removable_3;"";Operational;True
+Klimor.WebApi.DXF.Structures.Coordinates;2500;3500;2290;3215;3650;3700;1;1;Back;"";Wall;"";Back;True
+Klimor.WebApi.DXF.Structures.Coordinates;2500;3500;3265;4190;3650;3700;1;1;Back;"";Wall;"";Back;True
+Klimor.WebApi.DXF.Structures.Coordinates;3550;4350;2290;3215;3650;3700;2;2;Back;"";Wall;"";Back;True
+Klimor.WebApi.DXF.Structures.Coordinates;3550;4350;3265;4190;3650;3700;2;2;Back;"";Wall;"";Back;True
+Klimor.WebApi.DXF.Structures.Coordinates;4450;5050;2290;4190;0;50;1;1;Operational;"";Removable_2;"";Operational;True
+Klimor.WebApi.DXF.Structures.Coordinates;5100;5500;2290;4190;0;50;2;2;Operational;"";Removable_2;"";Operational;True
+Klimor.WebApi.DXF.Structures.Coordinates;5550;6050;2290;4190;0;50;3;3;Operational;"";Removable_3;"";Operational;True
+Klimor.WebApi.DXF.Structures.Coordinates;4450;6050;2290;3215;3650;3700;1;1;Back;"";Wall;"";Back;True
+Klimor.WebApi.DXF.Structures.Coordinates;4450;6050;3265;4190;3650;3700;1;1;Back;"";Wall;"";Back;True
+Klimor.WebApi.DXF.Structures.Coordinates;6150;6350;2205;4190;0;50;6;0;Operational;"";Removable_2;"";Operational;True
+Klimor.WebApi.DXF.Structures.Coordinates;6400;7100;2205;4190;0;50;5;0;Operational;"";Removable_3;"";Operational;True
+Klimor.WebApi.DXF.Structures.Coordinates;7150;8010;2205;4190;0;50;4;0;Operational;"";Removable_3;"";Operational;True
+Klimor.WebApi.DXF.Structures.Coordinates;8060;8920;2205;4190;0;50;3;0;Operational;"";Removable_3;"";Operational;True
+Klimor.WebApi.DXF.Structures.Coordinates;8970;9670;2205;4190;0;50;2;0;Operational;"";Removable_3;"";Operational;True
+Klimor.WebApi.DXF.Structures.Coordinates;9720;10320;2205;4190;0;50;1;0;Operational;"";Removable_2;"";Operational;True
+Klimor.WebApi.DXF.Structures.Coordinates;6150;7055;170;1095;3650;3700;0;0;Back;"";Wall;"";Back;True
+Klimor.WebApi.DXF.Structures.Coordinates;6150;7055;3265;4190;3650;3700;0;0;Back;"";Wall;"";Back;True
+Klimor.WebApi.DXF.Structures.Coordinates;6150;7055;2205;3215;3650;3700;0;0;Back;"";Wall;"";Back;True
+Klimor.WebApi.DXF.Structures.Coordinates;7105;8010;170;1095;3650;3700;0;0;Back;"";Wall;"";Back;True
+Klimor.WebApi.DXF.Structures.Coordinates;7105;8010;2205;3215;3650;3700;0;0;Back;"";Wall;"";Back;True
+Klimor.WebApi.DXF.Structures.Coordinates;7105;8010;3265;4190;3650;3700;0;0;Back;"";Wall;"";Back;True
+Klimor.WebApi.DXF.Structures.Coordinates;8060;9165;2205;3215;3650;3700;0;0;Back;"";Wall;"";Back;True
+Klimor.WebApi.DXF.Structures.Coordinates;8060;9165;3265;4190;3650;3700;0;0;Back;"";Wall;"";Back;True
+Klimor.WebApi.DXF.Structures.Coordinates;8060;9165;170;1095;3650;3700;0;0;Back;"";Wall;"";Back;True
+Klimor.WebApi.DXF.Structures.Coordinates;9215;10320;2205;3215;3650;3700;0;0;Back;"";Wall;"";Back;True
+Klimor.WebApi.DXF.Structures.Coordinates;9215;10320;170;1095;3650;3700;0;0;Back;"";Wall;"";Back;True
+Klimor.WebApi.DXF.Structures.Coordinates;9215;10320;3265;4190;3650;3700;0;0;Back;"";Wall;"";Back;True
+Klimor.WebApi.DXF.Structures.Coordinates;0;2900;120;2120;0;3700;0;1;Block;"Block: Up 0, Down 1";Block;Klimor.WebApi.DXF.Structures.AdditionalInfo;Operational;True
+Klimor.WebApi.DXF.Structures.Coordinates;0;2900;120;2120;0;3700;0;1;Block;"Block: Up 0, Down 1";Block;Klimor.WebApi.DXF.Structures.AdditionalInfo;Back;True
+Klimor.WebApi.DXF.Structures.Coordinates;0;2900;120;2120;0;3700;0;1;Block;"Block: Up 0, Down 1";Block;Klimor.WebApi.DXF.Structures.AdditionalInfo;Up;True
+Klimor.WebApi.DXF.Structures.Coordinates;0;2900;120;2120;0;3700;0;1;Block;"Block: Up 0, Down 1";Block;Klimor.WebApi.DXF.Structures.AdditionalInfo;Down;True
+Klimor.WebApi.DXF.Structures.Coordinates;0;2900;120;2120;0;3700;0;1;Block;"Block: Up 0, Down 1";Block;Klimor.WebApi.DXF.Structures.AdditionalInfo;LeftFront;True
+Klimor.WebApi.DXF.Structures.Coordinates;0;2900;120;2120;0;3700;0;1;Block;"Block: Up 0, Down 1";Block;Klimor.WebApi.DXF.Structures.AdditionalInfo;RightFront;True
+Klimor.WebApi.DXF.Structures.Coordinates;2900;4400;120;2120;0;3700;0;2;Block;"Block: Up 0, Down 2";Block;Klimor.WebApi.DXF.Structures.AdditionalInfo;Operational;True
+Klimor.WebApi.DXF.Structures.Coordinates;2900;4400;120;2120;0;3700;0;2;Block;"Block: Up 0, Down 2";Block;Klimor.WebApi.DXF.Structures.AdditionalInfo;Back;True
+Klimor.WebApi.DXF.Structures.Coordinates;2900;4400;120;2120;0;3700;0;2;Block;"Block: Up 0, Down 2";Block;Klimor.WebApi.DXF.Structures.AdditionalInfo;Up;True
+Klimor.WebApi.DXF.Structures.Coordinates;2900;4400;120;2120;0;3700;0;2;Block;"Block: Up 0, Down 2";Block;Klimor.WebApi.DXF.Structures.AdditionalInfo;Down;True
+Klimor.WebApi.DXF.Structures.Coordinates;2900;4400;120;2120;0;3700;0;2;Block;"Block: Up 0, Down 2";Block;Klimor.WebApi.DXF.Structures.AdditionalInfo;LeftFront;True
+Klimor.WebApi.DXF.Structures.Coordinates;2900;4400;120;2120;0;3700;0;2;Block;"Block: Up 0, Down 2";Block;Klimor.WebApi.DXF.Structures.AdditionalInfo;RightFront;True
+Klimor.WebApi.DXF.Structures.Coordinates;4400;6100;120;2120;0;3700;0;3;Block;"Block: Up 0, Down 3";Block;Klimor.WebApi.DXF.Structures.AdditionalInfo;Operational;True
+Klimor.WebApi.DXF.Structures.Coordinates;4400;6100;120;2120;0;3700;0;3;Block;"Block: Up 0, Down 3";Block;Klimor.WebApi.DXF.Structures.AdditionalInfo;Back;True
+Klimor.WebApi.DXF.Structures.Coordinates;4400;6100;120;2120;0;3700;0;3;Block;"Block: Up 0, Down 3";Block;Klimor.WebApi.DXF.Structures.AdditionalInfo;Up;True
+Klimor.WebApi.DXF.Structures.Coordinates;4400;6100;120;2120;0;3700;0;3;Block;"Block: Up 0, Down 3";Block;Klimor.WebApi.DXF.Structures.AdditionalInfo;Down;True
+Klimor.WebApi.DXF.Structures.Coordinates;4400;6100;120;2120;0;3700;0;3;Block;"Block: Up 0, Down 3";Block;Klimor.WebApi.DXF.Structures.AdditionalInfo;LeftFront;True
+Klimor.WebApi.DXF.Structures.Coordinates;4400;6100;120;2120;0;3700;0;3;Block;"Block: Up 0, Down 3";Block;Klimor.WebApi.DXF.Structures.AdditionalInfo;RightFront;True
+Klimor.WebApi.DXF.Structures.Coordinates;6100;10370;120;4240;0;3700;3;4;Block;"Block: Up 3, Down 4";Block;Klimor.WebApi.DXF.Structures.AdditionalInfo;Operational;True
+Klimor.WebApi.DXF.Structures.Coordinates;6100;10370;120;4240;0;3700;3;4;Block;"Block: Up 3, Down 4";Block;Klimor.WebApi.DXF.Structures.AdditionalInfo;Back;True
+Klimor.WebApi.DXF.Structures.Coordinates;6100;10370;120;4240;0;3700;3;4;Block;"Block: Up 3, Down 4";Block;Klimor.WebApi.DXF.Structures.AdditionalInfo;UpUp;True
+Klimor.WebApi.DXF.Structures.Coordinates;6100;10370;120;4240;0;3700;3;4;Block;"Block: Up 3, Down 4";Block;Klimor.WebApi.DXF.Structures.AdditionalInfo;Down;True
+Klimor.WebApi.DXF.Structures.Coordinates;6100;10370;120;4240;0;3700;3;4;Block;"Block: Up 3, Down 4";Block;Klimor.WebApi.DXF.Structures.AdditionalInfo;LeftFront;True
+Klimor.WebApi.DXF.Structures.Coordinates;6100;10370;120;4240;0;3700;3;4;Block;"Block: Up 3, Down 4";Block;Klimor.WebApi.DXF.Structures.AdditionalInfo;RightFront;True
+Klimor.WebApi.DXF.Structures.Coordinates;10370;11720;120;2120;0;3700;0;5;Block;"Block: Up 0, Down 5";Block;Klimor.WebApi.DXF.Structures.AdditionalInfo;Operational;True
+Klimor.WebApi.DXF.Structures.Coordinates;10370;11720;120;2120;0;3700;0;5;Block;"Block: Up 0, Down 5";Block;Klimor.WebApi.DXF.Structures.AdditionalInfo;Back;True
+Klimor.WebApi.DXF.Structures.Coordinates;10370;11720;120;2120;0;3700;0;5;Block;"Block: Up 0, Down 5";Block;Klimor.WebApi.DXF.Structures.AdditionalInfo;Up;True
+Klimor.WebApi.DXF.Structures.Coordinates;10370;11720;120;2120;0;3700;0;5;Block;"Block: Up 0, Down 5";Block;Klimor.WebApi.DXF.Structures.AdditionalInfo;Down;True
+Klimor.WebApi.DXF.Structures.Coordinates;10370;11720;120;2120;0;3700;0;5;Block;"Block: Up 0, Down 5";Block;Klimor.WebApi.DXF.Structures.AdditionalInfo;LeftFront;True
+Klimor.WebApi.DXF.Structures.Coordinates;10370;11720;120;2120;0;3700;0;5;Block;"Block: Up 0, Down 5";Block;Klimor.WebApi.DXF.Structures.AdditionalInfo;RightFront;True
+Klimor.WebApi.DXF.Structures.Coordinates;2450;4400;2240;4240;0;3700;1;0;Block;"Block: Up 1, Down 0";Block;Klimor.WebApi.DXF.Structures.AdditionalInfo;Operational;True
+Klimor.WebApi.DXF.Structures.Coordinates;2450;4400;2240;4240;0;3700;1;0;Block;"Block: Up 1, Down 0";Block;Klimor.WebApi.DXF.Structures.AdditionalInfo;Back;True
+Klimor.WebApi.DXF.Structures.Coordinates;2450;4400;2240;4240;0;3700;1;0;Block;"Block: Up 1, Down 0";Block;Klimor.WebApi.DXF.Structures.AdditionalInfo;UpUp;True
+Klimor.WebApi.DXF.Structures.Coordinates;2450;4400;2240;4240;0;3700;1;0;Block;"Block: Up 1, Down 0";Block;Klimor.WebApi.DXF.Structures.AdditionalInfo;DownUp;True
+Klimor.WebApi.DXF.Structures.Coordinates;2450;4400;2240;4240;0;3700;1;0;Block;"Block: Up 1, Down 0";Block;Klimor.WebApi.DXF.Structures.AdditionalInfo;LeftFront;True
+Klimor.WebApi.DXF.Structures.Coordinates;2450;4400;2240;4240;0;3700;1;0;Block;"Block: Up 1, Down 0";Block;Klimor.WebApi.DXF.Structures.AdditionalInfo;RightFront;True
+Klimor.WebApi.DXF.Structures.Coordinates;4400;6100;2240;4240;0;3700;2;0;Block;"Block: Up 2, Down 0";Block;Klimor.WebApi.DXF.Structures.AdditionalInfo;Operational;True
+Klimor.WebApi.DXF.Structures.Coordinates;4400;6100;2240;4240;0;3700;2;0;Block;"Block: Up 2, Down 0";Block;Klimor.WebApi.DXF.Structures.AdditionalInfo;Back;True
+Klimor.WebApi.DXF.Structures.Coordinates;4400;6100;2240;4240;0;3700;2;0;Block;"Block: Up 2, Down 0";Block;Klimor.WebApi.DXF.Structures.AdditionalInfo;UpUp;True
+Klimor.WebApi.DXF.Structures.Coordinates;4400;6100;2240;4240;0;3700;2;0;Block;"Block: Up 2, Down 0";Block;Klimor.WebApi.DXF.Structures.AdditionalInfo;DownUp;True
+Klimor.WebApi.DXF.Structures.Coordinates;4400;6100;2240;4240;0;3700;2;0;Block;"Block: Up 2, Down 0";Block;Klimor.WebApi.DXF.Structures.AdditionalInfo;LeftFront;True
+Klimor.WebApi.DXF.Structures.Coordinates;4400;6100;2240;4240;0;3700;2;0;Block;"Block: Up 2, Down 0";Block;Klimor.WebApi.DXF.Structures.AdditionalInfo;RightFront;True
+Klimor.WebApi.DXF.Structures.Coordinates;10420;11670;170;2080;3700;3815;0;8;AD;"";AirDamper;Klimor.WebApi.DXF.Structures.AdditionalInfo;Operational;True
+Klimor.WebApi.DXF.Structures.Coordinates;10420;11670;170;2080;3700;3815;0;8;AD;"";AirDamper;Klimor.WebApi.DXF.Structures.AdditionalInfo;Back;True
+Klimor.WebApi.DXF.Structures.Coordinates;10420;11670;170;2080;3700;3815;0;8;AD;"";AirDamper;Klimor.WebApi.DXF.Structures.AdditionalInfo;Up;True
+Klimor.WebApi.DXF.Structures.Coordinates;10420;11670;170;2080;3700;3815;0;8;AD;"";AirDamper;Klimor.WebApi.DXF.Structures.AdditionalInfo;Down;True
+Klimor.WebApi.DXF.Structures.Coordinates;10420;11670;170;2080;3700;3815;0;8;AD;"";AirDamper;Klimor.WebApi.DXF.Structures.AdditionalInfo;LeftFront;True
+Klimor.WebApi.DXF.Structures.Coordinates;10420;11670;170;2080;3700;3815;0;8;AD;"";AirDamper;Klimor.WebApi.DXF.Structures.AdditionalInfo;RightFront;True
+Klimor.WebApi.DXF.Structures.Coordinates;10375;10490;2205;4105;50;1820;5;6;AD;"";AirDamper;Klimor.WebApi.DXF.Structures.AdditionalInfo;Operational;True
+Klimor.WebApi.DXF.Structures.Coordinates;10375;10490;2205;4105;50;1820;5;6;AD;"";AirDamper;Klimor.WebApi.DXF.Structures.AdditionalInfo;Back;True
+Klimor.WebApi.DXF.Structures.Coordinates;10375;10490;2205;4105;50;1820;5;6;AD;"";AirDamper;Klimor.WebApi.DXF.Structures.AdditionalInfo;UpUp;True
+Klimor.WebApi.DXF.Structures.Coordinates;10375;10490;2205;4105;50;1820;5;6;AD;"";AirDamper;Klimor.WebApi.DXF.Structures.AdditionalInfo;DownUp;True
+Klimor.WebApi.DXF.Structures.Coordinates;10375;10490;2205;4105;50;1820;5;6;AD;"";AirDamper;Klimor.WebApi.DXF.Structures.AdditionalInfo;LeftFront;True
+Klimor.WebApi.DXF.Structures.Coordinates;10375;10490;2205;4105;50;1820;5;6;AD;"";AirDamper;Klimor.WebApi.DXF.Structures.AdditionalInfo;RightFront;True
+Klimor.WebApi.DXF.Structures.Coordinates;10375;10490;2205;4105;1880;3650;5;6;AD;"";AirDamper;Klimor.WebApi.DXF.Structures.AdditionalInfo;Operational;True
+Klimor.WebApi.DXF.Structures.Coordinates;10375;10490;2205;4105;1880;3650;5;6;AD;"";AirDamper;Klimor.WebApi.DXF.Structures.AdditionalInfo;Back;True
+Klimor.WebApi.DXF.Structures.Coordinates;10375;10490;2205;4105;1880;3650;5;6;AD;"";AirDamper;Klimor.WebApi.DXF.Structures.AdditionalInfo;UpUp;True
+Klimor.WebApi.DXF.Structures.Coordinates;10375;10490;2205;4105;1880;3650;5;6;AD;"";AirDamper;Klimor.WebApi.DXF.Structures.AdditionalInfo;DownUp;True
+Klimor.WebApi.DXF.Structures.Coordinates;10375;10490;2205;4105;1880;3650;5;6;AD;"";AirDamper;Klimor.WebApi.DXF.Structures.AdditionalInfo;LeftFront;True
+Klimor.WebApi.DXF.Structures.Coordinates;10375;10490;2205;4105;1880;3650;5;6;AD;"";AirDamper;Klimor.WebApi.DXF.Structures.AdditionalInfo;RightFront;True
+Klimor.WebApi.DXF.Structures.Coordinates;10420;11670;170;2080;3815;3915;0;8;FC;"";FlexibleConnection;Klimor.WebApi.DXF.Structures.AdditionalInfo;Operational;True
+Klimor.WebApi.DXF.Structures.Coordinates;10420;11670;170;2080;3815;3915;0;8;FC;"";FlexibleConnection;Klimor.WebApi.DXF.Structures.AdditionalInfo;Back;True
+Klimor.WebApi.DXF.Structures.Coordinates;10420;11670;170;2080;3815;3915;0;8;FC;"";FlexibleConnection;Klimor.WebApi.DXF.Structures.AdditionalInfo;Up;True
+Klimor.WebApi.DXF.Structures.Coordinates;10420;11670;170;2080;3815;3915;0;8;FC;"";FlexibleConnection;Klimor.WebApi.DXF.Structures.AdditionalInfo;Down;True
+Klimor.WebApi.DXF.Structures.Coordinates;10420;11670;170;2080;3815;3915;0;8;FC;"";FlexibleConnection;Klimor.WebApi.DXF.Structures.AdditionalInfo;LeftFront;True
+Klimor.WebApi.DXF.Structures.Coordinates;10420;11670;170;2080;3815;3915;0;8;FC;"";FlexibleConnection;Klimor.WebApi.DXF.Structures.AdditionalInfo;RightFront;True
+Klimor.WebApi.DXF.Structures.Coordinates;2350;2450;2290;4190;50;3650;1;0;FC;"";FlexibleConnection;Klimor.WebApi.DXF.Structures.AdditionalInfo;Operational;True
+Klimor.WebApi.DXF.Structures.Coordinates;2350;2450;2290;4190;50;3650;1;0;FC;"";FlexibleConnection;Klimor.WebApi.DXF.Structures.AdditionalInfo;Back;True
+Klimor.WebApi.DXF.Structures.Coordinates;2350;2450;2290;4190;50;3650;1;0;FC;"";FlexibleConnection;Klimor.WebApi.DXF.Structures.AdditionalInfo;Up;True
+Klimor.WebApi.DXF.Structures.Coordinates;2350;2450;2290;4190;50;3650;1;0;FC;"";FlexibleConnection;Klimor.WebApi.DXF.Structures.AdditionalInfo;UpUp;True
+Klimor.WebApi.DXF.Structures.Coordinates;2350;2450;2290;4190;50;3650;1;0;FC;"";FlexibleConnection;Klimor.WebApi.DXF.Structures.AdditionalInfo;DownUp;True
+Klimor.WebApi.DXF.Structures.Coordinates;2350;2450;2290;4190;50;3650;1;0;FC;"";FlexibleConnection;Klimor.WebApi.DXF.Structures.AdditionalInfo;LeftFront;True
+Klimor.WebApi.DXF.Structures.Coordinates;2350;2450;2290;4190;50;3650;1;0;FC;"";FlexibleConnection;Klimor.WebApi.DXF.Structures.AdditionalInfo;RightFront;True
+Klimor.WebApi.DXF.Structures.Coordinates;50;1300;170;2080;3700;3800;0;1;FC;"";FlexibleConnection;Klimor.WebApi.DXF.Structures.AdditionalInfo;Operational;True
+Klimor.WebApi.DXF.Structures.Coordinates;50;1300;170;2080;3700;3800;0;1;FC;"";FlexibleConnection;Klimor.WebApi.DXF.Structures.AdditionalInfo;Back;True
+Klimor.WebApi.DXF.Structures.Coordinates;50;1300;170;2080;3700;3800;0;1;FC;"";FlexibleConnection;Klimor.WebApi.DXF.Structures.AdditionalInfo;Up;True
+Klimor.WebApi.DXF.Structures.Coordinates;50;1300;170;2080;3700;3800;0;1;FC;"";FlexibleConnection;Klimor.WebApi.DXF.Structures.AdditionalInfo;Down;True
+Klimor.WebApi.DXF.Structures.Coordinates;50;1300;170;2080;3700;3800;0;1;FC;"";FlexibleConnection;Klimor.WebApi.DXF.Structures.AdditionalInfo;LeftFront;True
+Klimor.WebApi.DXF.Structures.Coordinates;50;1300;170;2080;3700;3800;0;1;FC;"";FlexibleConnection;Klimor.WebApi.DXF.Structures.AdditionalInfo;RightFront;True
+Klimor.WebApi.DXF.Structures.Coordinates;10490;10590;2205;4105;50;3650;5;6;FC;"";FlexibleConnection;Klimor.WebApi.DXF.Structures.AdditionalInfo;Operational;True
+Klimor.WebApi.DXF.Structures.Coordinates;10490;10590;2205;4105;50;3650;5;6;FC;"";FlexibleConnection;Klimor.WebApi.DXF.Structures.AdditionalInfo;Back;True
+Klimor.WebApi.DXF.Structures.Coordinates;10490;10590;2205;4105;50;3650;5;6;FC;"";FlexibleConnection;Klimor.WebApi.DXF.Structures.AdditionalInfo;UpUp;True
+Klimor.WebApi.DXF.Structures.Coordinates;10490;10590;2205;4105;50;3650;5;6;FC;"";FlexibleConnection;Klimor.WebApi.DXF.Structures.AdditionalInfo;Down;True
+Klimor.WebApi.DXF.Structures.Coordinates;10490;10590;2205;4105;50;3650;5;6;FC;"";FlexibleConnection;Klimor.WebApi.DXF.Structures.AdditionalInfo;LeftFront;True
+Klimor.WebApi.DXF.Structures.Coordinates;10490;10590;2205;4105;50;3650;5;6;FC;"";FlexibleConnection;Klimor.WebApi.DXF.Structures.AdditionalInfo;RightFront;True
+Klimor.WebApi.DXF.Structures.Coordinates;50;2850;170;2070;50;3650;0;1;Function;"ES, U:0, D:1";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;Operational;True
+Klimor.WebApi.DXF.Structures.Coordinates;50;2850;170;2070;50;3650;0;1;Function;"ES, U:0, D:1";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;Back;True
+Klimor.WebApi.DXF.Structures.Coordinates;50;2850;170;2070;50;3650;0;1;Function;"ES, U:0, D:1";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;Up;True
+Klimor.WebApi.DXF.Structures.Coordinates;50;2850;170;2070;50;3650;0;1;Function;"ES, U:0, D:1";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;Down;True
+Klimor.WebApi.DXF.Structures.Coordinates;50;2850;170;2070;50;3650;0;1;Function;"ES, U:0, D:1";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;LeftFront;True
+Klimor.WebApi.DXF.Structures.Coordinates;50;2850;170;2070;50;3650;0;1;Function;"ES, U:0, D:1";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;RightFront;True
+Klimor.WebApi.DXF.Structures.Coordinates;2950;3150;170;2070;50;3650;0;2;Function;"ES, U:0, D:2";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;Operational;True
+Klimor.WebApi.DXF.Structures.Coordinates;2950;3150;170;2070;50;3650;0;2;Function;"ES, U:0, D:2";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;Back;True
+Klimor.WebApi.DXF.Structures.Coordinates;2950;3150;170;2070;50;3650;0;2;Function;"ES, U:0, D:2";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;Up;True
+Klimor.WebApi.DXF.Structures.Coordinates;2950;3150;170;2070;50;3650;0;2;Function;"ES, U:0, D:2";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;Down;True
+Klimor.WebApi.DXF.Structures.Coordinates;2950;3150;170;2070;50;3650;0;2;Function;"ES, U:0, D:2";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;LeftFront;True
+Klimor.WebApi.DXF.Structures.Coordinates;2950;3150;170;2070;50;3650;0;2;Function;"ES, U:0, D:2";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;RightFront;True
+Klimor.WebApi.DXF.Structures.Coordinates;3200;3600;170;2070;50;3650;0;3;Function;"PF, U:0, D:3";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;Operational;True
+Klimor.WebApi.DXF.Structures.Coordinates;3200;3600;170;2070;50;3650;0;3;Function;"PF, U:0, D:3";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;Back;True
+Klimor.WebApi.DXF.Structures.Coordinates;3200;3600;170;2070;50;3650;0;3;Function;"PF, U:0, D:3";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;Up;True
+Klimor.WebApi.DXF.Structures.Coordinates;3200;3600;170;2070;50;3650;0;3;Function;"PF, U:0, D:3";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;Down;True
+Klimor.WebApi.DXF.Structures.Coordinates;3200;3600;170;2070;50;3650;0;3;Function;"PF, U:0, D:3";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;LeftFront;True
+Klimor.WebApi.DXF.Structures.Coordinates;3200;3600;170;2070;50;3650;0;3;Function;"PF, U:0, D:3";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;RightFront;True
+Klimor.WebApi.DXF.Structures.Coordinates;3650;4350;170;2070;50;3650;0;4;Function;"SL, U:0, D:4";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;Operational;True
+Klimor.WebApi.DXF.Structures.Coordinates;3650;4350;170;2070;50;3650;0;4;Function;"SL, U:0, D:4";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;Back;True
+Klimor.WebApi.DXF.Structures.Coordinates;3650;4350;170;2070;50;3650;0;4;Function;"SL, U:0, D:4";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;Up;True
+Klimor.WebApi.DXF.Structures.Coordinates;3650;4350;170;2070;50;3650;0;4;Function;"SL, U:0, D:4";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;Down;True
+Klimor.WebApi.DXF.Structures.Coordinates;3650;4350;170;2070;50;3650;0;4;Function;"SL, U:0, D:4";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;LeftFront;True
+Klimor.WebApi.DXF.Structures.Coordinates;3650;4350;170;2070;50;3650;0;4;Function;"SL, U:0, D:4";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;RightFront;True
+Klimor.WebApi.DXF.Structures.Coordinates;4450;6050;170;2070;50;3650;0;5;Function;"VF, U:0, D:5";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;Operational;True
+Klimor.WebApi.DXF.Structures.Coordinates;4450;6050;170;2070;50;3650;0;5;Function;"VF, U:0, D:5";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;Back;True
+Klimor.WebApi.DXF.Structures.Coordinates;4450;6050;170;2070;50;3650;0;5;Function;"VF, U:0, D:5";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;Up;True
+Klimor.WebApi.DXF.Structures.Coordinates;4450;6050;170;2070;50;3650;0;5;Function;"VF, U:0, D:5";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;Down;True
+Klimor.WebApi.DXF.Structures.Coordinates;4450;6050;170;2070;50;3650;0;5;Function;"VF, U:0, D:5";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;LeftFront;True
+Klimor.WebApi.DXF.Structures.Coordinates;4450;6050;170;2070;50;3650;0;5;Function;"VF, U:0, D:5";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;RightFront;True
+Klimor.WebApi.DXF.Structures.Coordinates;10420;11670;170;2070;50;3650;0;8;Function;"ES, U:0, D:8";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;Operational;True
+Klimor.WebApi.DXF.Structures.Coordinates;10420;11670;170;2070;50;3650;0;8;Function;"ES, U:0, D:8";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;Back;True
+Klimor.WebApi.DXF.Structures.Coordinates;10420;11670;170;2070;50;3650;0;8;Function;"ES, U:0, D:8";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;Up;True
+Klimor.WebApi.DXF.Structures.Coordinates;10420;11670;170;2070;50;3650;0;8;Function;"ES, U:0, D:8";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;Down;True
+Klimor.WebApi.DXF.Structures.Coordinates;10420;11670;170;2070;50;3650;0;8;Function;"ES, U:0, D:8";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;LeftFront;True
+Klimor.WebApi.DXF.Structures.Coordinates;10420;11670;170;2070;50;3650;0;8;Function;"ES, U:0, D:8";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;RightFront;True
+Klimor.WebApi.DXF.Structures.Coordinates;2500;3000;2290;4190;50;3650;1;0;Function;"SF, U:1, D:0";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;Operational;True
+Klimor.WebApi.DXF.Structures.Coordinates;2500;3000;2290;4190;50;3650;1;0;Function;"SF, U:1, D:0";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;Back;True
+Klimor.WebApi.DXF.Structures.Coordinates;2500;3000;2290;4190;50;3650;1;0;Function;"SF, U:1, D:0";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;UpUp;True
+Klimor.WebApi.DXF.Structures.Coordinates;2500;3000;2290;4190;50;3650;1;0;Function;"SF, U:1, D:0";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;DownUp;True
+Klimor.WebApi.DXF.Structures.Coordinates;2500;3000;2290;4190;50;3650;1;0;Function;"SF, U:1, D:0";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;LeftFront;True
+Klimor.WebApi.DXF.Structures.Coordinates;2500;3000;2290;4190;50;3650;1;0;Function;"SF, U:1, D:0";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;RightFront;True
+Klimor.WebApi.DXF.Structures.Coordinates;3050;3450;2290;4190;50;3650;2;0;Function;"WH, U:2, D:0";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;Operational;True
+Klimor.WebApi.DXF.Structures.Coordinates;3050;3450;2290;4190;50;3650;2;0;Function;"WH, U:2, D:0";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;Back;True
+Klimor.WebApi.DXF.Structures.Coordinates;3050;3450;2290;4190;50;3650;2;0;Function;"WH, U:2, D:0";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;UpUp;True
+Klimor.WebApi.DXF.Structures.Coordinates;3050;3450;2290;4190;50;3650;2;0;Function;"WH, U:2, D:0";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;DownUp;True
+Klimor.WebApi.DXF.Structures.Coordinates;3050;3450;2290;4190;50;3650;2;0;Function;"WH, U:2, D:0";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;LeftFront;True
+Klimor.WebApi.DXF.Structures.Coordinates;3050;3450;2290;4190;50;3650;2;0;Function;"WH, U:2, D:0";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;RightFront;True
+Klimor.WebApi.DXF.Structures.Coordinates;3500;4350;2290;4190;50;3650;3;0;Function;"WC, U:3, D:0";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;Operational;True
+Klimor.WebApi.DXF.Structures.Coordinates;3500;4350;2290;4190;50;3650;3;0;Function;"WC, U:3, D:0";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;Back;True
+Klimor.WebApi.DXF.Structures.Coordinates;3500;4350;2290;4190;50;3650;3;0;Function;"WC, U:3, D:0";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;UpUp;True
+Klimor.WebApi.DXF.Structures.Coordinates;3500;4350;2290;4190;50;3650;3;0;Function;"WC, U:3, D:0";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;DownUp;True
+Klimor.WebApi.DXF.Structures.Coordinates;3500;4350;2290;4190;50;3650;3;0;Function;"WC, U:3, D:0";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;LeftFront;True
+Klimor.WebApi.DXF.Structures.Coordinates;3500;4350;2290;4190;50;3650;3;0;Function;"WC, U:3, D:0";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;RightFront;True
+Klimor.WebApi.DXF.Structures.Coordinates;4450;6050;2290;4190;50;3650;4;0;Function;"VF, U:4, D:0";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;Operational;True
+Klimor.WebApi.DXF.Structures.Coordinates;4450;6050;2290;4190;50;3650;4;0;Function;"VF, U:4, D:0";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;Back;True
+Klimor.WebApi.DXF.Structures.Coordinates;4450;6050;2290;4190;50;3650;4;0;Function;"VF, U:4, D:0";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;UpUp;True
+Klimor.WebApi.DXF.Structures.Coordinates;4450;6050;2290;4190;50;3650;4;0;Function;"VF, U:4, D:0";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;DownUp;True
+Klimor.WebApi.DXF.Structures.Coordinates;4450;6050;2290;4190;50;3650;4;0;Function;"VF, U:4, D:0";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;LeftFront;True
+Klimor.WebApi.DXF.Structures.Coordinates;4450;6050;2290;4190;50;3650;4;0;Function;"VF, U:4, D:0";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;RightFront;True
+Klimor.WebApi.DXF.Structures.Coordinates;6150;10320;170;4190;50;3650;5;6;Function;"PR, U:5, D:6";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;Operational;True
+Klimor.WebApi.DXF.Structures.Coordinates;6150;10320;170;4190;50;3650;5;6;Function;"PR, U:5, D:6";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;Back;True
+Klimor.WebApi.DXF.Structures.Coordinates;6150;10320;170;4190;50;3650;5;6;Function;"PR, U:5, D:6";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;UpUp;True
+Klimor.WebApi.DXF.Structures.Coordinates;6150;10320;170;4190;50;3650;5;6;Function;"PR, U:5, D:6";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;Down;True
+Klimor.WebApi.DXF.Structures.Coordinates;6150;10320;170;4190;50;3650;5;6;Function;"PR, U:5, D:6";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;LeftFront;True
+Klimor.WebApi.DXF.Structures.Coordinates;6150;10320;170;4190;50;3650;5;6;Function;"PR, U:5, D:6";Function;Klimor.WebApi.DXF.Structures.AdditionalInfo;RightFront;True

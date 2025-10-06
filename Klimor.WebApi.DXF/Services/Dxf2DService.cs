@@ -337,7 +337,8 @@ namespace Klimor.WebApi.DXF.Services
                                 }
                                 idx = 0;
                             }
-                            if (!string.IsNullOrEmpty(el.type) && el.label != Lab.Block)
+
+                            if (!string.IsNullOrEmpty(el.type) && el.label != Lab.Block && el.View == view.Name)
                             {
                                 // ramy FRAME
                                 if (view.Name == ViewName.Frame && el.label == Lab.Frame)
@@ -396,7 +397,7 @@ namespace Klimor.WebApi.DXF.Services
                                     // Up/Down/UpUp/DownUp
                                     else
                                     {
-                                        externalElementsYOffset = -150;
+                                        externalElementsYOffset = -170;
                                     }                                    
                                 }
 
@@ -411,8 +412,10 @@ namespace Klimor.WebApi.DXF.Services
                                 //    dxf.Entities.Add(outerPoly); // &&*
                                 //}
 
-                                if (el.View == view.Name || (el.View == view.Name && externalElementShow))
-                                {                                    
+                                if ((el.View == view.Name && el.type != Lab.Wall) 
+                                    || (el.View == view.Name && externalElementShow) // el.zewnetrzne
+                                    || (el.type == Lab.Wall && el.View == view.Name))
+                                {                                      
                                     dxf.Entities.Add(outerPoly); // &&*
                                 }
 
@@ -434,10 +437,8 @@ namespace Klimor.WebApi.DXF.Services
                                     }                                    
                                 }
 
-                                if ((el.type == "Wall" || el.type == "DrainTray" ||
-                                    el.type.Contains("Removable") || 
-                                    el.type.Contains("Door")) && el.label == view.Name ||
-                                    el.label.Contains("_") || externalElementShow)
+                                if ((el.type == "Wall" || el.type == "DrainTray" || el.type.Contains("Removable") || el.type.Contains("Door"))
+                                    || el.label.Contains("_") || externalElementShow)
                                 {
                                     var idx = 0;
                                     foreach (var c in outer2D)
@@ -458,9 +459,8 @@ namespace Klimor.WebApi.DXF.Services
                                                 cornerVertices.Add(new Polyline2DVertex(c.X, c.Y + profileOffset, 0));
                                                 cornerVertices.Add(new Polyline2DVertex(c.X - profileOffset, c.Y + profileOffset, 0));
 
-                                                if (!view.Name.ToLower().Contains("front")
-                                                    && el.label == view.Name ||
-                                                    externalElementShow // elementy zewnętrzne
+                                                if (!view.Name.ToLower().Contains("front")                                                    
+                                                    || externalElementShow // elementy zewnętrzne
                                                     || (el.label.Contains("_") && view.Name == "Down"))
                                                 {
                                                     var wallDescription = el.label switch
