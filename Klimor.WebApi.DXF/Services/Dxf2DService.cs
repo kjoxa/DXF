@@ -362,7 +362,8 @@ namespace Klimor.WebApi.DXF.Services
                                 if (Lab.ExternalElements.Any(l => l == el.label))
                                 {
                                     // AD, FC na widokach up, down, back, operational
-                                    if (Lab.ExternalElements.Any(l => l == el.label) && (el.View == view.Name) || el.label == Lab.Hole)
+                                    if (Lab.ExternalElements.Any(l => l == el.label) && (el.View == view.Name) 
+                                        || (el.label == Lab.Hole && view.Name is (ViewName.Operational or ViewName.Back)))
                                     {
                                         externalElementShow = true;
                                     }

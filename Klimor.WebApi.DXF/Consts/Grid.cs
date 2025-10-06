@@ -109,7 +109,7 @@ namespace Klimor.WebApi.DXF.Consts
                 [ViewName.LeftFront] = (2, 5),
                 [ViewName.Back] = (3, 5),
                 [ViewName.Down] = (1, 4),
-                [ViewName.DownUp] = (2, 4),
+                [ViewName.DownUp] = (1, 3),
                 [ViewName.Up] = (1, 6),
                 [ViewName.UpUp] = (1, 7),
                 [ViewName.Frame] = (1, 3),
