@@ -157,7 +157,7 @@ namespace Klimor.WebApi.DXF
                     .ToList();
 
                 // usuwamy oryginały
-                elements.RemoveAll(e => e.y2 == upperLevels.FirstOrDefault() && (e.label == extrLabel) && e.View == ViewName.Up);
+                elements.RemoveAll(e => (e.y2 == upperLevels.FirstOrDefault() || e.y2 == upperLevels.LastOrDefault()) && (e.label == extrLabel) && e.View == ViewName.Up);
                 elements.RemoveAll(e => e.y2 == levels.Take(1).FirstOrDefault() && (e.label == extrLabel) && e.View == ViewName.UpUp);                
             }
         }
@@ -183,14 +183,23 @@ namespace Klimor.WebApi.DXF
             {
                 // zamiast levels.Count - 1 => C# 8 [^1]                
                 var topLevel = levels[^1]; // najwyższy Y1
+                var top2Level = levels.Count > 1 ? levels[^2] : topLevel; // drugi najwyższy (gdy jest)
 
                 // bierzemy tylko ściany z najwyższego poziomu
                 var topLevelWalls = downEls
                     .Where(e => e.y1.Equals(topLevel))
                     .ToList();
 
-                elements.RemoveAll(e => e.y1 == topLevel && e.View == ViewName.Down && e.label == extrLabel);
-                elements.RemoveAll(e => e.y1 != topLevel && e.View == ViewName.DownUp && e.label == extrLabel);
+                if (levels.Count > 2)
+                {
+                    elements.RemoveAll(e => (e.y1 == topLevel || e.y1 == top2Level) && e.View == ViewName.Down && e.label == extrLabel);
+                    elements.RemoveAll(e => e.y1 != topLevel && e.View == ViewName.DownUp && e.label == extrLabel);
+                }
+                else
+                {
+                    elements.RemoveAll(e => e.y1 == topLevel && e.View == ViewName.Down && e.label == extrLabel);
+                    elements.RemoveAll(e => e.y1 != topLevel && e.View == ViewName.DownUp && e.label == extrLabel);
+                }                    
             }
         }
 

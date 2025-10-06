@@ -338,7 +338,8 @@ namespace Klimor.WebApi.DXF.Services
                                 idx = 0;
                             }
 
-                            if (!string.IsNullOrEmpty(el.type) && el.label != Lab.Block && el.View == view.Name)
+                            if (!string.IsNullOrEmpty(el.type) && el.label != Lab.Block &&
+                                (el.View == view.Name || el.label == Lab.Hole))
                             {
                                 // ramy FRAME
                                 if (view.Name == ViewName.Frame && el.label == Lab.Frame)
@@ -361,7 +362,7 @@ namespace Klimor.WebApi.DXF.Services
                                 if (Lab.ExternalElements.Any(l => l == el.label))
                                 {
                                     // AD, FC na widokach up, down, back, operational
-                                    if (el.label != Lab.Hole && Lab.ExternalElements.Any(l => l == el.label) && (el.View == view.Name))
+                                    if (Lab.ExternalElements.Any(l => l == el.label) && (el.View == view.Name) || el.label == Lab.Hole)
                                     {
                                         externalElementShow = true;
                                     }
@@ -408,7 +409,12 @@ namespace Klimor.WebApi.DXF.Services
                                 //    dxf.Entities.Add(outerPoly); // &&*
                                 //}
 
-                                if ((el.type != Lab.Wall) || externalElementShow || (el.type == Lab.Wall || el.type == Lab.Div))
+                                if (el.label == view.Name ||
+                                   (view.Name is (ViewName.Down or ViewName.DownUp) && el.label is (Lab.Down_Div or Lab.Down_DrainTray or Lab.Down_Wall)) ||
+                                   (view.Name is (ViewName.Up) && el.label is Lab.Wall) ||
+                                   (view.Name is (ViewName.UpUp) && el.label is Lab.Up) ||
+                                   (externalElementShow && el.View == view.Name)
+                                   )
                                 {
                                     dxf.Entities.Add(outerPoly); // &&*
                                 }
@@ -492,13 +498,20 @@ namespace Klimor.WebApi.DXF.Services
                                                             _ => "INS"
                                                         };
                                                     }
-                                                    var text = new Text(wallDescription,
+
+                                                    if (el.label == view.Name ||
+                                                        Lab.ExternalElements.Any(l => l == el.label) ||
+                                                        el.label == Lab.Hole && string.IsNullOrEmpty(el.View) ||
+                                                        el.View is (ViewName.Down or ViewName.DownUp or ViewName.Up or ViewName.UpUp))
+                                                    {
+                                                        var text = new Text(wallDescription,
                                                         new Vector3(c.X - ((el.x2 - el.x1) / 2) - profileOffset, c.Y + 4 * profileOffset + externalElementsYOffset, 0), 20);
 
-                                                    text.Style = new TextStyle("ArialBold", "arialbd.ttf");
-                                                    text.Layer = layer;
-                                                    text.Color = new AciColor(3);
-                                                    dxf.Entities.Add(text);
+                                                        text.Style = new TextStyle("ArialBold", "arialbd.ttf");
+                                                        text.Layer = layer;
+                                                        text.Color = new AciColor(3);
+                                                        dxf.Entities.Add(text);
+                                                    }                                                    
                                                 }
                                                 break;
 
