@@ -32,7 +32,9 @@ namespace Klimor.WebApi.DXF.Consts
 
         // components
         public const string Roof = "Roof";
-        public const string Frame = "Frame";        
+        public const string RoofUp = "RoofUp";
+        public const string Frame = "Frame";
+        public const string FrameUp = "FrameUp";
 
         // external elements
         public const string Hole = "Hole";

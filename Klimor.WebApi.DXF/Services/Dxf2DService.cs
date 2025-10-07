@@ -99,6 +99,8 @@ namespace Klimor.WebApi.DXF.Services
             var downChannel = elements.OrderBy(e => e.x1).FirstOrDefault(e => e.label == Lab.Block && e.y1 <= 120);
             var upUpChannel = elements.OrderBy(e => e.x1).FirstOrDefault(e => e.View == ViewName.UpUp);
             var downUpChannel = elements.OrderBy(e => e.x1).FirstOrDefault(e => e.View == ViewName.DownUp);
+            var frameUpChannel = elements.OrderBy(e => e.x1).FirstOrDefault(e => e.View is ViewName.FrameUp);
+            var roofUpChannel = elements.OrderBy(e => e.x1).FirstOrDefault(e => e.View == ViewName.RoofUp);
 
             if (upChannel != null && (view.Name == ViewName.Operational || view.Name == ViewName.Back))
             {
@@ -114,7 +116,7 @@ namespace Klimor.WebApi.DXF.Services
             }
 
             if (downChannel != null && (view.Name == ViewName.Operational || view.Name == ViewName.Back 
-                || view.Name == ViewName.Up || view.Name == ViewName.Down))
+                || view.Name == ViewName.Up || view.Name == ViewName.Down || view.Name == ViewName.Frame || view.Name == ViewName.Roof))
             {
                 var numberDown = new Text("1", new Vector3(view.XOffset - 500, view.YOffset + downChannel.y2 - (downChannel.y2 - downChannel.y1) / 2 - 300 / 2, 0), 300)
                 {
@@ -154,13 +156,42 @@ namespace Klimor.WebApi.DXF.Services
                 };
                 dxf.Entities.Add(numberUp);
             }
+
+
+            if (view.Name == ViewName.FrameUp && frameUpChannel != null)
+            {
+                var x1 = frameUpChannel.x1 - 600;
+                var numberUp = new Text("2", new Vector3(view.XOffset + x1, view.YOffset + 500, 0), 300)
+                {
+                    Layer = textLayer,
+                    Rotation = 0,
+                    Color = AciColor.LightGray,
+                    WidthFactor = 1.2,
+                    Style = new TextStyle("ArialBold", "arialbd.ttf")
+                };
+                dxf.Entities.Add(numberUp);
+            }
+
+            if (view.Name == ViewName.RoofUp && roofUpChannel != null)
+            {
+                var x1 = roofUpChannel.x1 - 600;
+                var numberUp = new Text("2", new Vector3(view.XOffset + x1, view.YOffset + 500, 0), 300)
+                {
+                    Layer = textLayer,
+                    Rotation = 0,
+                    Color = AciColor.LightGray,
+                    WidthFactor = 1.2,
+                    Style = new TextStyle("ArialBold", "arialbd.ttf")
+                };
+                dxf.Entities.Add(numberUp);
+            }
         }
 
         public void GenerateView(DxfDocument dxf, List<Coordinates> elements, List<string> elementsGroup, bool createDimension, bool createShape, Layer layer, Layer textLayer, IEnumerable<ViewElement> views)
         {
             var firstElement = elements.OrderBy(e => e.x1).FirstOrDefault(e => e.label == Lab.Block);
             var lastElement = elements.OrderByDescending(e => e.x1).FirstOrDefault(e => e.label == Lab.Block);
-            var normTitle = new Text(Views.CurrentNorm.ToString(), new Vector3((lastElement.x2 - firstElement.x1) / 2, 20000, 0), 700)
+            var normTitle = new Text(Views.CurrentNorm.ToString(), new Vector3((lastElement.x2 - firstElement.x1) / 2, 30000, 0), 700)
             {
                 Layer = textLayer,
                 Rotation = 0,
@@ -196,6 +227,10 @@ namespace Klimor.WebApi.DXF.Services
                     case ViewName.UpUp:
                     case ViewName.Down:
                     case ViewName.DownUp:
+                    case ViewName.Frame:
+                    case ViewName.FrameUp:
+                    case ViewName.Roof:
+                    case ViewName.RoofUp:
                         GenerateChannelNumbers(elements, dxf, view, textLayer);
                         break;
                 }
@@ -342,14 +377,14 @@ namespace Klimor.WebApi.DXF.Services
                                 (el.View == view.Name || el.label == Lab.Hole))
                             {
                                 // ramy FRAME
-                                if (view.Name == ViewName.Frame && el.label == Lab.Frame)
-                                {
-                                    if (!frameXYmoved)
-                                    {
-                                        PrepareFrameToDraw(elements, textLayer, dxf, false);
-                                        frameXYmoved = true;
-                                    }                                    
-                                }
+                                //if (view.Name == ViewName.Frame && el.label == Lab.Frame)
+                                //{
+                                //    if (!frameXYmoved)
+                                //    {
+                                //        PrepareFrameToDraw(elements, textLayer, dxf, false);
+                                //        frameXYmoved = true;
+                                //    }                                    
+                                //}
 
                                 // dodawanie konektora
                                 if ((el.label == Lab.Connector || el.type == Lab.Porthole) && (view.Name == ViewName.Operational || view.Name == ViewName.Back))
@@ -959,11 +994,13 @@ namespace Klimor.WebApi.DXF.Services
                     return new List<Vector2> { new Vector2(newZ2, y1), new Vector2(newZ1, y1), new Vector2(newZ1, y2), new Vector2(newZ2, y2) };
 
                 case "Frame": // widok z dołu (XZ, odbicie w Z) - jak dla Down-a
+                case "FrameUp":
                     double frameZ1Down = globalZMax + globalZMin - z1;
                     double frameZ2Down = globalZMax + globalZMin - z2;
                     return new List<Vector2> { new Vector2(x1, frameZ2Down), new Vector2(x2, frameZ2Down), new Vector2(x2, frameZ1Down), new Vector2(x1, frameZ1Down) };
 
                 case "Roof": // widok z dołu (XZ, odbicie w Z) - jak dla Down-a
+                case "RoofUp":
                     return new List<Vector2> { new Vector2(x1, z1), new Vector2(x2, z1), new Vector2(x2, z2), new Vector2(x1, z2) };
 
                 default:

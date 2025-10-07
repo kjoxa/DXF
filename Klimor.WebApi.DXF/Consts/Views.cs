@@ -117,7 +117,9 @@ namespace Klimor.WebApi.DXF.Consts
                 [ViewName.Up] = (0, -6000),
                 [ViewName.UpUp] = (0, -16000),
                 [ViewName.Frame] = (0, -12000),
+                [ViewName.FrameUp] = (0, -12000),
                 [ViewName.Roof] = (0, -17000),
+                [ViewName.RoofUp] = (0, -17000),
             },
             [Norm.US] = new()
             {
