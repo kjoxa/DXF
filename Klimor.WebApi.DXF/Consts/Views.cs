@@ -57,7 +57,9 @@ namespace Klimor.WebApi.DXF.Consts
             [ViewName.LeftFront] = new(ViewName.LeftFront, 0, 20000),
             [ViewName.RightFront] = new(ViewName.RightFront, 0, 25000),
             [ViewName.Frame] = new(ViewName.Frame, 0, 50000),
-            [ViewName.Roof] = new(ViewName.Roof, 0, -50000)
+            [ViewName.FrameUp] = new(ViewName.FrameUp, 0, 50000),
+            [ViewName.Roof] = new(ViewName.Roof, 0, -50000),
+            [ViewName.RoofUp] = new(ViewName.RoofUp, 0, -50000)
         };
 
         public ViewElement this[string name] => _views[name];
@@ -80,7 +82,11 @@ namespace Klimor.WebApi.DXF.Consts
 
         public ViewElement Frame => _views[ViewName.Frame];
 
+        public ViewElement FrameUp => _views[ViewName.FrameUp];
+
         public ViewElement Roof => _views[ViewName.Roof];
+
+        public ViewElement RoofUp => _views[ViewName.RoofUp];
 
         public IEnumerable<ViewElement> All => _views.Values;
 

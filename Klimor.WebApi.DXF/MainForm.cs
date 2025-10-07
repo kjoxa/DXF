@@ -463,7 +463,73 @@ namespace Klimor.WebApi.DXF
             }
         }
 
-        private void SetGlobalViews(List<Coordinates> elements)
+        private void SelectFrameUpChannel(List<Coordinates> elements)
+        {
+            // wyciągamy UP-y
+            var frames = elements
+                .Where(e => e.label == ViewName.Frame && (e.View == ViewName.Frame))
+                .ToList();
+
+            if (frames.Count == 0)
+                return;
+
+            // różne poziomy Y2
+            var levels = frames
+                .Select(e => e.y2)
+                .Distinct()
+                .OrderBy(v => v)
+                .ToList();
+
+            // jeśli więcej niż jeden poziom, bierzemy najwyższy
+            if (levels.Count > 1)
+            {
+                // bierzemy wszystkie poziomy poza najniższym
+                var upperLevels = levels.Skip(1).ToList();
+
+                var upperWalls = frames
+                    .Where(e => upperLevels.Contains(e.y2))
+                    .ToList();
+
+                // usuwamy oryginały
+                elements.RemoveAll(e => e.y2 == upperLevels.FirstOrDefault() && (e.label == Lab.Frame) && e.View == ViewName.Frame);
+                elements.RemoveAll(e => e.y2 == levels.Take(1).FirstOrDefault() && (e.label == Lab.Frame) && e.View == ViewName.FrameUp);
+            }
+        }
+
+        private void SelectRoofUpChannel(List<Coordinates> elements)
+        {
+            // wyciągamy UP-y
+            var roofs = elements
+                .Where(e => e.label == ViewName.Roof && (e.View == ViewName.Roof))
+                .ToList();
+
+            if (roofs.Count == 0)
+                return;
+
+            // różne poziomy Y2
+            var levels = roofs
+                .Select(e => e.y2)
+                .Distinct()
+                .OrderBy(v => v)
+                .ToList();
+
+            // jeśli więcej niż jeden poziom, bierzemy najwyższy
+            if (levels.Count > 1)
+            {
+                // bierzemy wszystkie poziomy poza najniższym
+                var upperLevels = levels.Skip(1).ToList();
+
+                var upperWalls = roofs
+                    .Where(e => upperLevels.Contains(e.y2))
+                    .ToList();
+
+                // usuwamy oryginały
+                elements.RemoveAll(e => e.y2 == upperLevels.FirstOrDefault() && (e.label == Lab.Roof) && e.View == ViewName.Roof);
+                elements.RemoveAll(e => e.y2 == levels.Take(1).FirstOrDefault() && (e.label == Lab.Roof) && e.View == ViewName.RoofUp);
+            }
+        }
+
+        private void MapElementsToViews(List<Coordinates> elements)
         {
             var views = Views.Except("Frame", "Roof", "Connector");
 
@@ -596,6 +662,27 @@ namespace Klimor.WebApi.DXF
                         };
                         elements.Add(addBlock);
                     }
+
+                    if (el.label is (Lab.Frame or Lab.Roof))
+                    {
+                        var addBlock = new Coordinates
+                        {
+                            View = vw.Name,
+                            label = el.label,
+                            type = el.type,
+                            x1 = el.x1,
+                            x2 = el.x2,
+                            y1 = el.y1,
+                            y2 = el.y2,
+                            z1 = el.z1,
+                            z2 = el.z2,
+                            PositionUp = el.PositionUp,
+                            PositionDown = el.PositionDown,
+                            posUpDown = el.posUpDown,
+                            additionalInfos = el.additionalInfos,
+                        };
+                        elements.Add(addBlock);
+                    }
                 }
             }
             
@@ -605,6 +692,7 @@ namespace Klimor.WebApi.DXF
             elements.RemoveAll(e => string.IsNullOrWhiteSpace(e.View) && e.label == Lab.Up && (e.type == Lab.Wall || e.type == Lab.Div));
             elements.RemoveAll(e => string.IsNullOrWhiteSpace(e.View) && e.label is (Lab.Down_Wall or Lab.Down_Div or Lab.Down_DrainTray or Lab.Up) && (e.type is Lab.Wall or Lab.Div or Lab.Down_DrainTray or Lab.Down_DrainTray));
             elements.RemoveAll(e => e.type is (Lab.Div or Lab.Wall) && e.label != e.View && e.label is not (Lab.Down_Wall or Lab.Down_Div or Lab.Down_DrainTray or Lab.Up));
+            elements.RemoveAll(e => string.IsNullOrWhiteSpace(e.View) && e.label is (Lab.Frame or Lab.Roof));
 
             // ikony
             var icons = elements.Where(e => e.label.Contains("icon")).ToList();
@@ -790,13 +878,13 @@ namespace Klimor.WebApi.DXF
             void GenerateFrame()
             {
                 var layerFrame = dxf.Layers.Add(new Layer("Frame") { Color = AciColor.Blue });
-                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Frame, Lab.Roof }, false, true, layerFrame, textLayer, Views.Except(ViewName.Up, ViewName.Down, ViewName.Roof));
+                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Frame }, false, true, layerFrame, textLayer, Views.Except(ViewName.Up, ViewName.Down, ViewName.Roof));
             }
 
             void GenerateFrameDimensions()
             {
                 var layerFrameDim = dxf.Layers.Add(new Layer("Frame_dimensions") { Color = AciColor.Blue });
-                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Frame, Lab.Roof }, true, false, layerFrameDim, textLayer, Views.Except(ViewName.Up, ViewName.Down, ViewName.Roof));
+                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Frame }, true, false, layerFrameDim, textLayer, Views.Except(ViewName.Up, ViewName.Down, ViewName.Roof));
             }
 
             void GenerateRoof()
@@ -813,7 +901,7 @@ namespace Klimor.WebApi.DXF
 
             var opCnt = elements.Where(e => e.label == Lab.Operational).Count();
             // rozszerzanie listy elementów o widoki globalne
-            SetGlobalViews(elements);
+            MapElementsToViews(elements);
 
             // przypisywanie DownUp i UpUp, wybór górnych i dolnych kanałów
             SelectBlockUpChannel(elements);
@@ -827,7 +915,8 @@ namespace Klimor.WebApi.DXF
             SelectExternalElementsDownChannel(elements, Lab.AD);
             SelectExternalElementsDownChannel(elements, Lab.FC);
             SelectExternalElementsDownChannel(elements, Lab.INTK);
-
+            SelectFrameUpChannel(elements);
+            SelectRoofUpChannel(elements);
             // walle
             SelectWallUpChannel(elements);
             SelectWallDownChannel(elements);
@@ -844,10 +933,18 @@ namespace Klimor.WebApi.DXF
             //DrawFunctionsDimensions();
             DrawExternalElements();
             GenerateWalls();
-            
-            
-            
-            
+
+            GenerateFrame();
+            GenerateFrameDimensions();
+            //GenerateRoof();
+            //GenerateRoofDimensions();
+            //GeneratePorthole();
+            //GeneratePortholeDimension();
+            //GenerateSwitchbox();
+            //GenerateSwitchboxDimension();
+
+
+
             //if (!advanced2D)
             //{
             //    GenerateFunctionsWithIcons();
