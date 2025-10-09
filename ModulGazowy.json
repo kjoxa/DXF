@@ -8,7 +8,7 @@
     "z2": 50,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -20,7 +20,7 @@
     "z2": 950,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -32,7 +32,7 @@
     "z2": 900,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -44,7 +44,7 @@
     "z2": 900,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -56,7 +56,7 @@
     "z2": 50,
     "label": "Operational",
     "posUpDown": "",
-    "elementType": "Removable_2",
+    "type": "Removable_2",
     "additionalInfos": null
   },
   {
@@ -68,7 +68,7 @@
     "z2": 950,
     "label": "Back",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -80,7 +80,7 @@
     "z2": 900,
     "label": "Down_Wall",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -92,7 +92,7 @@
     "z2": 900,
     "label": "Up",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -104,7 +104,7 @@
     "z2": -200,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -116,7 +116,7 @@
     "z2": 950,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -128,7 +128,7 @@
     "z2": 900,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -140,7 +140,7 @@
     "z2": 900,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -152,7 +152,7 @@
     "z2": 1150,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -164,7 +164,7 @@
     "z2": -200,
     "label": "Operational",
     "posUpDown": "",
-    "elementType": "Removable_2",
+    "type": "Removable_2",
     "additionalInfos": null
   },
   {
@@ -176,7 +176,7 @@
     "z2": 950,
     "label": "Back",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -188,7 +188,7 @@
     "z2": 950,
     "label": "Back",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -200,7 +200,7 @@
     "z2": 650,
     "label": "Down_Wall",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -212,7 +212,7 @@
     "z2": 650,
     "label": "Up",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -224,7 +224,7 @@
     "z2": 650,
     "label": "Up",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -236,7 +236,7 @@
     "z2": -120,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -248,7 +248,7 @@
     "z2": 1120,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -260,7 +260,7 @@
     "z2": 1070,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -272,7 +272,7 @@
     "z2": 1070,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -284,7 +284,7 @@
     "z2": -120,
     "label": "Operational",
     "posUpDown": "",
-    "elementType": "Removable_2",
+    "type": "Removable_2",
     "additionalInfos": null
   },
   {
@@ -296,7 +296,7 @@
     "z2": -120,
     "label": "Operational",
     "posUpDown": "",
-    "elementType": "Removable_2",
+    "type": "Removable_2",
     "additionalInfos": null
   },
   {
@@ -308,7 +308,7 @@
     "z2": 1120,
     "label": "Back",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -320,7 +320,7 @@
     "z2": 1120,
     "label": "Back",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -332,7 +332,7 @@
     "z2": 1070,
     "label": "Down_Wall",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -344,7 +344,7 @@
     "z2": 1070,
     "label": "Up",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -356,7 +356,7 @@
     "z2": 1070,
     "label": "FrontLeft",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -368,7 +368,7 @@
     "z2": -25,
     "label": "FrontLeft",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -380,7 +380,7 @@
     "z2": 1070,
     "label": "FrontLeft",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -392,7 +392,31 @@
     "z2": -25,
     "label": "FrontLeft",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
+    "additionalInfos": null
+  },
+  {
+    "x1": 600,
+    "x2": 650,
+    "y1": 170,
+    "y2": 1020,
+    "z1": 25,
+    "z2": 925,
+    "label": "FrontLeft",
+    "posUpDown": "",
+    "type": "Hole",
+    "additionalInfos": null
+  },
+  {
+    "x1": 600,
+    "x2": 650,
+    "y1": 1070,
+    "y2": 1920,
+    "z1": 25,
+    "z2": 925,
+    "label": "FrontLeft",
+    "posUpDown": "",
+    "type": "Hole",
     "additionalInfos": null
   },
   {
@@ -404,7 +428,7 @@
     "z2": 1070,
     "label": "FrontRight",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -416,7 +440,7 @@
     "z2": -25,
     "label": "FrontRight",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -428,7 +452,7 @@
     "z2": 1070,
     "label": "FrontRight",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -440,7 +464,31 @@
     "z2": -25,
     "label": "FrontRight",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
+    "additionalInfos": null
+  },
+  {
+    "x1": 1000,
+    "x2": 1050,
+    "y1": 170,
+    "y2": 1020,
+    "z1": 25,
+    "z2": 925,
+    "label": "FrontRight",
+    "posUpDown": "",
+    "type": "Hole",
+    "additionalInfos": null
+  },
+  {
+    "x1": 1000,
+    "x2": 1050,
+    "y1": 1070,
+    "y2": 1920,
+    "z1": 25,
+    "z2": 925,
+    "label": "FrontRight",
+    "posUpDown": "",
+    "type": "Hole",
     "additionalInfos": null
   },
   {
@@ -452,7 +500,7 @@
     "z2": 50,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -464,7 +512,7 @@
     "z2": 950,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -476,7 +524,7 @@
     "z2": 900,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -488,7 +536,7 @@
     "z2": 900,
     "label": "Frame",
     "posUpDown": "",
-    "elementType": "Frame",
+    "type": "Frame",
     "additionalInfos": null
   },
   {
@@ -500,7 +548,7 @@
     "z2": 50,
     "label": "Operational",
     "posUpDown": "",
-    "elementType": "Removable_2",
+    "type": "Removable_2",
     "additionalInfos": null
   },
   {
@@ -512,7 +560,7 @@
     "z2": 50,
     "label": "Operational",
     "posUpDown": "",
-    "elementType": "Removable_2",
+    "type": "Removable_2",
     "additionalInfos": null
   },
   {
@@ -524,7 +572,7 @@
     "z2": 50,
     "label": "Operational",
     "posUpDown": "",
-    "elementType": "Removable_2",
+    "type": "Removable_2",
     "additionalInfos": null
   },
   {
@@ -536,7 +584,7 @@
     "z2": 50,
     "label": "Operational",
     "posUpDown": "",
-    "elementType": "Removable_2",
+    "type": "Removable_2",
     "additionalInfos": null
   },
   {
@@ -548,7 +596,7 @@
     "z2": 950,
     "label": "Back",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -560,7 +608,7 @@
     "z2": 950,
     "label": "Back",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -572,7 +620,7 @@
     "z2": 900,
     "label": "Down_Wall",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -584,7 +632,7 @@
     "z2": 900,
     "label": "Middle_Wall",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -596,7 +644,7 @@
     "z2": 900,
     "label": "Up",
     "posUpDown": "",
-    "elementType": "Wall",
+    "type": "Wall",
     "additionalInfos": null
   },
   {
@@ -608,7 +656,7 @@
     "z2": -150,
     "label": "Connector",
     "posUpDown": "DrainTray: AhuEmptySectionOutput / Up: 0, Down: 4",
-    "elementType": null,
+    "type": "DrainTrayConnector",
     "additionalInfos": null
   },
   {
@@ -620,7 +668,7 @@
     "z2": 950,
     "label": "Block",
     "posUpDown": "Block: Up 0, Down 1",
-    "elementType": null,
+    "type": "Block",
     "additionalInfos": {
       "sName": null,
       "airPath": null,
@@ -628,7 +676,9 @@
       "iconName": null,
       "positionUp": 0,
       "positionDown": 0,
-      "blockNumber": 1
+      "blockNumber": 1,
+      "direction": null,
+      "airPathPosition": null
     }
   },
   {
@@ -640,7 +690,7 @@
     "z2": 1120,
     "label": "Block",
     "posUpDown": "Block: Up 1, Down 2",
-    "elementType": null,
+    "type": "Block",
     "additionalInfos": {
       "sName": null,
       "airPath": null,
@@ -648,7 +698,9 @@
       "iconName": null,
       "positionUp": 0,
       "positionDown": 0,
-      "blockNumber": 2
+      "blockNumber": 2,
+      "direction": null,
+      "airPathPosition": null
     }
   },
   {
@@ -660,7 +712,7 @@
     "z2": 950,
     "label": "Block",
     "posUpDown": "Block: Up 2, Down 3",
-    "elementType": null,
+    "type": "Block",
     "additionalInfos": {
       "sName": null,
       "airPath": null,
@@ -668,7 +720,9 @@
       "iconName": null,
       "positionUp": 0,
       "positionDown": 0,
-      "blockNumber": 3
+      "blockNumber": 3,
+      "direction": null,
+      "airPathPosition": null
     }
   },
   {
@@ -680,7 +734,7 @@
     "z2": 950,
     "label": "Block",
     "posUpDown": "Block: Up 0, Down 4",
-    "elementType": null,
+    "type": "Block",
     "additionalInfos": {
       "sName": null,
       "airPath": null,
@@ -688,7 +742,97 @@
       "iconName": null,
       "positionUp": 0,
       "positionDown": 0,
-      "blockNumber": 4
+      "blockNumber": 4,
+      "direction": null,
+      "airPathPosition": null
+    }
+  },
+  {
+    "x1": 0,
+    "x2": 5,
+    "y1": 170,
+    "y2": 1020,
+    "z1": 50,
+    "z2": 900,
+    "label": "Hole",
+    "posUpDown": "",
+    "type": "Hole",
+    "additionalInfos": {
+      "sName": null,
+      "airPath": "Supply",
+      "iconPosition": null,
+      "iconName": null,
+      "positionUp": 0,
+      "positionDown": 0,
+      "blockNumber": 0,
+      "direction": "Front",
+      "airPathPosition": "Inlet"
+    }
+  },
+  {
+    "x1": 4150,
+    "x2": 4155,
+    "y1": 170,
+    "y2": 1020,
+    "z1": -75,
+    "z2": 775,
+    "label": "Hole",
+    "posUpDown": "",
+    "type": "Hole",
+    "additionalInfos": {
+      "sName": null,
+      "airPath": "Supply",
+      "iconPosition": null,
+      "iconName": null,
+      "positionUp": 0,
+      "positionDown": 0,
+      "blockNumber": 0,
+      "direction": "Front",
+      "airPathPosition": "Outlet"
+    }
+  },
+  {
+    "x1": 2250,
+    "x2": 2255,
+    "y1": 1070,
+    "y2": 1920,
+    "z1": 50,
+    "z2": 900,
+    "label": "Hole",
+    "posUpDown": "",
+    "type": "Hole",
+    "additionalInfos": {
+      "sName": null,
+      "airPath": "Exhaust",
+      "iconPosition": null,
+      "iconName": null,
+      "positionUp": 0,
+      "positionDown": 0,
+      "blockNumber": 0,
+      "direction": "Front",
+      "airPathPosition": "Inlet"
+    }
+  },
+  {
+    "x1": 600,
+    "x2": 605,
+    "y1": 1070,
+    "y2": 1920,
+    "z1": 50,
+    "z2": 900,
+    "label": "Hole",
+    "posUpDown": "",
+    "type": "Hole",
+    "additionalInfos": {
+      "sName": null,
+      "airPath": "Exhaust",
+      "iconPosition": null,
+      "iconName": null,
+      "positionUp": 0,
+      "positionDown": 0,
+      "blockNumber": 0,
+      "direction": "Front",
+      "airPathPosition": "Outlet"
     }
   },
   {
@@ -700,8 +844,18 @@
     "z2": 900,
     "label": "AD",
     "posUpDown": "",
-    "elementType": null,
-    "additionalInfos": null
+    "type": "AirDamper",
+    "additionalInfos": {
+      "sName": null,
+      "airPath": "Supply",
+      "iconPosition": null,
+      "iconName": null,
+      "positionUp": 0,
+      "positionDown": 0,
+      "blockNumber": 0,
+      "direction": "Front",
+      "airPathPosition": "Inlet"
+    }
   },
   {
     "x1": 485,
@@ -712,8 +866,18 @@
     "z2": 900,
     "label": "AD",
     "posUpDown": "",
-    "elementType": null,
-    "additionalInfos": null
+    "type": "AirDamper",
+    "additionalInfos": {
+      "sName": null,
+      "airPath": "Exhaust",
+      "iconPosition": null,
+      "iconName": null,
+      "positionUp": 0,
+      "positionDown": 0,
+      "blockNumber": 0,
+      "direction": "Front",
+      "airPathPosition": "Outlet"
+    }
   },
   {
     "x1": -215,
@@ -724,8 +888,18 @@
     "z2": 900,
     "label": "FC",
     "posUpDown": "",
-    "elementType": null,
-    "additionalInfos": null
+    "type": "FlexibleConnection",
+    "additionalInfos": {
+      "sName": null,
+      "airPath": "Supply",
+      "iconPosition": null,
+      "iconName": null,
+      "positionUp": 0,
+      "positionDown": 0,
+      "blockNumber": 0,
+      "direction": "Front",
+      "airPathPosition": "Inlet"
+    }
   },
   {
     "x1": 4155,
@@ -736,8 +910,18 @@
     "z2": 775,
     "label": "FC",
     "posUpDown": "",
-    "elementType": null,
-    "additionalInfos": null
+    "type": "FlexibleConnection",
+    "additionalInfos": {
+      "sName": null,
+      "airPath": "Supply",
+      "iconPosition": null,
+      "iconName": null,
+      "positionUp": 0,
+      "positionDown": 0,
+      "blockNumber": 0,
+      "direction": "Front",
+      "airPathPosition": "Outlet"
+    }
   },
   {
     "x1": 2255,
@@ -748,8 +932,18 @@
     "z2": 900,
     "label": "FC",
     "posUpDown": "",
-    "elementType": null,
-    "additionalInfos": null
+    "type": "FlexibleConnection",
+    "additionalInfos": {
+      "sName": null,
+      "airPath": "Exhaust",
+      "iconPosition": null,
+      "iconName": null,
+      "positionUp": 0,
+      "positionDown": 0,
+      "blockNumber": 0,
+      "direction": "Front",
+      "airPathPosition": "Inlet"
+    }
   },
   {
     "x1": 385,
@@ -760,8 +954,18 @@
     "z2": 900,
     "label": "FC",
     "posUpDown": "",
-    "elementType": null,
-    "additionalInfos": null
+    "type": "FlexibleConnection",
+    "additionalInfos": {
+      "sName": null,
+      "airPath": "Exhaust",
+      "iconPosition": null,
+      "iconName": null,
+      "positionUp": 0,
+      "positionDown": 0,
+      "blockNumber": 0,
+      "direction": "Front",
+      "airPathPosition": "Outlet"
+    }
   },
   {
     "x1": 50,
@@ -772,7 +976,7 @@
     "z2": 900,
     "label": "Function",
     "posUpDown": "PF, U:0, D:1",
-    "elementType": "Function",
+    "type": "Function",
     "additionalInfos": {
       "sName": "PF",
       "airPath": "Supply",
@@ -780,7 +984,9 @@
       "iconName": null,
       "positionUp": 0,
       "positionDown": 0,
-      "blockNumber": 0
+      "blockNumber": 0,
+      "direction": null,
+      "airPathPosition": null
     }
   },
   {
@@ -792,7 +998,7 @@
     "z2": 900,
     "label": "Function",
     "posUpDown": "GM, U:0, D:5",
-    "elementType": "Function",
+    "type": "Function",
     "additionalInfos": {
       "sName": "GM",
       "airPath": "Supply",
@@ -800,7 +1006,9 @@
       "iconName": null,
       "positionUp": 0,
       "positionDown": 0,
-      "blockNumber": 0
+      "blockNumber": 0,
+      "direction": null,
+      "airPathPosition": null
     }
   },
   {
@@ -812,7 +1020,7 @@
     "z2": 1070,
     "label": "Function",
     "posUpDown": "RR, U:1, D:2",
-    "elementType": "Function",
+    "type": "Function",
     "additionalInfos": {
       "sName": "RR",
       "airPath": "Supply",
@@ -820,7 +1028,9 @@
       "iconName": null,
       "positionUp": 0,
       "positionDown": 0,
-      "blockNumber": 0
+      "blockNumber": 0,
+      "direction": null,
+      "airPathPosition": null
     }
   },
   {
@@ -832,7 +1042,7 @@
     "z2": 900,
     "label": "Function",
     "posUpDown": "VF, U:0, D:3",
-    "elementType": "Function",
+    "type": "Function",
     "additionalInfos": {
       "sName": "VF",
       "airPath": "Supply",
@@ -840,7 +1050,9 @@
       "iconName": null,
       "positionUp": 0,
       "positionDown": 0,
-      "blockNumber": 0
+      "blockNumber": 0,
+      "direction": null,
+      "airPathPosition": null
     }
   },
   {
@@ -852,7 +1064,7 @@
     "z2": 900,
     "label": "Function",
     "posUpDown": "ES, U:0, D:4",
-    "elementType": "Function",
+    "type": "Function",
     "additionalInfos": {
       "sName": "ES",
       "airPath": "Supply",
@@ -860,7 +1072,9 @@
       "iconName": null,
       "positionUp": 0,
       "positionDown": 0,
-      "blockNumber": 0
+      "blockNumber": 0,
+      "direction": null,
+      "airPathPosition": null
     }
   },
   {
@@ -872,7 +1086,7 @@
     "z2": 900,
     "label": "Function",
     "posUpDown": "VF, U:2, D:0",
-    "elementType": "Function",
+    "type": "Function",
     "additionalInfos": {
       "sName": "VF",
       "airPath": "Exhaust",
@@ -880,7 +1094,9 @@
       "iconName": null,
       "positionUp": 0,
       "positionDown": 0,
-      "blockNumber": 0
+      "blockNumber": 0,
+      "direction": null,
+      "airPathPosition": null
     }
   },
   {
@@ -892,7 +1108,7 @@
     "z2": 900,
     "label": "Function",
     "posUpDown": "PF, U:3, D:0",
-    "elementType": "Function",
+    "type": "Function",
     "additionalInfos": {
       "sName": "PF",
       "airPath": "Exhaust",
@@ -900,7 +1116,9 @@
       "iconName": null,
       "positionUp": 0,
       "positionDown": 0,
-      "blockNumber": 0
+      "blockNumber": 0,
+      "direction": null,
+      "airPathPosition": null
     }
   },
   {
@@ -912,7 +1130,7 @@
     "z2": -1,
     "label": "icon_filter",
     "posUpDown": "Icon: PF",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "PF",
       "airPath": "Supply",
@@ -920,7 +1138,9 @@
       "iconName": "PF",
       "positionUp": 0,
       "positionDown": 0,
-      "blockNumber": 0
+      "blockNumber": 0,
+      "direction": null,
+      "airPathPosition": null
     }
   },
   {
@@ -932,7 +1152,7 @@
     "z2": 951,
     "label": "icon_filter",
     "posUpDown": "Icon: PF",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "PF",
       "airPath": "Supply",
@@ -940,7 +1160,9 @@
       "iconName": "PF",
       "positionUp": 0,
       "positionDown": 0,
-      "blockNumber": 0
+      "blockNumber": 0,
+      "direction": null,
+      "airPathPosition": null
     }
   },
   {
@@ -952,7 +1174,7 @@
     "z2": 525,
     "label": "icon_filter",
     "posUpDown": "Icon: PF",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "PF",
       "airPath": "Supply",
@@ -960,7 +1182,9 @@
       "iconName": "PF",
       "positionUp": 0,
       "positionDown": 0,
-      "blockNumber": 0
+      "blockNumber": 0,
+      "direction": null,
+      "airPathPosition": null
     }
   },
   {
@@ -972,7 +1196,7 @@
     "z2": -251,
     "label": "icon_gas",
     "posUpDown": "Icon: GM",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "GM",
       "airPath": "Supply",
@@ -980,7 +1204,9 @@
       "iconName": "GM",
       "positionUp": 0,
       "positionDown": 0,
-      "blockNumber": 0
+      "blockNumber": 0,
+      "direction": null,
+      "airPathPosition": null
     }
   },
   {
@@ -992,7 +1218,7 @@
     "z2": 951,
     "label": "icon_gas",
     "posUpDown": "Icon: GM",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "GM",
       "airPath": "Supply",
@@ -1000,7 +1226,9 @@
       "iconName": "GM",
       "positionUp": 0,
       "positionDown": 0,
-      "blockNumber": 0
+      "blockNumber": 0,
+      "direction": null,
+      "airPathPosition": null
     }
   },
   {
@@ -1012,7 +1240,7 @@
     "z2": 400,
     "label": "icon_gas",
     "posUpDown": "Icon: GM",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "GM",
       "airPath": "Supply",
@@ -1020,7 +1248,9 @@
       "iconName": "GM",
       "positionUp": 0,
       "positionDown": 0,
-      "blockNumber": 0
+      "blockNumber": 0,
+      "direction": null,
+      "airPathPosition": null
     }
   },
   {
@@ -1032,7 +1262,7 @@
     "z2": -171,
     "label": "icon_rotor",
     "posUpDown": "Icon: RR",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "RR",
       "airPath": "Supply",
@@ -1040,7 +1270,9 @@
       "iconName": "RR",
       "positionUp": 0,
       "positionDown": 0,
-      "blockNumber": 0
+      "blockNumber": 0,
+      "direction": null,
+      "airPathPosition": null
     }
   },
   {
@@ -1052,7 +1284,7 @@
     "z2": 1121,
     "label": "icon_rotor",
     "posUpDown": "Icon: RR",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "RR",
       "airPath": "Supply",
@@ -1060,7 +1292,9 @@
       "iconName": "RR",
       "positionUp": 0,
       "positionDown": 0,
-      "blockNumber": 0
+      "blockNumber": 0,
+      "direction": null,
+      "airPathPosition": null
     }
   },
   {
@@ -1072,7 +1306,7 @@
     "z2": 525,
     "label": "icon_rotor",
     "posUpDown": "Icon: RR",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "RR",
       "airPath": "Supply",
@@ -1080,7 +1314,9 @@
       "iconName": "RR",
       "positionUp": 0,
       "positionDown": 0,
-      "blockNumber": 0
+      "blockNumber": 0,
+      "direction": null,
+      "airPathPosition": null
     }
   },
   {
@@ -1092,7 +1328,7 @@
     "z2": -1,
     "label": "icon_fan",
     "posUpDown": "Icon: VF",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "VF",
       "airPath": "Supply",
@@ -1100,7 +1336,9 @@
       "iconName": "VF",
       "positionUp": 0,
       "positionDown": 0,
-      "blockNumber": 0
+      "blockNumber": 0,
+      "direction": null,
+      "airPathPosition": null
     }
   },
   {
@@ -1112,7 +1350,7 @@
     "z2": 951,
     "label": "icon_fan",
     "posUpDown": "Icon: VF",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "VF",
       "airPath": "Supply",
@@ -1120,7 +1358,9 @@
       "iconName": "VF",
       "positionUp": 0,
       "positionDown": 0,
-      "blockNumber": 0
+      "blockNumber": 0,
+      "direction": null,
+      "airPathPosition": null
     }
   },
   {
@@ -1132,7 +1372,7 @@
     "z2": 525,
     "label": "icon_fan",
     "posUpDown": "Icon: VF",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "VF",
       "airPath": "Supply",
@@ -1140,7 +1380,9 @@
       "iconName": "VF",
       "positionUp": 0,
       "positionDown": 0,
-      "blockNumber": 0
+      "blockNumber": 0,
+      "direction": null,
+      "airPathPosition": null
     }
   },
   {
@@ -1152,7 +1394,7 @@
     "z2": -1,
     "label": "icon_emptysection",
     "posUpDown": "Icon: ES",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "ES",
       "airPath": "Supply",
@@ -1160,7 +1402,9 @@
       "iconName": "ES",
       "positionUp": 0,
       "positionDown": 0,
-      "blockNumber": 0
+      "blockNumber": 0,
+      "direction": null,
+      "airPathPosition": null
     }
   },
   {
@@ -1172,7 +1416,7 @@
     "z2": 951,
     "label": "icon_emptysection",
     "posUpDown": "Icon: ES",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "ES",
       "airPath": "Supply",
@@ -1180,7 +1424,9 @@
       "iconName": "ES",
       "positionUp": 0,
       "positionDown": 0,
-      "blockNumber": 0
+      "blockNumber": 0,
+      "direction": null,
+      "airPathPosition": null
     }
   },
   {
@@ -1192,7 +1438,7 @@
     "z2": 525,
     "label": "icon_emptysection",
     "posUpDown": "Icon: ES",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "ES",
       "airPath": "Supply",
@@ -1200,7 +1446,9 @@
       "iconName": "ES",
       "positionUp": 0,
       "positionDown": 0,
-      "blockNumber": 0
+      "blockNumber": 0,
+      "direction": null,
+      "airPathPosition": null
     }
   },
   {
@@ -1212,7 +1460,7 @@
     "z2": -1,
     "label": "icon_fan",
     "posUpDown": "Icon: VF",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "VF",
       "airPath": "Exhaust",
@@ -1220,7 +1468,9 @@
       "iconName": "VF",
       "positionUp": 0,
       "positionDown": 0,
-      "blockNumber": 0
+      "blockNumber": 0,
+      "direction": null,
+      "airPathPosition": null
     }
   },
   {
@@ -1232,7 +1482,7 @@
     "z2": 951,
     "label": "icon_fan",
     "posUpDown": "Icon: VF",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "VF",
       "airPath": "Exhaust",
@@ -1240,7 +1490,9 @@
       "iconName": "VF",
       "positionUp": 0,
       "positionDown": 0,
-      "blockNumber": 0
+      "blockNumber": 0,
+      "direction": null,
+      "airPathPosition": null
     }
   },
   {
@@ -1252,7 +1504,7 @@
     "z2": 525,
     "label": "icon_fan",
     "posUpDown": "Icon: VF",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "VF",
       "airPath": "Exhaust",
@@ -1260,7 +1512,9 @@
       "iconName": "VF",
       "positionUp": 0,
       "positionDown": 0,
-      "blockNumber": 0
+      "blockNumber": 0,
+      "direction": null,
+      "airPathPosition": null
     }
   },
   {
@@ -1272,7 +1526,7 @@
     "z2": -1,
     "label": "icon_filter",
     "posUpDown": "Icon: PF",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "PF",
       "airPath": "Exhaust",
@@ -1280,7 +1534,9 @@
       "iconName": "PF",
       "positionUp": 0,
       "positionDown": 0,
-      "blockNumber": 0
+      "blockNumber": 0,
+      "direction": null,
+      "airPathPosition": null
     }
   },
   {
@@ -1292,7 +1548,7 @@
     "z2": 951,
     "label": "icon_filter",
     "posUpDown": "Icon: PF",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "PF",
       "airPath": "Exhaust",
@@ -1300,7 +1556,9 @@
       "iconName": "PF",
       "positionUp": 0,
       "positionDown": 0,
-      "blockNumber": 0
+      "blockNumber": 0,
+      "direction": null,
+      "airPathPosition": null
     }
   },
   {
@@ -1312,7 +1570,7 @@
     "z2": 525,
     "label": "icon_filter",
     "posUpDown": "Icon: PF",
-    "elementType": "Icon",
+    "type": "Icon",
     "additionalInfos": {
       "sName": "PF",
       "airPath": "Exhaust",
@@ -1320,7 +1578,9 @@
       "iconName": "PF",
       "positionUp": 0,
       "positionDown": 0,
-      "blockNumber": 0
+      "blockNumber": 0,
+      "direction": null,
+      "airPathPosition": null
     }
   }
 ]

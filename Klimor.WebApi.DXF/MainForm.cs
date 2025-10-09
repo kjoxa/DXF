@@ -318,6 +318,7 @@ namespace Klimor.WebApi.DXF
                 }
             }
 
+            // tu zarządzamy CONNECTORAMI - kopiujemy do pozostałych widoków
             foreach (var view in Views.Except("Frame", "FrameUp", "Roof", "RoofUp", "RightFront", "LeftFront", "DownUp", "UpUp", "Back", "Up"))
             {                
                 foreach (var c in connectors)
@@ -341,7 +342,6 @@ namespace Klimor.WebApi.DXF
                 }
             }
         }
-
 
         private void AssignExternalElementsToFunctions(List<Coordinates> elements)
         {
@@ -955,19 +955,27 @@ namespace Klimor.WebApi.DXF
 
             // powiązanie external elements z funkcjami
             AssignExternalElementsToFunctions(elements);
-            
+
+            var noExtract = true;
             // rysowanie
             DrawBlocks();
-            DrawBlockDimensions();
-            DrawFunctionsWithIcons();
-            DrawFunctionsDimensions();
             DrawExternalElements();
-            GenerateWalls();
 
-            GenerateFrame();
-            GenerateFrameDimensions();
-            GenerateRoof();
-            GenerateRoofDimensions();
+            if (noExtract)
+            {
+                DrawBlockDimensions();
+                DrawFunctionsWithIcons();
+                DrawFunctionsDimensions();
+                DrawExternalElements();
+                GenerateWalls();
+
+                GenerateFrame();
+                GenerateFrameDimensions();
+                GenerateRoof();
+                GenerateRoofDimensions();
+            }            
+
+            // do zrobienia
             //GeneratePorthole();
             //GeneratePortholeDimension();
             //GenerateSwitchbox();
@@ -1002,31 +1010,28 @@ namespace Klimor.WebApi.DXF
 
         private void MainFrm_Load(object sender, EventArgs e)
         {
+            var autoload = false;
             StartProcessService sps = new StartProcessService();
             sps.TerminateExistingPreviousProcess(Path.GetFileNameWithoutExtension(Application.ExecutablePath));
 
-            var path = @"D:\\DXFApp\\DXF\\Ogromna_Debug.json";
-            string json = File.ReadAllText(path);
-            List<Coordinates> elements = JsonSerializer.Deserialize<List<Coordinates>>(json);
-
-            elements = elements.Where(e => !string.IsNullOrWhiteSpace(e.label)).ToList();
-
-            Generate2D(elements, $"{Path.GetFileNameWithoutExtension(path)}.dxf", true, Norm.ISO);
-            //this.Show();
-            //Application.DoEvents();
-            //Task.Delay(2000);
-            //Application.DoEvents();
-            //Close();
-            //MessageBox.Show("OK", "Sukces", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            //Process.Start(new ProcessStartInfo($"{Path.GetFileNameWithoutExtension(path)}.dxf") { UseShellExecute = true });
-            var dwgPath = @"C:\Program Files\Autodesk\DWG TrueView 2026 - English\dwgviewr.exe";
-            var dxfPath = Path.ChangeExtension(Path.GetFileNameWithoutExtension(path), ".dxf");
-
-            Process.Start(new ProcessStartInfo(dwgPath, $"\"{dxfPath}\"")
+            if (autoload)
             {
-                UseShellExecute = false
-            });
-            Close();
+                var path = @"D:\\DXFApp\\DXF\\Ogromna_Debug.json";
+                string json = File.ReadAllText(path);
+                List<Coordinates> elements = JsonSerializer.Deserialize<List<Coordinates>>(json);
+
+                elements = elements.Where(e => !string.IsNullOrWhiteSpace(e.label)).ToList();
+
+                Generate2D(elements, $"{Path.GetFileNameWithoutExtension(path)}.dxf", true, Norm.ISO);
+                var dwgPath = @"C:\Program Files\Autodesk\DWG TrueView 2026 - English\dwgviewr.exe";
+                var dxfPath = Path.ChangeExtension(Path.GetFileNameWithoutExtension(path), ".dxf");
+
+                Process.Start(new ProcessStartInfo(dwgPath, $"\"{dxfPath}\"")
+                {
+                    UseShellExecute = false
+                });
+                Close();
+            }
         }
     }
 }
