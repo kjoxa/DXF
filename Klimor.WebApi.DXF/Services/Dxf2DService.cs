@@ -376,8 +376,11 @@ namespace Klimor.WebApi.DXF.Services
                             }
 
                             if ((!string.IsNullOrEmpty(el.type) && el.label != Lab.Block) &&
-                                (el.View == view.Name || el.label == Lab.Hole) || (el.label == Lab.Connector && view.Name is (ViewName.LeftFront or ViewName.RightFront)))
+                                (el.View == view.Name || el.label == Lab.Hole) || 
+                                (el.label == Lab.Connector && view.Name is (ViewName.LeftFront or ViewName.RightFront)) ||
+                                (el.label is (ViewName.LeftFront or ViewName.RightFront)))
                             {
+                                // zakrywanie elementów na frontach
                                 if (view.Name is (ViewName.LeftFront or ViewName.RightFront))
                                 {
                                     if (Lab.ExternalElements.Any(l => l == el.label) && (el.View == view.Name))
@@ -465,13 +468,15 @@ namespace Klimor.WebApi.DXF.Services
                                 //{
                                 //    dxf.Entities.Add(outerPoly); // &&*
                                 //}
+                                var isFront = el.View is (ViewName.LeftFront or ViewName.RightFront);
 
                                 if (el.label == view.Name ||
                                    (view.Name is (ViewName.Down or ViewName.DownUp) && el.label is (Lab.Down_Div or Lab.Down_DrainTray or Lab.Down_Wall)) ||
                                    (view.Name is (ViewName.Up) && el.label is Lab.Wall) ||
                                    (view.Name is (ViewName.UpUp) && el.label is Lab.Up) ||
                                    (externalElementShow && el.View == view.Name) ||
-                                   (el.label == Lab.Connector && view.Name is (ViewName.LeftFront or ViewName.RightFront))
+                                   (el.label == Lab.Connector && isFront) ||
+                                   (el.type == Lab.Wall && isFront)
                                    )
                                 {
                                     dxf.Entities.Add(outerPoly); // &&*
@@ -1319,11 +1324,19 @@ namespace Klimor.WebApi.DXF.Services
                     return new List<Vector2> { new Vector2(x1, newZ2Down), new Vector2(x2, newZ2Down), new Vector2(x2, newZ1Down), new Vector2(x1, newZ1Down) };
 
                 case "LeftFront": // widok z lewej (YZ)
+                    if (el.label == ViewName.LeftFront)
+                    {
+                        return new List<Vector2> { new Vector2(x1, y1), new Vector2(x2, y1), new Vector2(x2, y2), new Vector2(x1, y2) };
+                    }
                     return new List<Vector2> { new Vector2(z1, y1), new Vector2(z2, y1), new Vector2(z2, y2), new Vector2(z1, y2) };
 
                 case "RightFront": // odbicie w Z
                     double newZ1 = globalZMax + globalZMin - z1;
                     double newZ2 = globalZMax + globalZMin - z2;
+                    if (el.label == ViewName.RightFront)
+                    {
+                        return new List<Vector2> { new Vector2(x1, y1), new Vector2(x2, y1), new Vector2(x2, y2), new Vector2(x1, y2) };
+                    }
                     return new List<Vector2> { new Vector2(newZ2, y1), new Vector2(newZ1, y1), new Vector2(newZ1, y2), new Vector2(newZ2, y2) };
 
                 case "Frame": // widok z dołu (XZ, odbicie w Z) - jak dla Down-a

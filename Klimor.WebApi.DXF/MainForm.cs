@@ -510,6 +510,17 @@ namespace Klimor.WebApi.DXF
 
         private void MapElementsToViews(List<Coordinates> elements)
         {
+            foreach (var el in elements.ToList())
+            {
+                if (el.label == "FrontRight")
+                {
+                    el.label = "RightFront";
+                }
+                if (el.label == "FrontLeft")
+                {
+                    el.label = "LeftFront";
+                }
+            }
             var views = Views.Except("Frame", "Roof", "Connector");
             foreach (var el in elements.ToList())
             {
@@ -661,6 +672,27 @@ namespace Klimor.WebApi.DXF
                         };
                         elements.Add(addBlock);
                     }
+
+                    if ((el.label is (ViewName.LeftFront or ViewName.RightFront)) && el.type == Lab.Wall && (vw.Name is (ViewName.LeftFront or ViewName.RightFront)))
+                    {
+                        var addBlock = new Coordinates
+                        {
+                            View = vw.Name,
+                            label = el.label,
+                            type = el.type,
+                            x1 = el.x1,
+                            x2 = el.x2,
+                            y1 = el.y1,
+                            y2 = el.y2,
+                            z1 = el.z1,
+                            z2 = el.z2,
+                            PositionUp = el.PositionUp,
+                            PositionDown = el.PositionDown,
+                            posUpDown = el.posUpDown,
+                            additionalInfos = el.additionalInfos,
+                        };
+                        elements.Add(addBlock);
+                    }
                 }
             }
 
@@ -713,7 +745,7 @@ namespace Klimor.WebApi.DXF
                 }
             }
 
-            elements.RemoveAll(e => string.IsNullOrWhiteSpace(e.View) && e.label is (Lab.Operational or Lab.Back));
+            elements.RemoveAll(e => string.IsNullOrWhiteSpace(e.View) && e.label is (Lab.Operational or Lab.Back) && e.label != ViewName.RightFront);
             elements.RemoveAll(e => string.IsNullOrWhiteSpace(e.View) && e.label is (Lab.Block or Lab.Function));            
             elements.RemoveAll(e => string.IsNullOrWhiteSpace(e.View) && (e.label is Lab.AD or Lab.FC or Lab.INTK));            
             elements.RemoveAll(e => string.IsNullOrWhiteSpace(e.View) && e.label == Lab.Up && (e.type == Lab.Wall || e.type == Lab.Div));
@@ -778,7 +810,7 @@ namespace Klimor.WebApi.DXF
             void GenerateWalls()
             {
                 var layer = dxf.Layers.Add(new Layer("Walls") { Color = AciColor.Default });
-                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Operational, Lab.Up, Lab.Down, Lab.Down_DrainTray, Lab.Down_Wall, Lab.Back }, false, true, layer, textLayer, Views.Except(ViewName.Frame, ViewName.Roof));
+                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Operational, Lab.Up, Lab.Down, Lab.Down_DrainTray, Lab.Down_Wall, Lab.Back, ViewName.LeftFront, ViewName.RightFront }, false, true, layer, textLayer, Views.Except(ViewName.Frame, ViewName.Roof));
             }
 
             void GenerateWallsDimensions()
@@ -956,6 +988,7 @@ namespace Klimor.WebApi.DXF
             // powiązanie external elements z funkcjami
             AssignExternalElementsToFunctions(elements);
 
+            //GenerateWalls();
             var noExtract = true;
             // rysowanie
             DrawBlocks();
