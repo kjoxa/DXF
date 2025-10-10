@@ -756,6 +756,7 @@ namespace Klimor.WebApi.DXF
             elements.RemoveAll(e => e.label is Lab.Frame && e.View is (ViewName.Down or ViewName.DownUp or ViewName.Up or ViewName.UpUp));            
             elements.RemoveAll(e => e.label is Lab.Roof && e.View is not (ViewName.Roof or ViewName.RoofUp));
             elements.RemoveAll(e => e.label is Lab.Frame && e.View is (ViewName.Roof or ViewName.RoofUp));
+            elements.RemoveAll(e => e.label is (ViewName.Up or Lab.Down_Wall) && e.View is (ViewName.LeftFront or ViewName.RightFront));
 
             // ikony
             var icons = elements.Where(e => e.label.Contains("icon")).ToList();
@@ -1006,7 +1007,9 @@ namespace Klimor.WebApi.DXF
                 GenerateFrameDimensions();
                 GenerateRoof();
                 GenerateRoofDimensions();
-            }            
+                GeneratePorthole();
+                GeneratePortholeDimension();
+            }
 
             // do zrobienia
             //GeneratePorthole();

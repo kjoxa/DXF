@@ -58,6 +58,8 @@ namespace Klimor.WebApi.DXF.Services
         public double globalZMax = 0;
         bool frameXYmoved = false;
 
+        int channelNumberTextSize = 200;
+
         DimensionStyle dimStyle = new DimensionStyle("MyDimStyle")
         {
             TextHeight = 15.0,
@@ -104,7 +106,7 @@ namespace Klimor.WebApi.DXF.Services
 
             if (upChannel != null && (view.Name == ViewName.Operational || view.Name == ViewName.Back))
             {
-                var numberUp = new Text("2", new Vector3(view.XOffset - 500, view.YOffset + upChannel.y2 - (upChannel.y2 - upChannel.y1) / 2 - 300 / 2, 0), 300)
+                var numberUp = new Text("2", new Vector3(view.XOffset - 500, view.YOffset + upChannel.y2 - (upChannel.y2 - upChannel.y1) / 2 - 300 / 2, 0), channelNumberTextSize)
                 {
                     Layer = textLayer,
                     Rotation = 0,
@@ -118,7 +120,7 @@ namespace Klimor.WebApi.DXF.Services
             if (downChannel != null && (view.Name == ViewName.Operational || view.Name == ViewName.Back 
                 || view.Name == ViewName.Up || view.Name == ViewName.Down || view.Name == ViewName.Frame || view.Name == ViewName.Roof))
             {
-                var numberDown = new Text("1", new Vector3(view.XOffset - 500, view.YOffset + downChannel.y2 - (downChannel.y2 - downChannel.y1) / 2 - 300 / 2, 0), 300)
+                var numberDown = new Text("1", new Vector3(view.XOffset - 500, view.YOffset + downChannel.y2 - (downChannel.y2 - downChannel.y1) / 2 - 300 / 2, 0), channelNumberTextSize)
                 {
                     Layer = textLayer,
                     Rotation = 0,
@@ -132,7 +134,7 @@ namespace Klimor.WebApi.DXF.Services
             if (view.Name == ViewName.UpUp && upUpChannel != null)
             {
                 var x1 = upUpChannel.x1 - 600;
-                var numberUp = new Text("2", new Vector3(view.XOffset + x1, view.YOffset + 500, 0), 300)
+                var numberUp = new Text("2", new Vector3(view.XOffset + x1, view.YOffset + 500, 0), channelNumberTextSize)
                 {
                     Layer = textLayer,
                     Rotation = 0,
@@ -146,7 +148,7 @@ namespace Klimor.WebApi.DXF.Services
             if (view.Name == ViewName.DownUp && downUpChannel != null)
             {
                 var x1 = downUpChannel.x1 - 600;
-                var numberUp = new Text("2", new Vector3(view.XOffset + x1, view.YOffset + 500, 0), 300)
+                var numberUp = new Text("2", new Vector3(view.XOffset + x1, view.YOffset + 500, 0), channelNumberTextSize)
                 {
                     Layer = textLayer,
                     Rotation = 0,
@@ -161,7 +163,7 @@ namespace Klimor.WebApi.DXF.Services
             if (view.Name == ViewName.FrameUp && frameUpChannel != null)
             {
                 var x1 = frameUpChannel.x1 - 600;
-                var numberUp = new Text("2", new Vector3(view.XOffset + x1, view.YOffset + 500, 0), 300)
+                var numberUp = new Text("2", new Vector3(view.XOffset + x1, view.YOffset + 500, 0), channelNumberTextSize)
                 {
                     Layer = textLayer,
                     Rotation = 0,
@@ -175,7 +177,7 @@ namespace Klimor.WebApi.DXF.Services
             if (view.Name == ViewName.RoofUp && roofUpChannel != null)
             {
                 var x1 = roofUpChannel.x1 - 600;
-                var numberUp = new Text("2", new Vector3(view.XOffset + x1, view.YOffset + 500, 0), 300)
+                var numberUp = new Text("2", new Vector3(view.XOffset + x1, view.YOffset + 500, 0), channelNumberTextSize)
                 {
                     Layer = textLayer,
                     Rotation = 0,
@@ -462,13 +464,8 @@ namespace Klimor.WebApi.DXF.Services
                                     }                                    
                                 }
 
-                                //if ((el.View == view.Name && el.type != Lab.Wall)
-                                //    || (el.View == view.Name && externalElementShow) // el.zewnetrzne
-                                //    || (el.type == Lab.Wall && el.View == view.Name))
-                                //{
-                                //    dxf.Entities.Add(outerPoly); // &&*
-                                //}
-                                var isFront = el.View is (ViewName.LeftFront or ViewName.RightFront);
+                                var isFront = el.View is (ViewName.LeftFront or ViewName.RightFront) || 
+                                    (view.Name is (ViewName.LeftFront or ViewName.RightFront));
 
                                 if (el.label == view.Name ||
                                    (view.Name is (ViewName.Down or ViewName.DownUp) && el.label is (Lab.Down_Div or Lab.Down_DrainTray or Lab.Down_Wall)) ||
@@ -476,7 +473,7 @@ namespace Klimor.WebApi.DXF.Services
                                    (view.Name is (ViewName.UpUp) && el.label is Lab.Up) ||
                                    (externalElementShow && el.View == view.Name) ||
                                    (el.label == Lab.Connector && isFront) ||
-                                   (el.type == Lab.Wall && isFront)
+                                   (el.type == Lab.Wall && isFront && view.Name is not (ViewName.UpUp or ViewName.DownUp or ViewName.FrameUp or ViewName.RoofUp))
                                    )
                                 {
                                     dxf.Entities.Add(outerPoly); // &&*
@@ -598,11 +595,6 @@ namespace Klimor.WebApi.DXF.Services
                                     }
                                     idx = 0;
                                 }
-
-                                //if (view.Name != ViewName.Frame && el.label == Lab.Frame && frameXYmoved)
-                                //{
-                                //    PrepareFrameToDraw(elements, textLayer, dxf, true);
-                                //}
                             }
                         }
 
@@ -716,53 +708,6 @@ namespace Klimor.WebApi.DXF.Services
             }
         }
 
-        void PrepareFrameToDraw(List<Coordinates> elements, Layer textLayer, DxfDocument dxf, bool backToDefault)
-        {
-            // przywracamy poprzednie rozsunięcie
-            if (backToDefault)
-            {
-                for (int i = 0; i < elements.Count; i++)
-                {
-                    if (elements[i].label == Lab.Frame && elements[i].y1 > 200)
-                    {
-                        var tmp = elements[i];
-                        tmp.x1 -= 10000;
-                        tmp.x2 -= 10000;
-                        elements[i] = tmp;
-                    }
-                }
-            }
-            else
-            {
-                //górne ramy muszą dostać przesunięcie o X
-                bool upFrameExist = false;
-                for (int i = 0; i < elements.Count; i++)
-                {
-                    if (elements[i].label == Lab.Frame && elements[i].y1 > 200)
-                    {
-                        var tmp = elements[i];
-                        tmp.x1 += 10000;
-                        tmp.x2 += 10000;
-                        elements[i] = tmp;
-                        upFrameExist = true;
-                    }
-                }
-
-                if (upFrameExist)
-                {
-                    var firstUpFrame = elements.FirstOrDefault(e => e.label == Lab.Frame && e.y1 > 200);
-                    var text = new Text("Frame Up", new Vector3(firstUpFrame.x1 + Views.Frame.XOffset, firstUpFrame.z1 - 440 + Views.Frame.YOffset, 0), 100)
-                    {
-                        Layer = textLayer,
-                        Rotation = 0,
-                        Color = AciColor.LightGray,
-                        WidthFactor = 1.2,
-                    };
-                    dxf.Entities.Add(text);
-                }
-            }
-        }
-
         void AddCircle(List<Vector2> outer2D, DxfDocument dxf, Coordinates el, Layer layer)
         {            
             // obwiednia kwadratu (outer2D ma 4 narożniki)
@@ -786,514 +731,6 @@ namespace Klimor.WebApi.DXF.Services
             var text = new Text(el.label, new Vector3(center.X + profileOffset, center.Y - 10, 0), 20) { Layer = layer };
             dxf.Entities.Add(text);
         }
-
-        public double ReflectZ(double z) => globalZMax + globalZMin - z;
-
-        public void GetProjectedZ(Coordinates el, string viewName, out double zLeft, out double zRight)
-        {
-            if (viewName == "LeftFront")
-            {
-                double a = ReflectZ(el.z2);
-                double b = ReflectZ(el.z1);
-                zLeft = Math.Min(a, b);
-                zRight = Math.Max(a, b);
-            }
-            else // RightFront
-            {
-                double a = el.z1;
-                double b = el.z2;
-                zLeft = Math.Min(a, b);
-                zRight = Math.Max(a, b);
-            }
-        }
-
-        public double FrontDepth(Coordinates el, string viewName)
-        {
-            if (viewName == "LeftFront")
-                // przód = odbity z2
-                return ReflectZ(el.z2);
-            else
-                // rightFront przód = z1
-                return el.z1;
-        }
-
-        public void GenerateSideViewOLDBETTER(
-    DxfDocument dxf,
-    List<Coordinates> elements,
-    List<string> elementsGroup,
-    bool createDimension,
-    bool createShape,
-    Layer layer,
-    string viewName)
-        {
-            var groupElements = elements
-                .Where(e => elementsGroup.Any(g => string.Equals(e.label, g, StringComparison.OrdinalIgnoreCase)))
-                .ToList();
-
-            var blocks = elements.Where(e => e.label == "Block").ToList();
-            double viewerPlaneX = viewName == "LeftFront" ? blocks.Min(b => b.x1) : blocks.Max(b => b.x2);
-
-            int LabelPriority(Coordinates e) => e.label switch
-            {
-                "AD" or "FC" or "Function" => 0,
-                "Block" => 10,
-                _ => 5
-            };
-            double DepthFromSide(Coordinates e) => viewName == "LeftFront" ? (e.x1 - viewerPlaneX) : (viewerPlaneX - e.x2);
-            bool Overlap(double a1, double a2, double b1, double b2) => Math.Max(a1, b1) < Math.Min(a2, b2) - 1e-6;
-
-            var sideElements = groupElements
-                .Select(e => new { E = e, D = DepthFromSide(e) })
-                .OrderBy(x => x.D)
-                .ThenBy(x => LabelPriority(x.E))
-                .Select(x => x.E)
-                .ToList();
-
-            var frontBlock = blocks
-                .Select(b => new { B = b, D = DepthFromSide(b) })
-                .OrderBy(x => x.D)
-                .FirstOrDefault()
-                ?.B;
-
-            var yOffset = Views[viewName].YOffset;
-            var xOffset = Views[viewName].XOffset;
-
-            var visibleRects = new List<Rect2D>();
-
-            // ——— Liczenie widoczności (painter: od najbliższych do dalszych) ———
-            foreach (var el in sideElements)
-            {
-                // stabilne filtrowanie AD/FC
-                if ((el.label == "AD" || el.label == "FC") && frontBlock != null &&
-                    !Overlap(el.x1, el.x2, frontBlock.x1, frontBlock.x2))
-                    continue;
-
-                GetProjectedZ(el, viewName, out double zLeft, out double zRight);
-                var rect = new Rect2D(el.y1, el.y2, zLeft, zRight, el.label);
-
-                // odejmujemy wszystko, co już "leży bliżej kamery"
-                var toAdd = new List<Rect2D> { rect };
-                foreach (var occ in visibleRects)
-                {
-                    if (toAdd.Count == 0) break;
-                    var next = new List<Rect2D>();
-                    foreach (var r in toAdd) next.AddRange(r.Subtract(occ));
-                    toAdd = next;
-                }
-
-                if (toAdd.Count > 0) visibleRects.AddRange(toAdd);
-            }
-
-            // ——— Rysowanie wyłącznie widocznych fragmentów ———
-            foreach (var r in visibleRects)
-            {
-                var outer2D = r.ToVertices().Select(v => new Vector2(v.X + xOffset, v.Y + yOffset)).ToList();
-
-                if (createShape)
-                {
-                    var outerPoly = new Polyline2D(outer2D.Select(v => new Polyline2DVertex(v.X, v.Y, 0)).ToList(), true)
-                    { Layer = layer };
-                    dxf.Entities.Add(outerPoly);
-
-                    if (r.SourceLabel == "Block")
-                    {
-                        double t = 50.0;
-                        double iZ1 = r.Z1 + t, iZ2 = r.Z2 - t, iY1 = r.Y1 + t, iY2 = r.Y2 - t;
-                        if (iZ2 > iZ1 && iY2 > iY1)
-                        {
-                            var inner2D = new List<Vector2>
-                    {
-                        new Vector2(iZ1 + xOffset, iY1 + yOffset),
-                        new Vector2(iZ2 + xOffset, iY1 + yOffset),
-                        new Vector2(iZ2 + xOffset, iY2 + yOffset),
-                        new Vector2(iZ1 + xOffset, iY2 + yOffset),
-                    };
-                            var innerPoly = new Polyline2D(inner2D.Select(p => new Polyline2DVertex(p.X, p.Y, 0)).ToList(), true)
-                            { Layer = layer };
-                            dxf.Entities.Add(innerPoly);
-                        }
-
-                        // narożniki do środka (jak u Ciebie)
-                        for (int i = 0; i < outer2D.Count; i++)
-                        {
-                            var c = outer2D[i];
-                            double dx = 0, dy = 0;
-                            switch (i)
-                            {
-                                case 0: dx = t; dy = t; break;
-                                case 1: dx = -t; dy = t; break;
-                                case 2: dx = -t; dy = -t; break;
-                                case 3: dx = t; dy = -t; break;
-                            }
-                            var extra = 20.0;
-                            int sx = Math.Sign(dx), sy = Math.Sign(dy);
-
-                            var cornerVertices = new List<Polyline2DVertex>
-                    {
-                        new(c.X,                      c.Y,                      0),
-                        new(c.X + dx + extra * sx,    c.Y,                      0),
-                        new(c.X + dx + extra * sx,    c.Y + dy,                 0),
-                        new(c.X + dx,                 c.Y + dy,                 0),
-                        new(c.X + dx,                 c.Y + dy + extra * sy,    0),
-                        new(c.X,                      c.Y + dy + extra * sy,    0),
-                    };
-
-                            var cornerPoly = new Polyline2D(cornerVertices, true) { Layer = layer };
-                            var hatch = new Hatch(HatchPattern.Solid, true) { Layer = layer, Color = new AciColor(7) };
-                            hatch.BoundaryPaths.Add(new HatchBoundaryPath(new List<EntityObject> { cornerPoly }));
-                            dxf.Entities.Add(hatch);
-                        }
-                    }
-                }
-
-                if (createDimension)
-                {
-                    double dimOffset = 30.0;
-                    var wStart = outer2D[0]; var wEnd = outer2D[1];
-                    dxf.Entities.Add(new LinearDimension(wStart, wEnd, -dimOffset, 0.0, dimStyle) { Layer = layer });
-
-                    var hStart = outer2D[1]; var hEnd = outer2D[2];
-                    dxf.Entities.Add(new LinearDimension(hStart, hEnd, dimOffset, 90.0, dimStyle) { Layer = layer });
-                }
-            }
-
-            // watermark tylko raz
-            AddWatermarkText(dxf, layer, elements, Views[viewName], Views.GetWaterMark());
-        }
-
-
-        public void GenerateSideView(
-    DxfDocument dxf,
-    List<Coordinates> elements,
-    List<string> elementsGroup,
-    bool createDimension,
-    bool createShape,
-    Layer layer,
-    string viewName)
-        {
-            const double EPS = 1e-3;
-
-            // Zwraca część o, która leży POZA maską m (o \ m). Brak niespodzianek, brak „odwrócenia”.
-            List<Rect2D> SliceOutside(Rect2D o, Rect2D m)
-            {
-                // szybkie wyjście: brak nakładania
-                if (o.Z2 <= m.Z1 + EPS || o.Z1 >= m.Z2 - EPS ||
-                    o.Y2 <= m.Y1 + EPS || o.Y1 >= m.Y2 - EPS)
-                    return new List<Rect2D> { o };
-
-                var res = new List<Rect2D>();
-
-                // lewa część
-                if (o.Z1 < m.Z1 - EPS)
-                    res.Add(new Rect2D(o.Y1, o.Y2, o.Z1, Math.Min(o.Z2, m.Z1), o.SourceLabel));
-
-                // prawa część
-                if (o.Z2 > m.Z2 + EPS)
-                    res.Add(new Rect2D(o.Y1, o.Y2, Math.Max(o.Z1, m.Z2), o.Z2, o.SourceLabel));
-
-                // dolna i górna (tylko w zakresie wspólnego Z)
-                double zLo = Math.Max(o.Z1, m.Z1);
-                double zHi = Math.Min(o.Z2, m.Z2);
-                if (zHi - zLo > EPS)
-                {
-                    if (o.Y1 < m.Y1 - EPS)
-                        res.Add(new Rect2D(o.Y1, Math.Min(o.Y2, m.Y1), zLo, zHi, o.SourceLabel));
-                    if (o.Y2 > m.Y2 + EPS)
-                        res.Add(new Rect2D(Math.Max(o.Y1, m.Y2), o.Y2, zLo, zHi, o.SourceLabel));
-                }
-
-                return res.Where(r => (r.Z2 - r.Z1) > EPS && (r.Y2 - r.Y1) > EPS).ToList();
-            }
-
-            bool Overlap1D_Strict(double a1, double a2, double b1, double b2, double eps)
-            {
-                // zachodzi tylko gdy zakresy mają wnętrze wspólne; styki (==) NIE liczą się jako kolizja
-                return Math.Min(a2, b2) - Math.Max(a1, b1) > eps;
-            }
-
-            // --- offsety widoku ---
-            var yOffset = Views[viewName].YOffset;
-            var xOffset = Views[viewName].XOffset;
-
-            // --- dane wejściowe ---
-            var groupElements = elements
-                .Where(e => elementsGroup.Any(g => string.Equals(e.label, g, StringComparison.OrdinalIgnoreCase)))
-                .ToList();
-
-            var blocksAll = elements.Where(e => e.label == "Block").ToList();
-            var frontBlock = (viewName == "LeftFront")
-    ? blocksAll.OrderBy(b => b.x1).First()
-    : blocksAll.OrderByDescending(b => b.x2).First();
-            if (blocksAll.Count == 0) return;
-
-            // --- kierunek patrzenia ---
-            double viewerPlaneX = viewName == "LeftFront" ? blocksAll.Min(b => b.x1) : blocksAll.Max(b => b.x2);
-            double DepthFromSide(Coordinates e) => viewName == "LeftFront" ? (e.x1 - viewerPlaneX) : (viewerPlaneX - e.x2);
-
-            // --- pomocnicze ---
-            
-            bool Eq(double a, double b) => Math.Abs(a - b) <= EPS;
-            bool Overlap1D(double a1, double a2, double b1, double b2) => Math.Max(a1, b1) < Math.Min(a2, b2) - EPS;
-
-            void GetBlockProjectedBounds(Coordinates block, out double bz1, out double bz2, out double by1, out double by2)
-            {
-                GetProjectedZ(block, viewName, out double pz1, out double pz2);
-                bz1 = Math.Min(pz1, pz2);
-                bz2 = Math.Max(pz1, pz2);
-                by1 = block.y1; by2 = block.y2;
-            }
-
-            // ========= FAZA 1 (NAPRAWIONA): widoczność względem UNII bliższych bloków =========
-            // ========= FAZA 1 (bez Subtract): widoczność względem UNII bliższych bloków =========
-            var blocksByDepth = blocksAll.OrderBy(DepthFromSide).ToList(); // najbliższy -> najdalszy
-
-            // rzut prostokąta bloku na widok
-            Rect2D ProjBlock(Coordinates b)
-            {
-                GetProjectedZ(b, viewName, out double z1, out double z2);
-                return new Rect2D(b.y1, b.y2, Math.Min(z1, z2), Math.Max(z1, z2), "Block");
-            }
-
-            // „unia” bliższych bloków jako lista nieprzecinających się prostokątów
-            var nearerUnion = new List<Rect2D>();
-
-            // wynik: widoczne fragmenty + właściciel
-            var visibleBlocks = new List<(Rect2D rect, Coordinates owner)>();
-
-            
-            visibleBlocks.Clear();
-
-            foreach (var b in blocksByDepth)
-            {
-                var rect = ProjBlock(b);
-
-                // 1) widoczne części = rect MINUS (unia bliższych)
-                var toDraw = new List<Rect2D> { rect };
-                foreach (var mask in nearerUnion)
-                {
-                    if (toDraw.Count == 0) break;
-                    var next = new List<Rect2D>();
-                    foreach (var r in toDraw)
-                        next.AddRange(SliceOutside(r, mask));   // <<< ZAMIANA: własne odejmowanie
-                    toDraw = next;
-                }
-                visibleBlocks.AddRange(toDraw.Select(r => (r, b)));
-
-                // 2) zaktualizuj UNIĘ bliższych: dodaj PEŁNY rect bieżącego bloku
-                var addPieces = new List<Rect2D> { rect };
-                foreach (var mask in nearerUnion)
-                {
-                    if (addPieces.Count == 0) break;
-                    var next = new List<Rect2D>();
-                    foreach (var r in addPieces)
-                        next.AddRange(SliceOutside(r, mask));   // <<< ZAMIANA: własne odejmowanie
-                    addPieces = next;
-                }
-                nearerUnion.AddRange(addPieces);
-            }
-
-            // ========= RYSOWANIE bloków =========
-            var drawnCornerKeys = new HashSet<string>();
-
-            foreach (var (r, owner) in visibleBlocks)
-            {
-                var outer2D = r.ToVertices().Select(v => new Vector2(v.X + xOffset, v.Y + yOffset)).ToList();
-
-                if (createShape)
-                {
-                    // zewnętrzny obrys – zawsze
-                    var outerPoly = new Polyline2D(
-                        outer2D.Select(v => new Polyline2DVertex(v.X, v.Y, 0)).ToList(), true
-                    )
-                    { Layer = layer };
-                    dxf.Entities.Add(outerPoly);
-
-                    // ===== WEWNĘTRZNY PROFIL (dla KAŻDEGO bloku), bazując na pełnym ownerze i CLIP do r =====
-                    const double t = 50.0; // profileThickness
-
-                    // 1) bazowe granice "inner" z pełnego bloku (owner), nie z r
-                    GetProjectedZ(owner, viewName, out double oz1, out double oz2);
-                    double bz1 = Math.Min(oz1, oz2), bz2 = Math.Max(oz1, oz2);
-                    double by1 = owner.y1, by2 = owner.y2;
-
-                    double iZ1 = bz1 + t, iZ2 = bz2 - t;
-                    double iY1 = by1 + t, iY2 = by2 - t;
-
-                    if (iZ2 - iZ1 > EPS && iY2 - iY1 > EPS)
-                    {
-                        // pion lewy (Z = iZ1)
-                        if (iZ1 > r.Z1 + EPS && iZ1 < r.Z2 - EPS)
-                        {
-                            double yA = Math.Max(iY1, r.Y1), yB = Math.Min(iY2, r.Y2);
-                            if (yB - yA > EPS)
-                                dxf.Entities.Add(new Line(
-                                    new Vector2(iZ1 + xOffset, yA + yOffset),
-                                    new Vector2(iZ1 + xOffset, yB + yOffset))
-                                { Layer = layer });
-                        }
-
-                        // pion prawy (Z = iZ2)
-                        if (iZ2 > r.Z1 + EPS && iZ2 < r.Z2 - EPS)
-                        {
-                            double yA = Math.Max(iY1, r.Y1), yB = Math.Min(iY2, r.Y2);
-                            if (yB - yA > EPS)
-                                dxf.Entities.Add(new Line(
-                                    new Vector2(iZ2 + xOffset, yA + yOffset),
-                                    new Vector2(iZ2 + xOffset, yB + yOffset))
-                                { Layer = layer });
-                        }
-
-                        // poziom dolny (Y = iY1)
-                        if (iY1 > r.Y1 + EPS && iY1 < r.Y2 - EPS)
-                        {
-                            double zA = Math.Max(iZ1, r.Z1), zB = Math.Min(iZ2, r.Z2);
-                            if (zB - zA > EPS)
-                                dxf.Entities.Add(new Line(
-                                    new Vector2(zA + xOffset, iY1 + yOffset),
-                                    new Vector2(zB + xOffset, iY1 + yOffset))
-                                { Layer = layer });
-                        }
-
-                        // poziom górny (Y = iY2)
-                        if (iY2 > r.Y1 + EPS && iY2 < r.Y2 - EPS)
-                        {
-                            double zA = Math.Max(iZ1, r.Z1), zB = Math.Min(iZ2, r.Z2);
-                            if (zB - zA > EPS)
-                                dxf.Entities.Add(new Line(
-                                    new Vector2(zA + xOffset, iY2 + yOffset),
-                                    new Vector2(zB + xOffset, iY2 + yOffset))
-                                { Layer = layer });
-                        }
-                    }
-                    // ===== koniec: wewnętrzny profil =====
-
-                    // narożniki tylko na rogach zewnętrznych ownera
-                    GetBlockProjectedBounds(owner, out double bzL, out double bzR, out double bY1, out double bY2);
-
-                    bool IsOuterCorner(int idx) => idx switch
-                    {
-                        0 => Eq(r.Z1, bzL) && Eq(r.Y1, bY1),
-                        1 => Eq(r.Z2, bzR) && Eq(r.Y1, bY1),
-                        2 => Eq(r.Z2, bzR) && Eq(r.Y2, bY2),
-                        3 => Eq(r.Z1, bzL) && Eq(r.Y2, bY2),
-                        _ => false
-                    };
-
-                    const double cornerT = 50.0, extra = 20.0;
-                    for (int i = 0; i < 4; i++)
-                    {
-                        if (!IsOuterCorner(i)) continue;
-
-                        string cornerTag = i switch { 0 => "LL", 1 => "LR", 2 => "UR", 3 => "UL", _ => "X" };
-                        string key = $"{owner.GetHashCode()}_{cornerTag}";
-                        if (!drawnCornerKeys.Add(key)) continue;
-
-                        var c = outer2D[i];
-                        double dx = 0, dy = 0;
-                        switch (i)
-                        {
-                            case 0: dx = cornerT; dy = cornerT; break;
-                            case 1: dx = -cornerT; dy = cornerT; break;
-                            case 2: dx = -cornerT; dy = -cornerT; break;
-                            case 3: dx = cornerT; dy = -cornerT; break;
-                        }
-                        int sx = Math.Sign(dx), sy = Math.Sign(dy);
-
-                        var cornerVertices = new List<Polyline2DVertex>
-            {
-                new(c.X,                      c.Y,                      0),
-                new(c.X + dx + extra * sx,    c.Y,                      0),
-                new(c.X + dx + extra * sx,    c.Y + dy,                 0),
-                new(c.X + dx,                 c.Y + dy,                 0),
-                new(c.X + dx,                 c.Y + dy + extra * sy,    0),
-                new(c.X,                      c.Y + dy + extra * sy,    0),
-            };
-
-                        var cornerPoly = new Polyline2D(cornerVertices, true) { Layer = layer };
-                        var hatch = new Hatch(HatchPattern.Solid, true) { Layer = layer, Color = new AciColor(7) };
-                        hatch.BoundaryPaths.Add(new HatchBoundaryPath(new List<EntityObject> { cornerPoly }));
-                        dxf.Entities.Add(hatch);
-                    }
-                    }
-
-                    if (createDimension)
-                {
-                    double dimOffset = 30.0;
-                    var wStart = outer2D[0]; var wEnd = outer2D[1];
-                    dxf.Entities.Add(new LinearDimension(wStart, wEnd, -dimOffset, 0.0, dimStyle) { Layer = layer });
-                    var hStart = outer2D[1]; var hEnd = outer2D[2];
-                    dxf.Entities.Add(new LinearDimension(hStart, hEnd, dimOffset, 90.0, dimStyle) { Layer = layer });
-                }
-            }
-
-            // ========= FAZA 2: overlaye (Function/AD/FC...) – prosto: przyklej i nie rysuj krawędzi na licu =========
-            // ========= FAZA 2: overlaye (Function/AD/FC...) — bez cięcia, tylko tłumienie krawędzi na licu bloku =========
-            var overlays = groupElements
-                .Where(e => e.label != "Block")
-                .OrderBy(DepthFromSide)
-                .ToList();
-
-            // Zbierz krawędzie widocznych fragmentów bloków (po FAZIE 1)
-            var blockEdgesH = visibleBlocks.SelectMany(vb => new[]
-            {
-    new { Y = vb.rect.Y1, Z1 = vb.rect.Z1, Z2 = vb.rect.Z2 },
-    new { Y = vb.rect.Y2, Z1 = vb.rect.Z1, Z2 = vb.rect.Z2 },
-}).ToList();
-
-            var blockEdgesV = visibleBlocks.SelectMany(vb => new[]
-            {
-    new { Z = vb.rect.Z1, Y1 = vb.rect.Y1, Y2 = vb.rect.Y2 },
-    new { Z = vb.rect.Z2, Y1 = vb.rect.Y1, Y2 = vb.rect.Y2 },
-}).ToList();
-
-            bool OnBlockHorizontalEdge(double yConst, double z1, double z2)
-                => blockEdgesH.Any(e => Math.Abs(yConst - e.Y) <= EPS && Overlap1D(z1, z2, e.Z1, e.Z2));
-
-            bool OnBlockVerticalEdge(double zConst, double y1, double y2)
-                => blockEdgesV.Any(e => Math.Abs(zConst - e.Z) <= EPS && Overlap1D(y1, y2, e.Y1, e.Y2));
-
-            foreach (var el in overlays)
-            {
-                GetProjectedZ(el, viewName, out double zL, out double zR);
-                double Z1 = Math.Min(zL, zR), Z2 = Math.Max(zL, zR);
-                double Y1 = el.y1, Y2 = el.y2;
-
-                // punkty narożne overlayu w rzutni
-                var p00 = new Vector2(Z1 + xOffset, Y1 + yOffset);
-                var p10 = new Vector2(Z2 + xOffset, Y1 + yOffset);
-                var p11 = new Vector2(Z2 + xOffset, Y2 + yOffset);
-                var p01 = new Vector2(Z1 + xOffset, Y2 + yOffset);
-
-                // rysuj TYLKO te boki, które nie kładą się na krawędzi widocznego bloku
-                // dół (Y = Y1)
-                if (!OnBlockHorizontalEdge(Y1, Z1, Z2))
-                    dxf.Entities.Add(new Line(p00, p10) { Layer = layer });
-
-                // góra (Y = Y2)
-                if (!OnBlockHorizontalEdge(Y2, Z1, Z2))
-                    dxf.Entities.Add(new Line(p11, p01) { Layer = layer });
-
-                // lewa (Z = Z1)
-                if (!OnBlockVerticalEdge(Z1, Y1, Y2))
-                    dxf.Entities.Add(new Line(p01, p00) { Layer = layer });
-
-                // prawa (Z = Z2)
-                if (!OnBlockVerticalEdge(Z2, Y1, Y2))
-                    dxf.Entities.Add(new Line(p10, p11) { Layer = layer });
-
-                if (createDimension)
-                {
-                    double dimOffset = 30.0;
-                    dxf.Entities.Add(new LinearDimension(p00, p10, -dimOffset, 0.0, dimStyle) { Layer = layer });
-                    dxf.Entities.Add(new LinearDimension(p10, p11, dimOffset, 90.0, dimStyle) { Layer = layer });
-                }
-            }
-
-            // watermark raz
-            AddWatermarkText(dxf, layer, elements, Views[viewName], Views.GetWaterMark());
-        }
-
-
 
         // współrzędne dla poszczególnych widoków / perspektyw
         public List<Vector2> GenerateViewVertices(Coordinates el, string view, double globalXMin, double globalXMax,
@@ -1408,61 +845,6 @@ namespace Klimor.WebApi.DXF.Services
             };
 
             dxf.Entities.Add(text);
-        }
-
-        public class Rect2D
-        {
-            public double Y1, Y2, Z1, Z2;
-            public string SourceLabel { get; set; } // skąd powstał fragment (np. "Block")
-
-            public Rect2D(double y1, double y2, double z1, double z2, string sourceLabel = null)
-            {
-                Y1 = y1; Y2 = y2; Z1 = z1; Z2 = z2;
-                SourceLabel = sourceLabel;
-            }
-
-            public List<Rect2D> Subtract(Rect2D other)
-            {
-                var result = new List<Rect2D>();
-
-                double yOverlapMin = Math.Max(Y1, other.Y1);
-                double yOverlapMax = Math.Min(Y2, other.Y2);
-                double zOverlapMin = Math.Max(Z1, other.Z1);
-                double zOverlapMax = Math.Min(Z2, other.Z2);
-
-                // brak nakładania - cały prostokąt zostaje
-                if (yOverlapMax <= yOverlapMin || zOverlapMax <= zOverlapMin)
-                {
-                    result.Add(this);
-                    return result;
-                }
-
-                // części nad/pod
-                if (Y1 < yOverlapMin)
-                    result.Add(new Rect2D(Y1, yOverlapMin, Z1, Z2, SourceLabel));
-                if (Y2 > yOverlapMax)
-                    result.Add(new Rect2D(yOverlapMax, Y2, Z1, Z2, SourceLabel));
-
-                // części w pasie Y – przycinamy w Z
-                if (Z1 < zOverlapMin)
-                    result.Add(new Rect2D(yOverlapMin, yOverlapMax, Z1, zOverlapMin, SourceLabel));
-                if (Z2 > zOverlapMax)
-                    result.Add(new Rect2D(yOverlapMin, yOverlapMax, zOverlapMax, Z2, SourceLabel));
-
-                return result;
-            }
-
-            public List<Vector2> ToVertices()
-            {
-                // kolejność: LL, LR, UR, UL (po Z w poziomie, Y w pionie)
-                return new List<Vector2>
-                {
-                    new Vector2(Z1, Y1),
-                    new Vector2(Z2, Y1),
-                    new Vector2(Z2, Y2),
-                    new Vector2(Z1, Y2)
-                };
-            }
         }
     }
 }
