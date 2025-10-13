@@ -801,6 +801,8 @@ namespace Klimor.WebApi.DXF
                 Views.SetView(ViewName.LeftFront, Views.LeftFront.XOffset + (Views.LeftFront.XOffset / 2) - ((int)Views.AhuWidth / 2), Views.LeftFront.YOffset);
                 Views.SetView(ViewName.RightFront, Views.RightFront.XOffset - (Views.RightFront.XOffset / 2) - ((int)Views.AhuWidth / 2), Views.RightFront.YOffset);
             }
+            
+            //var vall = Views.All;
 
             void DrawBlocks()
             {
@@ -966,6 +968,11 @@ namespace Klimor.WebApi.DXF
             // rozszerzanie listy elementów o widoki globalne
             MapElementsToViews(elements);
 
+            if (advanced2D)
+            {
+                Views.RemoveViews(ViewName.RoofUp, ViewName.FrameUp, ViewName.UpUp, ViewName.DownUp);
+            }
+
             // przypisywanie DownUp i UpUp, wybór górnych i dolnych kanałów
             SelectBlockUpChannel(elements);
             SelectBlockDownChannel(elements);
@@ -990,12 +997,12 @@ namespace Klimor.WebApi.DXF
             AssignExternalElementsToFunctions(elements);
 
             //GenerateWalls();
-            var noExtract = true;
+            var noExtract = false;
             // rysowanie
             DrawBlocks();
-            DrawExternalElements();
+            //DrawExternalElements();
 
-            if (noExtract)
+            if (true)
             {
                 DrawBlockDimensions();
                 DrawFunctionsWithIcons();

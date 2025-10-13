@@ -189,6 +189,39 @@ namespace Klimor.WebApi.DXF.Services
             }
         }
 
+        private static void AddSolidFill(
+            DxfDocument dxf,
+            Layer layer,
+            EntityObject outerPoly,
+            int index,
+            EntityObject? innerPoly = null,
+            AciColor? color = null)
+        {
+            if (dxf == null || outerPoly == null)
+                return;
+            if (index > 254) index = 1;
+            var fill = new Hatch(HatchPattern.Solid, false)
+            {
+                Layer = layer,
+                Color = color ?? new AciColor(1, 1, 1) //new AciColor((byte)(30 + index), (byte)(30 + index), (byte)(30 + index))
+            };
+
+            // zewnętrzna granica
+            fill.BoundaryPaths.Add(
+                new HatchBoundaryPath(new List<EntityObject> { (EntityObject)outerPoly.Clone() })
+            );
+
+            // opcjonalna wewnętrzna (otwór)
+            if (innerPoly != null)
+            {
+                fill.BoundaryPaths.Add(
+                    new HatchBoundaryPath(new List<EntityObject> { (EntityObject)innerPoly.Clone() })
+                );
+            }
+
+            dxf.Entities.Add(fill);
+        }
+
         public void GenerateView(DxfDocument dxf, List<Coordinates> elements, List<string> elementsGroup, bool createDimension, bool createShape, Layer layer, Layer textLayer, IEnumerable<ViewElement> views)
         {
             var firstElement = elements.OrderBy(e => e.x1).FirstOrDefault(e => e.label == Lab.Block);
@@ -246,6 +279,11 @@ namespace Klimor.WebApi.DXF.Services
                 bool externalElementShow = false;
                 int externalElementsYOffset = 0;
 
+                if (view.Name == ViewName.RightFront)
+                {
+                    groupElements = groupElements.OrderByDescending(e => e.x2).ToList();
+                }
+
                 // widoki boczne: przycinanie
                 //if (view.Name == "LeftFront" || view.Name == "RightFront")
                 //{
@@ -253,9 +291,10 @@ namespace Klimor.WebApi.DXF.Services
                 //}
                 //else
                 {
+                    int fillIndexColor = 0;
                     // dla innych widoków bez przycinania
                     foreach (var el in groupElements)
-                    {
+                    {                                                
                         externalElementShow = false;
                         // generowanie współrzędnych dla widoku
                         List<Vector2> outer2D = GenerateViewVertices(el, view.Name, globalXMin, globalXMax,
@@ -271,18 +310,42 @@ namespace Klimor.WebApi.DXF.Services
                         {
                             Layer = layer
                         };
-
+                        
                         var shapeAdded = false;
                         if (createShape)
                         {                            
                             if (el.label == Lab.Block && el.View == view.Name)
                             {
+                                fillIndexColor += 50;
                                 //if (view.Name == ViewName.Operational)
                                 {
                                     AddWatermarkText(dxf, textLayer, elements, view, Views.GetWaterMark());
                                 }
 
-                                dxf.Entities.Add(outerPoly); // &&*
+                                AddSolidFill(dxf, layer, outerPoly, fillIndexColor);
+                                outerPoly.Layer.Color = new AciColor(7);
+                                outerPoly.Lineweight = Lineweight.W100;
+                                dxf.Entities.Add(outerPoly); // &&*                                                            
+                                //var firstblock = view.Name is ViewName.LeftFront ?
+                                //            elements.OrderBy(e => e.x1).FirstOrDefault(e => e.label == Lab.Block) :
+                                //            elements.OrderBy(e => e.x2).FirstOrDefault(e => e.label == Lab.Block);
+
+                                //if (view.Name is ViewName.LeftFront)
+                                //{
+                                //    if (((el.x1 < firstblock.x1 && el.x1 < firstblock.x2) || (el.x1 < firstblock.x2 && el.y1 > firstblock.y1)))
+                                //    {
+                                //        AddSolidFill(dxf, layer, outerPoly);
+                                //        outerPoly.Layer.Color = AciColor.Red;                                        
+                                //    }
+                                //}
+                                //else
+                                //{
+                                //    if (((el.x2 > firstblock.x2 && el.x2 > firstblock.x1) || (el.x2 > firstblock.x1 && el.y1 > firstblock.y1)))
+                                //    {
+                                //        AddSolidFill(dxf, layer, outerPoly);
+                                //        outerPoly.Layer.Color = AciColor.Red;
+                                //    }
+                                //}                                
 
                                 var left = inner2D.Min(p => p.X);
                                 var right = inner2D.Max(p => p.X);
@@ -519,7 +582,7 @@ namespace Klimor.WebApi.DXF.Services
                                                 cornerVertices.Add(new Polyline2DVertex(c.X, c.Y + profileOffset, 0));
                                                 cornerVertices.Add(new Polyline2DVertex(c.X - profileOffset, c.Y + profileOffset, 0));
 
-                                                if (view.Name.ToLower().Contains("front")                                                    
+                                                if (el.type == "Wall" || el.type.Contains("Removable") || el.type.Contains("Door")
                                                     || externalElementShow // elementy zewnętrzne
                                                     || (el.label.Contains("_") && view.Name == "Down"))
                                                 {
@@ -760,20 +823,20 @@ namespace Klimor.WebApi.DXF.Services
                     double newZ2Down = globalZMax + globalZMin - z2;
                     return new List<Vector2> { new Vector2(x1, newZ2Down), new Vector2(x2, newZ2Down), new Vector2(x2, newZ1Down), new Vector2(x1, newZ1Down) };
 
-                case "LeftFront": // widok z lewej (YZ)
-                    if (el.label == ViewName.LeftFront)
-                    {
-                        return new List<Vector2> { new Vector2(x1, y1), new Vector2(x2, y1), new Vector2(x2, y2), new Vector2(x1, y2) };
-                    }
+                case "RightFront": // widok z lewej (YZ)
+                    //if (el.label == ViewName.LeftFront)
+                    //{
+                    //    return new List<Vector2> { new Vector2(x1, y1), new Vector2(x2, y1), new Vector2(x2, y2), new Vector2(x1, y2) };
+                    //}
                     return new List<Vector2> { new Vector2(z1, y1), new Vector2(z2, y1), new Vector2(z2, y2), new Vector2(z1, y2) };
 
-                case "RightFront": // odbicie w Z
+                case "LeftFront": // odbicie w Z
                     double newZ1 = globalZMax + globalZMin - z1;
                     double newZ2 = globalZMax + globalZMin - z2;
-                    if (el.label == ViewName.RightFront)
-                    {
-                        return new List<Vector2> { new Vector2(x1, y1), new Vector2(x2, y1), new Vector2(x2, y2), new Vector2(x1, y2) };
-                    }
+                    //if (el.label == ViewName.RightFront)
+                    //{
+                    //    return new List<Vector2> { new Vector2(x1, y1), new Vector2(x2, y1), new Vector2(x2, y2), new Vector2(x1, y2) };
+                    //}
                     return new List<Vector2> { new Vector2(newZ2, y1), new Vector2(newZ1, y1), new Vector2(newZ1, y2), new Vector2(newZ2, y2) };
 
                 case "Frame": // widok z dołu (XZ, odbicie w Z) - jak dla Down-a

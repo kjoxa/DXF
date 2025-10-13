@@ -162,6 +162,14 @@ namespace Klimor.WebApi.DXF.Consts
             CurrentNorm = norm;            
         }
 
+        public void RemoveViews(params string[] names)
+        {
+            foreach (var name in names)
+            {
+                _views.Remove(name);
+            }
+        }
+
         public IEnumerable<ViewElement> Select(params string[] names) => names.Select(n => this[n]);
 
         public IEnumerable<ViewElement> Except(params string[] names) => _views.Where(kv => !names.Contains(kv.Key)).Select(kv => kv.Value);
