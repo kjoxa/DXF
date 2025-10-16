@@ -971,8 +971,8 @@ namespace Klimor.WebApi.DXF
             }
             
             // rozszerzanie listy elementów o widoki globalne
-            MapElementsToViews(elements, isExtended);            
-
+            MapElementsToViews(elements, isExtended);
+            PrepareElementsToMode(elements, isExtended);
             if (!isExtended)
             {
                 if (!elements.Any(e => e.label == Lab.Roof))
@@ -1028,19 +1028,7 @@ namespace Klimor.WebApi.DXF
                 GeneratePortholeDimension();
             }
             
-            foreach (var layer in dxf.Layers)
-            {
-                Debug.WriteLine($"Layer: {layer.Name}, IsVisible: {layer.IsVisible}");
-                if (!isExtended)
-                {
-                    layer.IsVisible = layer.Name switch
-                    {
-                        "Function_dimensions" or
-                        "Walls_dimensions" => false,
-                        _ => layer.IsVisible
-                    };
-                }
-            }
+            
 
             // do zrobienia
             //GeneratePorthole();
@@ -1069,9 +1057,42 @@ namespace Klimor.WebApi.DXF
             //    GenerateSwitchbox();
             //    GenerateSwitchboxDimension();
             //}
-
+            PrepareLayersToMode(dxf, isExtended);
             dxf.Save(fileOutput);
         }
+
+        private void PrepareElementsToMode(List<Coordinates> elements, bool isExtended)
+        {
+            if (!isExtended)
+            {
+                foreach (var el in elements.ToList())
+                {
+                    if (!(el.type.Contains("Removable") || el.type.Contains("Door")) &&
+                        (el.label is not (Lab.Block or Lab.Function) && !el.label.Contains("icon")) &&
+                        !Lab.ExternalElements.Any(l => l == el.label))
+                    {
+                        elements.Remove(el);
+                    }
+                }
+            }            
+        }
+
+        private void PrepareLayersToMode(DxfDocument dxf, bool isExtended)
+        {
+            if (!isExtended)
+            {
+                foreach (var layer in dxf.Layers)
+                {
+                    layer.IsVisible = layer.Name switch
+                    {
+                        "Function_dimensions" or
+                        "Walls_dimensions" => false,
+                        _ => layer.IsVisible
+                    };
+                }
+            }            
+        }
+
 
         private void MainFrm_Load(object sender, EventArgs e)
         {

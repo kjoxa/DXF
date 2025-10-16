@@ -204,7 +204,7 @@ namespace Klimor.WebApi.DXF.Services
             var fill = new Hatch(HatchPattern.Solid, false)
             {
                 Layer = layer,
-                Color = color ?? new AciColor(1, 1, 1) //new AciColor((byte)(30 + index), (byte)(30 + index), (byte)(30 + index))
+                Color = color ?? new AciColor(0, 0, 0) //new AciColor((byte)(30 + index), (byte)(30 + index), (byte)(30 + index))
             };
 
             // zewnętrzna granica
@@ -684,6 +684,7 @@ namespace Klimor.WebApi.DXF.Services
 
                         if (createDimension)
                         {
+                            //var frameDimOnlyFor
                             double dimOffset = 30.0;
                             var wStart = outer2D[0];
                             var wEnd = outer2D[1];
@@ -774,7 +775,7 @@ namespace Klimor.WebApi.DXF.Services
                                     heightDim = new LinearDimension(hStart, hEnd, dimOffset, 90.0, dimStyle);
                                 }
                             }
-
+                            
                             if (el.View == view.Name && (el.label == Lab.Function || el.label == Lab.Block || Lab.ExternalElements.Any(l => l == el.label)))
                             {
                                 heightDim.Layer = layer;
