@@ -30,6 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainFrm));
             btnOpenJson = new Button();
+            prodBox = new CheckBox();
             SuspendLayout();
             // 
             // btnOpenJson
@@ -39,18 +40,29 @@
             btnOpenJson.UseVisualStyleBackColor = true;
             btnOpenJson.Click += btnOpenJson_Click;
             // 
+            // prodBox
+            // 
+            resources.ApplyResources(prodBox, "prodBox");
+            prodBox.Checked = true;
+            prodBox.CheckState = CheckState.Checked;
+            prodBox.Name = "prodBox";
+            prodBox.UseVisualStyleBackColor = true;
+            // 
             // MainFrm
             // 
             resources.ApplyResources(this, "$this");
             AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(prodBox);
             Controls.Add(btnOpenJson);
             Name = "MainFrm";
             Load += MainFrm_Load;
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
 
         private Button btnOpenJson;
+        private CheckBox prodBox;
     }
 }

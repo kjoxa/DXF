@@ -119,21 +119,25 @@
   </resheader>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="btnOpenJson.Location" type="System.Drawing.Point, System.Drawing">
-    <value>56, 124</value>
+    <value>116, 33</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="btnOpenJson.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>3, 4, 3, 4</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="btnOpenJson.RightToLeft" type="System.Windows.Forms.RightToLeft, System.Windows.Forms">
     <value>Yes</value>
   </data>
   <data name="btnOpenJson.Size" type="System.Drawing.Size, System.Drawing">
-    <value>75, 23</value>
+    <value>87, 38</value>
   </data>
   <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="btnOpenJson.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
   </data>
   <data name="btnOpenJson.Text" xml:space="preserve">
-    <value>button1</value>
+    <value>Generuj</value>
   </data>
   <data name="&gt;&gt;btnOpenJson.Name" xml:space="preserve">
     <value>btnOpenJson</value>
@@ -145,16 +149,49 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;btnOpenJson.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="prodBox.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="prodBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>106, 90</value>
+  </data>
+  <data name="prodBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>114, 24</value>
+  </data>
+  <data name="prodBox.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
+  </data>
+  <data name="prodBox.Text" xml:space="preserve">
+    <value>Produkcjyjny</value>
+  </data>
+  <data name="&gt;&gt;prodBox.Name" xml:space="preserve">
+    <value>prodBox</value>
+  </data>
+  <data name="&gt;&gt;prodBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;prodBox.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;prodBox.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
   <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
-    <value>7, 15</value>
+    <value>8, 20</value>
   </data>
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
-    <value>551, 276</value>
+    <value>338, 141</value>
+  </data>
+  <data name="$this.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>3, 4, 3, 4</value>
+  </data>
+  <data name="$this.StartPosition" type="System.Windows.Forms.FormStartPosition, System.Windows.Forms">
+    <value>CenterScreen</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
     <value>Klimor DXF</value>

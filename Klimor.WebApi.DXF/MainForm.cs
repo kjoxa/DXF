@@ -58,7 +58,10 @@ namespace Klimor.WebApi.DXF
 
                         elements = elements.Where(e => !string.IsNullOrWhiteSpace(e.label)).ToList();
 
-                        Generate2D(elements, $"{Path.GetFileNameWithoutExtension(ofd.FileName)}.dxf", true, Norm.ISO);
+                        var isExtended = prodBox.Checked;
+                        var norm = isExtended ? Norm.ISO_EXTENDED : Norm.ISO;
+
+                        Generate2D(elements, $"{Path.GetFileNameWithoutExtension(ofd.FileName)}.dxf", isExtended, norm);
                         //GenerateViews(elements, "output2D.dxf");
                         dxf3D.Generate3D(elements, "output3D.dxf");
 
@@ -508,7 +511,7 @@ namespace Klimor.WebApi.DXF
             }
         }
 
-        private void MapElementsToViews(List<Coordinates> elements)
+        private void MapElementsToViews(List<Coordinates> elements, bool extended)
         {
             foreach (var el in elements.ToList())
             {
@@ -744,7 +747,7 @@ namespace Klimor.WebApi.DXF
                     }
                 }
             }
-
+            
             elements.RemoveAll(e => string.IsNullOrWhiteSpace(e.View) && e.label is (Lab.Operational or Lab.Back) && e.label != ViewName.RightFront);
             elements.RemoveAll(e => string.IsNullOrWhiteSpace(e.View) && e.label is (Lab.Block or Lab.Function));            
             elements.RemoveAll(e => string.IsNullOrWhiteSpace(e.View) && (e.label is Lab.AD or Lab.FC or Lab.INTK));            
@@ -766,8 +769,10 @@ namespace Klimor.WebApi.DXF
             }
         }
 
-        private void Generate2D(List<Coordinates> elements, string fileOutput, bool advanced2D, Norm norm)
-        {
+        private void Generate2D(List<Coordinates> elements, string fileOutput, bool isExtended, Norm norm)
+        {            
+            dxf2D.isExtended = isExtended;
+
             Views.AhuLength = elements.Where(el => el.label == Lab.Block).Max(e => e.x2);
             Views.AhuHeight = elements.Where(el => el.label == Lab.Block).Max(e => e.y2);
             Views.AhuWidth = elements.Where(el => el.label == Lab.Block).Max(e => e.z2);
@@ -791,12 +796,12 @@ namespace Klimor.WebApi.DXF
             grid.AlignCellToPoint(col: 1, row: 5, worldX: 0, worldY: 0);
 
             // Użycie presetów siatkowych:
-            Views.ApplyNormOnGrid(Norm.ISO, grid);
+            Views.ApplyNormOnGrid(norm, grid);
             var drawer = new GridDrawer(dxf);
             drawer.Draw(grid);
 
             // odsuwanie żeby w komórce GRID były na środku
-            if (norm == Norm.ISO)
+            if (norm == Norm.ISO || norm == Norm.ISO_EXTENDED)
             {
                 Views.SetView(ViewName.LeftFront, Views.LeftFront.XOffset + (Views.LeftFront.XOffset / 2) - ((int)Views.AhuWidth / 2), Views.LeftFront.YOffset);
                 Views.SetView(ViewName.RightFront, Views.RightFront.XOffset - (Views.RightFront.XOffset / 2) - ((int)Views.AhuWidth / 2), Views.RightFront.YOffset);
@@ -828,7 +833,7 @@ namespace Klimor.WebApi.DXF
                 dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Block }, true, false, layer, textLayer, Views.Except(ViewName.Frame, ViewName.FrameUp, ViewName.Roof, ViewName.RoofUp));
             }
 
-            void DrawFunctionsWithIcons()
+            void DrawFunctionsWithIcons(bool production)
             {
                 var upOffset = Views.Up.YOffset;
                 var upUpOffset = Views.UpUp.YOffset;
@@ -880,7 +885,7 @@ namespace Klimor.WebApi.DXF
                                 dxf.Entities.Add(insertIconUp);
                                 break;
 
-                            case ViewName.UpUp:
+                            case ViewName.UpUp when production:
                                 var insertIconUpUp = new Insert(insertIcon)
                                 {
                                     Position = new Vector3(icon.x1, icon.z1 + upUpOffset, 0),
@@ -966,50 +971,55 @@ namespace Klimor.WebApi.DXF
             }
             
             // rozszerzanie listy elementów o widoki globalne
-            MapElementsToViews(elements);
+            MapElementsToViews(elements, isExtended);            
 
-            if (advanced2D)
+            if (!isExtended)
             {
-                Views.RemoveViews(ViewName.RoofUp, ViewName.FrameUp, ViewName.UpUp, ViewName.DownUp);
+                if (!elements.Any(e => e.label == Lab.Roof))
+                    Views.Roof.Visibility = false;
+                if (!elements.Any(e => e.label == Lab.Frame))
+                    Views.Frame.Visibility = false;
+                Views.UpUp.Visibility = false;
+                Views.DownUp.Visibility = false;
+                Views.FrameUp.Visibility = false;
+                Views.RoofUp.Visibility = false;
             }
 
             // przypisywanie DownUp i UpUp, wybór górnych i dolnych kanałów
-            SelectBlockUpChannel(elements);
-            SelectBlockDownChannel(elements);
-            SelectFunctionDownChannel(elements);
-            SelectFunctionUpChannel(elements);
+            if (isExtended)
+            {
+                SelectBlockUpChannel(elements);
+                SelectBlockDownChannel(elements);
+                SelectFunctionDownChannel(elements);
+                SelectFunctionUpChannel(elements);
 
-            SelectExternalElementsUpChannel(elements, Lab.AD);
-            SelectExternalElementsUpChannel(elements, Lab.FC);
-            SelectExternalElementsUpChannel(elements, Lab.INTK);
-            SelectExternalElementsDownChannel(elements, Lab.AD);
-            SelectExternalElementsDownChannel(elements, Lab.FC);
-            SelectExternalElementsDownChannel(elements, Lab.INTK);
-            SelectFrameUpChannel(elements);
-            SelectRoofUpChannel(elements);
-            // walle
-            SelectWallUpChannel(elements);
-            SelectWallDownChannel(elements);
+                SelectExternalElementsUpChannel(elements, Lab.AD);
+                SelectExternalElementsUpChannel(elements, Lab.FC);
+                SelectExternalElementsUpChannel(elements, Lab.INTK);
+                SelectExternalElementsDownChannel(elements, Lab.AD);
+                SelectExternalElementsDownChannel(elements, Lab.FC);
+                SelectExternalElementsDownChannel(elements, Lab.INTK);
+                SelectFrameUpChannel(elements);
+                SelectRoofUpChannel(elements);                
+                SelectWallUpChannel(elements);
+                SelectWallDownChannel(elements);
+            }
+
             // powiązanie connectorów z funkcjami
             AssignDrainTrayConnectorsToFunctions(elements);
 
             // powiązanie external elements z funkcjami
             AssignExternalElementsToFunctions(elements);
-
-            //GenerateWalls();
-            var noExtract = false;
-            // rysowanie
-            DrawBlocks();
-            //DrawExternalElements();
-
+                            
             if (true)
             {
+                DrawBlocks();
                 DrawBlockDimensions();
-                DrawFunctionsWithIcons();
+                DrawFunctionsWithIcons(isExtended);
                 DrawFunctionsDimensions();
                 DrawExternalElements();
                 GenerateWalls();
-
+                GenerateWallsDimensions();
                 GenerateFrame();
                 GenerateFrameDimensions();
                 GenerateRoof();
@@ -1017,14 +1027,26 @@ namespace Klimor.WebApi.DXF
                 GeneratePorthole();
                 GeneratePortholeDimension();
             }
+            
+            foreach (var layer in dxf.Layers)
+            {
+                Debug.WriteLine($"Layer: {layer.Name}, IsVisible: {layer.IsVisible}");
+                if (!isExtended)
+                {
+                    layer.IsVisible = layer.Name switch
+                    {
+                        "Function_dimensions" or
+                        "Walls_dimensions" => false,
+                        _ => layer.IsVisible
+                    };
+                }
+            }
 
             // do zrobienia
             //GeneratePorthole();
             //GeneratePortholeDimension();
             //GenerateSwitchbox();
             //GenerateSwitchboxDimension();
-
-
 
             //if (!advanced2D)
             //{

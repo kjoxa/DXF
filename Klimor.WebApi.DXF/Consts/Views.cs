@@ -30,8 +30,10 @@ namespace Klimor.WebApi.DXF.Consts
 
         public int YOffset { get; set; }
 
-        public ViewElement(string name, int x, int y) =>
-            (Name, XOffset, YOffset) = (name, x, y);
+        public bool Visibility { get; set; } = true; // 🔹 nowe pole, domyślnie true
+
+        public ViewElement(string name, int x, int y, bool visibility = true) =>
+            (Name, XOffset, YOffset, Visibility) = (name, x, y, visibility);
     }
 
     public class ViewsList
@@ -65,27 +67,16 @@ namespace Klimor.WebApi.DXF.Consts
         public ViewElement this[string name] => _views[name];
 
         public ViewElement Operational => _views[ViewName.Operational];
-
         public ViewElement Back => _views[ViewName.Back];
-
         public ViewElement Up => _views[ViewName.Up];
-
         public ViewElement UpUp => _views[ViewName.UpUp];
-
         public ViewElement Down => _views[ViewName.Down];
-
         public ViewElement DownUp => _views[ViewName.DownUp];
-
         public ViewElement LeftFront => _views[ViewName.LeftFront];
-
         public ViewElement RightFront => _views[ViewName.RightFront];
-
         public ViewElement Frame => _views[ViewName.Frame];
-
         public ViewElement FrameUp => _views[ViewName.FrameUp];
-
         public ViewElement Roof => _views[ViewName.Roof];
-
         public ViewElement RoofUp => _views[ViewName.RoofUp];
 
         public IEnumerable<ViewElement> All => _views.Values;
@@ -121,7 +112,35 @@ namespace Klimor.WebApi.DXF.Consts
                 [ViewName.Roof] = (0, -17000),
                 [ViewName.RoofUp] = (0, -17000),
             },
+            [Norm.ISO_EXTENDED] = new()
+            {
+                [ViewName.RightFront] = (-6000, 0),
+                [ViewName.Operational] = (0, 0),
+                [ViewName.LeftFront] = (13000, 0),
+                [ViewName.Back] = (18000, 0),
+                [ViewName.Down] = (0, 6000),
+                [ViewName.DownUp] = (0, 13000),
+                [ViewName.Up] = (0, -6000),
+                [ViewName.UpUp] = (0, -16000),
+                [ViewName.Frame] = (0, -12000),
+                [ViewName.FrameUp] = (0, -12000),
+                [ViewName.Roof] = (0, -17000),
+                [ViewName.RoofUp] = (0, -17000),
+            },
             [Norm.US] = new()
+            {
+                [ViewName.RightFront] = (13000, 0),
+                [ViewName.Operational] = (0, 0),
+                [ViewName.LeftFront] = (-5500, 0),
+                [ViewName.Back] = (-18500, 0),
+                [ViewName.Down] = (0, -6000),
+                [ViewName.DownUp] = (0, 13000),
+                [ViewName.Up] = (0, 6000),
+                [ViewName.UpUp] = (0, -16000),
+                [ViewName.Frame] = (0, -12000),
+                [ViewName.Roof] = (0, -17000),
+            },
+            [Norm.US_EXTENDED] = new()
             {
                 [ViewName.RightFront] = (13000, 0),
                 [ViewName.Operational] = (0, 0),
@@ -146,6 +165,19 @@ namespace Klimor.WebApi.DXF.Consts
                 [ViewName.UpUp] = (0, -16000),
                 [ViewName.Frame] = (0, -12000),
                 [ViewName.Roof] = (0, -17000),
+            },
+            [Norm.PROD_EXTENDED] = new()
+            {
+                [ViewName.RightFront] = (13000, 0),
+                [ViewName.Operational] = (0, 0),
+                [ViewName.LeftFront] = (-5500, 0),
+                [ViewName.Back] = (-18500, 0),
+                [ViewName.Down] = (0, -6000),
+                [ViewName.DownUp] = (0, 13000),
+                [ViewName.Up] = (0, 6000),
+                [ViewName.UpUp] = (0, -16000),
+                [ViewName.Frame] = (0, -12000),
+                [ViewName.Roof] = (0, -17000),
             }
         };
 
@@ -159,7 +191,7 @@ namespace Klimor.WebApi.DXF.Consts
                 layout.At(name, cell.col, cell.row, localDx, localDy);
 
             layout.ApplyTo(this);
-            CurrentNorm = norm;            
+            CurrentNorm = norm;
         }
 
         public void RemoveViews(params string[] names)
@@ -193,6 +225,9 @@ namespace Klimor.WebApi.DXF.Consts
     {
         ISO,
         US,
-        PROD
+        PROD,
+        ISO_EXTENDED,
+        US_EXTENDED,
+        PROD_EXTENDED,
     }
 }

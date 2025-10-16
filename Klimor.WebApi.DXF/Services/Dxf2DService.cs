@@ -57,6 +57,7 @@ namespace Klimor.WebApi.DXF.Services
         public double globalZMin = 0;
         public double globalZMax = 0;
         bool frameXYmoved = false;
+        public bool isExtended = true;
 
         int channelNumberTextSize = 200;
 
@@ -235,7 +236,7 @@ namespace Klimor.WebApi.DXF.Services
             };
             dxf.Entities.Add(normTitle);
 
-            foreach (var view in views)
+            foreach (var view in views.Where(v => v.Visibility))
             {
                 // podpis widoku przy elemencie
                 firstElement = elements.OrderBy(e => e.x1).FirstOrDefault(e => e.label == Lab.Block);
@@ -243,7 +244,24 @@ namespace Klimor.WebApi.DXF.Services
                 if (firstElement != null)
                 {
                     //double elementCenterY = (firstElement.y1 + firstElement.y2) - 500 + view.YOffset;
-                    var text = new Text(view.Name, new Vector3(view.XOffset + 200, view.YOffset - 400, 0), 100)
+                    var textToShow = view.Name switch
+                    {
+                        ViewName.Operational => "Obsługa/Inspection",
+                        ViewName.Back => "Plecy/Back",
+                        ViewName.LeftFront => "Lewy bok/Left side",
+                        ViewName.RightFront => "Prawy bok/Right side",
+                        ViewName.Up => "Sufit/Up",
+                        ViewName.UpUp => "Sufit górny/UpUp",
+                        ViewName.Down => "Podłoga/Down",
+                        ViewName.DownUp => "Podłoga/Middle",
+                        ViewName.Frame => "Rama",
+                        ViewName.FrameUp => "Rama middle",
+                        ViewName.Roof => "Dach",
+                        ViewName.RoofUp => "Dach Up",
+                        _ => view.Name
+                    };
+
+                    var text = new Text(textToShow, new Vector3(view.XOffset + 200, view.YOffset - 400, 0), 100)
                     {
                         Layer = textLayer,
                         Rotation = 0,
@@ -253,22 +271,25 @@ namespace Klimor.WebApi.DXF.Services
                     dxf.Entities.Add(text);
                 }
 
-                // numery kanałów                
-                switch (view.Name)
+                // numery kanałów
+                if (isExtended)
                 {
-                    case ViewName.Operational:
-                    case ViewName.Back:
-                    case ViewName.Up:
-                    case ViewName.UpUp:
-                    case ViewName.Down:
-                    case ViewName.DownUp:
-                    case ViewName.Frame:
-                    case ViewName.FrameUp:
-                    case ViewName.Roof:
-                    case ViewName.RoofUp:
-                        GenerateChannelNumbers(elements, dxf, view, textLayer);
-                        break;
-                }
+                    switch (view.Name)
+                    {
+                        case ViewName.Operational:
+                        case ViewName.Back:
+                        case ViewName.Up:
+                        case ViewName.UpUp:
+                        case ViewName.Down:
+                        case ViewName.DownUp:
+                        case ViewName.Frame:
+                        case ViewName.FrameUp:
+                        case ViewName.Roof:
+                        case ViewName.RoofUp:
+                            GenerateChannelNumbers(elements, dxf, view, textLayer);
+                            break;
+                    }
+                }                
 
                 // wyodrębnienie elementów dla grupy
                 var groupElements = elements
@@ -536,7 +557,7 @@ namespace Klimor.WebApi.DXF.Services
                                    (view.Name is (ViewName.UpUp) && el.label is Lab.Up) ||
                                    (externalElementShow && el.View == view.Name) ||
                                    (el.label == Lab.Connector && isFront) ||
-                                   (el.type == Lab.Wall && isFront && view.Name is not (ViewName.UpUp or ViewName.DownUp or ViewName.FrameUp or ViewName.RoofUp))
+                                   (el.type == Lab.Wall && isFront && view.Name is not (ViewName.Up or ViewName.UpUp or ViewName.DownUp or ViewName.FrameUp or ViewName.RoofUp))
                                    )
                                 {
                                     dxf.Entities.Add(outerPoly); // &&*
