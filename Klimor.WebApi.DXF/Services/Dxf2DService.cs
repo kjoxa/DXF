@@ -248,20 +248,20 @@ namespace Klimor.WebApi.DXF.Services
                     {
                         ViewName.Operational => "Obsługa/Inspection",
                         ViewName.Back => "Plecy/Back",
-                        ViewName.LeftFront => "Lewy bok/Left side",
-                        ViewName.RightFront => "Prawy bok/Right side",
+                        ViewName.LeftFront => "Lewy bok/Side L",
+                        ViewName.RightFront => "Prawy bok/Side R",
                         ViewName.Up => "Sufit/Up",
-                        ViewName.UpUp => "Sufit górny/UpUp",
+                        ViewName.UpUp => "Sufit 2/Up2",
                         ViewName.Down => "Podłoga/Down",
-                        ViewName.DownUp => "Podłoga/Middle",
+                        ViewName.DownUp => "Podłoga/Down2",
                         ViewName.Frame => "Rama",
-                        ViewName.FrameUp => "Rama middle",
-                        ViewName.Roof => "Dach",
-                        ViewName.RoofUp => "Dach Up",
+                        ViewName.FrameUp => "Rama/Frame2",
+                        ViewName.Roof => "Dach/Roof",
+                        ViewName.RoofUp => "Dach/Roof2",
                         _ => view.Name
                     };
 
-                    var text = new Text(textToShow, new Vector3(view.XOffset + 200, view.YOffset - 400, 0), 100)
+                    var text = new Text(textToShow, new Vector3(view.XOffset, view.YOffset - 400, 0), 100)
                     {
                         Layer = textLayer,
                         Rotation = 0,
@@ -305,490 +305,459 @@ namespace Klimor.WebApi.DXF.Services
                     groupElements = groupElements.OrderByDescending(e => e.x2).ToList();
                 }
 
-                // widoki boczne: przycinanie
-                //if (view.Name == "LeftFront" || view.Name == "RightFront")
-                //{
-                //    GenerateSideView(dxf, elements, elementsGroup, createDimension, createShape, layer, view.Name);
-                //}
-                //else
+                int fillIndexColor = 0;
+                // dla innych widoków bez przycinania
+                foreach (var el in groupElements)
                 {
-                    int fillIndexColor = 0;
-                    // dla innych widoków bez przycinania
-                    foreach (var el in groupElements)
-                    {                                                
-                        externalElementShow = false;
-                        // generowanie współrzędnych dla widoku
-                        List<Vector2> outer2D = GenerateViewVertices(el, view.Name, globalXMin, globalXMax,
-                            globalYMin, globalYMax, globalZMin, globalZMax);
-                        List<Vector2> inner2D = outer2D.Select(v => new Vector2(v.X + profileOffset, v.Y - profileOffset)).ToList();
+                    externalElementShow = false;
+                    // generowanie współrzędnych dla widoku
+                    List<Vector2> outer2D = GenerateViewVertices(el, view.Name, globalXMin, globalXMax,
+                        globalYMin, globalYMax, globalZMin, globalZMax);
+                    List<Vector2> inner2D = outer2D.Select(v => new Vector2(v.X + profileOffset, v.Y - profileOffset)).ToList();
 
-                        // przesunięcie Y dla widoku
-                        outer2D = outer2D.Select(v => new Vector2(v.X + view.XOffset, v.Y + view.YOffset)).ToList();
-                        inner2D = inner2D.Select(v => new Vector2(v.X + view.XOffset, v.Y + view.YOffset)).ToList();
+                    // przesunięcie Y dla widoku
+                    outer2D = outer2D.Select(v => new Vector2(v.X + view.XOffset, v.Y + view.YOffset)).ToList();
+                    inner2D = inner2D.Select(v => new Vector2(v.X + view.XOffset, v.Y + view.YOffset)).ToList();
 
-                        // &&*: rysowanie zewnętrznej i wewnętrznej polilinii
-                        var outerPoly = new Polyline2D(outer2D.Select(v => new Polyline2DVertex(v.X, v.Y, 0)).ToList(), true)
+                    // &&*: rysowanie zewnętrznej i wewnętrznej polilinii
+                    var outerPoly = new Polyline2D(outer2D.Select(v => new Polyline2DVertex(v.X, v.Y, 0)).ToList(), true)
+                    {
+                        Layer = layer
+                    };
+
+                    if (createShape)
+                    {
+                        if (el.label == Lab.Block && el.View == view.Name && el.Show)
                         {
-                            Layer = layer
-                        };
-                        
-                        var shapeAdded = false;
-                        if (createShape)
-                        {                            
-                            if (el.label == Lab.Block && el.View == view.Name)
+                            fillIndexColor += 50;
+                            AddSolidFill(dxf, layer, outerPoly, fillIndexColor);
+                            //if (view.Name == ViewName.Operational)
                             {
-                                fillIndexColor += 50;
-                                //if (view.Name == ViewName.Operational)
+                                AddWatermarkText(dxf, textLayer, elements, view, Views.GetWaterMark());
+                            }
+
+                            outerPoly.Layer.Color = new AciColor(7);
+                            outerPoly.Lineweight = Lineweight.W100;
+                            dxf.Entities.Add(outerPoly); // &&*                                                                                        
+
+                            var left = inner2D.Min(p => p.X);
+                            var right = inner2D.Max(p => p.X);
+                            var bottom = inner2D.Min(p => p.Y);
+                            var top = inner2D.Max(p => p.Y);
+
+                            var bottomLeft = inner2D.First(p => p.X == left && p.Y == bottom);
+                            var bottomRight = inner2D.First(p => p.X == right && p.Y == bottom);
+                            var topRight = inner2D.First(p => p.X == right && p.Y == top);
+                            var topLeft = inner2D.First(p => p.X == left && p.Y == top);
+
+                            // korekta narożników
+                            bottomLeft = new Vector2(bottomLeft.X, bottomLeft.Y + 2 * profileOffset);
+                            bottomRight = new Vector2(bottomRight.X - 2 * profileOffset, bottomRight.Y + 2 * profileOffset);
+                            topRight = new Vector2(topRight.X - 2 * profileOffset, topRight.Y);
+                            topLeft = new Vector2(topLeft.X, topLeft.Y);
+
+                            inner2D = new List<Vector2> { bottomLeft, bottomRight, topRight, topLeft };
+
+                            var innerPoly = new Polyline2D(inner2D.Select(v => new Polyline2DVertex(v.X, v.Y, 0)).ToList(), true)
+                            {
+                                Layer = layer
+                            };
+
+                            dxf.Entities.Add(innerPoly);
+
+                            var idx = 0;
+                            var extra = 20.0;              // długość „wysunięcia” do wnętrza
+                            var w = profileOffset;         // szerokość profilu (dotychczasowe 50)
+
+                            foreach (var c in outer2D)
+                            {
+                                var cornerVertices = new List<Polyline2DVertex>();
+
+                                switch (idx)
                                 {
-                                    AddWatermarkText(dxf, textLayer, elements, view, Views.GetWaterMark());
+                                    case 0: // lewy dół – rozsunięcie: w prawo (X+) i w górę (Y+)
+                                        cornerVertices.Add(new Polyline2DVertex(c.X, c.Y, 0));
+                                        cornerVertices.Add(new Polyline2DVertex(c.X + w + extra, c.Y, 0));
+                                        cornerVertices.Add(new Polyline2DVertex(c.X + w + extra, c.Y + w, 0));
+                                        cornerVertices.Add(new Polyline2DVertex(c.X + w, c.Y + w, 0));
+                                        cornerVertices.Add(new Polyline2DVertex(c.X + w, c.Y + w + extra, 0));
+                                        cornerVertices.Add(new Polyline2DVertex(c.X, c.Y + w + extra, 0));
+
+                                        if (!view.Name.ToLower().Contains("front") && el.additionalInfos != null)
+                                        {
+                                            var text = new Text(el.additionalInfos.blockNumber.ToString(),
+                                            new Vector3(c.X + 2 * profileOffset, c.Y + 2 * profileOffset, 0), 70);
+
+                                            text.Style = new TextStyle("ArialBold", "arialbd.ttf");
+                                            text.Layer = layer;
+                                            text.Color = new AciColor(7);
+                                            dxf.Entities.Add(text);
+                                        }
+                                        break;
+
+                                    case 1: // prawy dół – rozsunięcie: w lewo (X−) i w górę (Y+)
+                                        cornerVertices.Add(new Polyline2DVertex(c.X, c.Y, 0));
+                                        cornerVertices.Add(new Polyline2DVertex(c.X - w - extra, c.Y, 0));
+                                        cornerVertices.Add(new Polyline2DVertex(c.X - w - extra, c.Y + w, 0));
+                                        cornerVertices.Add(new Polyline2DVertex(c.X - w, c.Y + w, 0));
+                                        cornerVertices.Add(new Polyline2DVertex(c.X - w, c.Y + w + extra, 0));
+                                        cornerVertices.Add(new Polyline2DVertex(c.X, c.Y + w + extra, 0));
+                                        break;
+
+                                    case 2: // prawy góra – rozsunięcie: w lewo (X−) i w dół (Y−)
+                                        cornerVertices.Add(new Polyline2DVertex(c.X, c.Y, 0));
+                                        cornerVertices.Add(new Polyline2DVertex(c.X - w - extra, c.Y, 0));
+                                        cornerVertices.Add(new Polyline2DVertex(c.X - w - extra, c.Y - w, 0));
+                                        cornerVertices.Add(new Polyline2DVertex(c.X - w, c.Y - w, 0));
+                                        cornerVertices.Add(new Polyline2DVertex(c.X - w, c.Y - w - extra, 0));
+                                        cornerVertices.Add(new Polyline2DVertex(c.X, c.Y - w - extra, 0));
+                                        break;
+
+                                    case 3: // lewy góra – rozsunięcie: w prawo (X+) i w dół (Y−)
+                                        cornerVertices.Add(new Polyline2DVertex(c.X, c.Y, 0));
+                                        cornerVertices.Add(new Polyline2DVertex(c.X + w + extra, c.Y, 0));
+                                        cornerVertices.Add(new Polyline2DVertex(c.X + w + extra, c.Y - w, 0));
+                                        cornerVertices.Add(new Polyline2DVertex(c.X + w, c.Y - w, 0));
+                                        cornerVertices.Add(new Polyline2DVertex(c.X + w, c.Y - w - extra, 0));
+                                        cornerVertices.Add(new Polyline2DVertex(c.X, c.Y - w - extra, 0));
+                                        break;
                                 }
 
-                                AddSolidFill(dxf, layer, outerPoly, fillIndexColor);
-                                outerPoly.Layer.Color = new AciColor(7);
-                                outerPoly.Lineweight = Lineweight.W100;
-                                dxf.Entities.Add(outerPoly); // &&*                                                            
-                                //var firstblock = view.Name is ViewName.LeftFront ?
-                                //            elements.OrderBy(e => e.x1).FirstOrDefault(e => e.label == Lab.Block) :
-                                //            elements.OrderBy(e => e.x2).FirstOrDefault(e => e.label == Lab.Block);
+                                var cornerPoly = new Polyline2D(cornerVertices, true) { Layer = layer };
+                                var hatch = new Hatch(HatchPattern.Solid, true) { Layer = layer, Color = new AciColor(7) };
+                                hatch.BoundaryPaths.Add(new HatchBoundaryPath(new List<EntityObject> { cornerPoly }));
 
-                                //if (view.Name is ViewName.LeftFront)
-                                //{
-                                //    if (((el.x1 < firstblock.x1 && el.x1 < firstblock.x2) || (el.x1 < firstblock.x2 && el.y1 > firstblock.y1)))
-                                //    {
-                                //        AddSolidFill(dxf, layer, outerPoly);
-                                //        outerPoly.Layer.Color = AciColor.Red;                                        
-                                //    }
-                                //}
-                                //else
-                                //{
-                                //    if (((el.x2 > firstblock.x2 && el.x2 > firstblock.x1) || (el.x2 > firstblock.x1 && el.y1 > firstblock.y1)))
-                                //    {
-                                //        AddSolidFill(dxf, layer, outerPoly);
-                                //        outerPoly.Layer.Color = AciColor.Red;
-                                //    }
-                                //}                                
+                                dxf.Entities.Add(hatch);
+                                idx++;
+                            }
+                            idx = 0;
+                        }
 
-                                var left = inner2D.Min(p => p.X);
-                                var right = inner2D.Max(p => p.X);
-                                var bottom = inner2D.Min(p => p.Y);
-                                var top = inner2D.Max(p => p.Y);
-
-                                var bottomLeft = inner2D.First(p => p.X == left && p.Y == bottom);
-                                var bottomRight = inner2D.First(p => p.X == right && p.Y == bottom);
-                                var topRight = inner2D.First(p => p.X == right && p.Y == top);
-                                var topLeft = inner2D.First(p => p.X == left && p.Y == top);
-
-                                // korekta narożników
-                                bottomLeft = new Vector2(bottomLeft.X, bottomLeft.Y + 2 * profileOffset);
-                                bottomRight = new Vector2(bottomRight.X - 2 * profileOffset, bottomRight.Y + 2 * profileOffset);
-                                topRight = new Vector2(topRight.X - 2 * profileOffset, topRight.Y);
-                                topLeft = new Vector2(topLeft.X, topLeft.Y);
-
-                                inner2D = new List<Vector2> { bottomLeft, bottomRight, topRight, topLeft };
-
-                                var innerPoly = new Polyline2D(inner2D.Select(v => new Polyline2DVertex(v.X, v.Y, 0)).ToList(), true)
+                        if ((!string.IsNullOrEmpty(el.type) && el.label != Lab.Block && el.Show) &&
+                            (el.View == view.Name || el.label == Lab.Hole) ||
+                            (el.label == Lab.Connector && view.Name is (ViewName.LeftFront or ViewName.RightFront)) ||
+                            (el.label is (ViewName.LeftFront or ViewName.RightFront)))
+                        {
+                            // zakrywanie elementów na frontach
+                            if (view.Name is (ViewName.LeftFront or ViewName.RightFront))
+                            {
+                                if (Lab.ExternalElements.Any(l => l == el.label) && (el.View == view.Name))
                                 {
-                                    Layer = layer
-                                };
-                                shapeAdded = true;
-                                dxf.Entities.Add(innerPoly);
+                                    var firstblock = view.Name is ViewName.LeftFront ?
+                                        elements.OrderBy(e => e.x1).FirstOrDefault(e => e.label == Lab.Block) :
+                                        elements.OrderBy(e => e.x2).FirstOrDefault(e => e.label == Lab.Block);
 
+                                    if (el.label is (Lab.AD or Lab.FC or Lab.Connector))
+                                    {
+                                        if (view.Name is ViewName.LeftFront)
+                                        {
+                                            if (!((el.x1 < firstblock.x1 && el.x1 < firstblock.x2) || (el.x1 < firstblock.x2 && el.y1 > firstblock.y1)))
+                                            {
+                                                continue;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (!((el.x2 > firstblock.x2 && el.x2 > firstblock.x1) || (el.x2 > firstblock.x1 && el.y1 > firstblock.y1)))
+                                            {
+                                                continue;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            // dodawanie konektora
+                            if ((el.label == Lab.Connector || el.type == Lab.Porthole) && (view.Name == ViewName.Operational || view.Name == ViewName.Back))
+                            {
+                                AddCircle(outer2D, dxf, el, layer);
+                                continue;
+                            }
+
+                            // dopasowywanie elementów zewnętrznych do widoku                                                               
+                            if (Lab.ExternalElements.Any(l => l == el.label))
+                            {
+                                // AD, FC na widokach up, down, back, operational
+                                if (Lab.ExternalElements.Any(l => l == el.label) && (el.View == view.Name) ||
+                                    (el.label == Lab.Hole && view.Name is (ViewName.Operational or ViewName.Back)) ||
+                                    (el.label == Lab.Connector && el.View is (ViewName.LeftFront or ViewName.RightFront)))
+                                {
+                                    externalElementShow = true;
+                                }
+
+                                if (el.label == Lab.Frame && view.Name == Lab.Operational)
+                                {
+                                    externalElementShow = true;
+                                }
+                                else if (el.additionalInfos != null)
+                                {
+                                    if (el.additionalInfos.direction == "Front" && el.additionalInfos.direction != "Back" && view.Name == Lab.Operational && el.label != Lab.Hole)
+                                        externalElementShow = true;
+                                    if (el.additionalInfos.direction == "Back" && view.Name == Lab.Back)
+                                        externalElementShow = true;
+                                    if (el.additionalInfos.direction == "Up" && view.Name == Lab.Back)
+                                        externalElementShow = true;
+                                }
+                            }
+
+                            // przesunięcie dla elementów zewnętrznych w Y, żeby się nie nakładały
+                            if (externalElementShow)
+                            {
+                                if (view.Name == ViewName.Operational || view.Name == ViewName.Back)
+                                {
+                                    externalElementsYOffset = el.label switch
+                                    {
+                                        Lab.AD => 30,
+                                        Lab.FC => 60,
+                                        Lab.INTK => 90,
+                                        _ => 0
+                                    };
+                                }
+                                // Up/Down/UpUp/DownUp
+                                else
+                                {
+                                    externalElementsYOffset = -170;
+                                }
+                            }
+
+                            var isFront = el.View is (ViewName.LeftFront or ViewName.RightFront) ||
+                                (view.Name is (ViewName.LeftFront or ViewName.RightFront));
+
+                            if (el.label == view.Name ||
+                               (view.Name is (ViewName.Down or ViewName.DownUp) && el.label is (Lab.Down_Div or Lab.Down_DrainTray or Lab.Down_Wall)) ||
+                               (view.Name is (ViewName.Up) && el.label is Lab.Wall) ||
+                               (view.Name is (ViewName.UpUp) && el.label is Lab.Up) ||
+                               (externalElementShow && el.View == view.Name) ||
+                               (el.label == Lab.Connector && isFront) ||
+                               (el.type == Lab.Wall && isFront && view.Name is not (ViewName.Up or ViewName.UpUp or ViewName.DownUp or ViewName.FrameUp or ViewName.RoofUp))
+                               )
+                            {
+                                dxf.Entities.Add(outerPoly); // &&*
+                            }
+
+                            // dodajemy kwadraciki - Up/Down ożebrowanie / znaczniki płyt na Up/Down
+                            if (!externalElementShow
+                                && (el.type == "Wall" || el.type.Contains("Removable"))
+                                && (view.Name == "Up" || view.Name == "Down")
+                                && (el.label == "Operational" || el.label == "Back"))
+                            {
+                                if (el.x2 + 50 < Views.AhuLength)
+                                {
+                                    var cornerService = new CornerService(dxf, layer);
+                                    cornerService.AddFilledCorner(
+                                        outer2D[1].X + 50,
+                                        outer2D[1].Y,
+                                        size: 50,
+                                        anchor: AnchorPos.BottomRight
+                                    );
+                                }
+                            }
+
+                            if ((el.type == "Wall" || el.type == "DrainTray" || el.type.Contains("Removable") || el.type.Contains("Door"))
+                                || el.label.Contains("_") || externalElementShow)
+                            {
                                 var idx = 0;
-                                var extra = 20.0;              // długość „wysunięcia” do wnętrza
-                                var w = profileOffset;         // szerokość profilu (dotychczasowe 50)
-
                                 foreach (var c in outer2D)
                                 {
                                     var cornerVertices = new List<Polyline2DVertex>();
-
                                     switch (idx)
                                     {
-                                        case 0: // lewy dół – rozsunięcie: w prawo (X+) i w górę (Y+)
+                                        case 0: // lewy dół
                                             cornerVertices.Add(new Polyline2DVertex(c.X, c.Y, 0));
-                                            cornerVertices.Add(new Polyline2DVertex(c.X + w + extra, c.Y, 0));
-                                            cornerVertices.Add(new Polyline2DVertex(c.X + w + extra, c.Y + w, 0));
-                                            cornerVertices.Add(new Polyline2DVertex(c.X + w, c.Y + w, 0));
-                                            cornerVertices.Add(new Polyline2DVertex(c.X + w, c.Y + w + extra, 0));
-                                            cornerVertices.Add(new Polyline2DVertex(c.X, c.Y + w + extra, 0));
+                                            cornerVertices.Add(new Polyline2DVertex(c.X + profileOffset, c.Y, 0));
+                                            cornerVertices.Add(new Polyline2DVertex(c.X + profileOffset, c.Y + profileOffset, 0));
+                                            cornerVertices.Add(new Polyline2DVertex(c.X, c.Y + profileOffset, 0));
+                                            break;
 
-                                            if (!view.Name.ToLower().Contains("front") && el.additionalInfos != null)
+                                        case 1: // prawy dół
+                                            cornerVertices.Add(new Polyline2DVertex(c.X - profileOffset, c.Y, 0));
+                                            cornerVertices.Add(new Polyline2DVertex(c.X, c.Y, 0));
+                                            cornerVertices.Add(new Polyline2DVertex(c.X, c.Y + profileOffset, 0));
+                                            cornerVertices.Add(new Polyline2DVertex(c.X - profileOffset, c.Y + profileOffset, 0));
+
+                                            if (el.type == "Wall" || el.type.Contains("Removable") || el.type.Contains("Door")
+                                                || externalElementShow // elementy zewnętrzne
+                                                || (el.label.Contains("_") && view.Name == "Down"))
                                             {
-                                                var text = new Text(el.additionalInfos.blockNumber.ToString(),
-                                                new Vector3(c.X + 2 * profileOffset, c.Y + 2 * profileOffset, 0), 70);
+                                                var wallDescription = el.label switch
+                                                {
+                                                    "Up" => "UP",
+                                                    "UpUp" => "UP",
+                                                    "Operational" => "INS",
+                                                    "Back" => "BACK",
+                                                    "Down" => "Down",
+                                                    "DownUp" => "Down",
+                                                    "Down_Wall" => "DOWN",
+                                                    "Down_DrainTray" => "DRN_TRY",
+                                                    "Frame" => "",
+                                                    _ => el.label
+                                                };
 
-                                                text.Style = new TextStyle("ArialBold", "arialbd.ttf");
-                                                text.Layer = layer;
-                                                text.Color = new AciColor(7);
-                                                dxf.Entities.Add(text);
+                                                // nadpisanie przesuniętych Down, które jako label mają ustawione DownUp, ale trzymają typ
+                                                if (el.type == "DrainTray" && el.label == ViewName.DownUp)
+                                                {
+                                                    wallDescription = "DRN_TRY";
+                                                }
+
+                                                if (wallDescription == "INS")
+                                                {
+                                                    wallDescription = el.type switch
+                                                    {
+                                                        "Door" => "DOOR",
+                                                        "Removable" => "PNL_GRIP",
+                                                        "Removable_2" => "PNL_HH",
+                                                        "Removable_3" => "PNL_BSH",
+                                                        "Wall" => "PNL", //operational, back, frontLeft, frontRight, up, down, middle
+                                                        "DrainTray" => "DRN_TY", //down, middle
+                                                        "Hole" => "HOLE", //operational, back, frontLeft, frontRight, up, down, middle
+                                                        "Div" => "", //operational, back, frontLeft, frontRight, up, down, middle  
+                                                        _ => "INS"
+                                                    };
+                                                }
+
+                                                if (el.label == view.Name ||
+                                                    Lab.ExternalElements.Any(l => l == el.label) ||
+                                                    el.label == Lab.Hole && string.IsNullOrEmpty(el.View) ||
+                                                    el.View is (ViewName.Down or ViewName.DownUp or ViewName.Up or ViewName.UpUp))
+                                                {
+                                                    var text = new Text(wallDescription,
+                                                    new Vector3(c.X - ((el.x2 - el.x1) / 2) - profileOffset, c.Y + 4 * profileOffset + externalElementsYOffset, 0), 20);
+
+                                                    text.Style = new TextStyle("ArialBold", "arialbd.ttf");
+                                                    text.Layer = layer;
+                                                    text.Color = new AciColor(3);
+                                                    dxf.Entities.Add(text);
+                                                }
                                             }
                                             break;
 
-                                        case 1: // prawy dół – rozsunięcie: w lewo (X−) i w górę (Y+)
+                                        case 2: // prawy góra
+                                            cornerVertices.Add(new Polyline2DVertex(c.X - profileOffset, c.Y - profileOffset, 0));
+                                            cornerVertices.Add(new Polyline2DVertex(c.X, c.Y - profileOffset, 0));
                                             cornerVertices.Add(new Polyline2DVertex(c.X, c.Y, 0));
-                                            cornerVertices.Add(new Polyline2DVertex(c.X - w - extra, c.Y, 0));
-                                            cornerVertices.Add(new Polyline2DVertex(c.X - w - extra, c.Y + w, 0));
-                                            cornerVertices.Add(new Polyline2DVertex(c.X - w, c.Y + w, 0));
-                                            cornerVertices.Add(new Polyline2DVertex(c.X - w, c.Y + w + extra, 0));
-                                            cornerVertices.Add(new Polyline2DVertex(c.X, c.Y + w + extra, 0));
+                                            cornerVertices.Add(new Polyline2DVertex(c.X - profileOffset, c.Y, 0));
                                             break;
 
-                                        case 2: // prawy góra – rozsunięcie: w lewo (X−) i w dół (Y−)
+                                        case 3: // lewy góra
                                             cornerVertices.Add(new Polyline2DVertex(c.X, c.Y, 0));
-                                            cornerVertices.Add(new Polyline2DVertex(c.X - w - extra, c.Y, 0));
-                                            cornerVertices.Add(new Polyline2DVertex(c.X - w - extra, c.Y - w, 0));
-                                            cornerVertices.Add(new Polyline2DVertex(c.X - w, c.Y - w, 0));
-                                            cornerVertices.Add(new Polyline2DVertex(c.X - w, c.Y - w - extra, 0));
-                                            cornerVertices.Add(new Polyline2DVertex(c.X, c.Y - w - extra, 0));
-                                            break;
-
-                                        case 3: // lewy góra – rozsunięcie: w prawo (X+) i w dół (Y−)
-                                            cornerVertices.Add(new Polyline2DVertex(c.X, c.Y, 0));
-                                            cornerVertices.Add(new Polyline2DVertex(c.X + w + extra, c.Y, 0));
-                                            cornerVertices.Add(new Polyline2DVertex(c.X + w + extra, c.Y - w, 0));
-                                            cornerVertices.Add(new Polyline2DVertex(c.X + w, c.Y - w, 0));
-                                            cornerVertices.Add(new Polyline2DVertex(c.X + w, c.Y - w - extra, 0));
-                                            cornerVertices.Add(new Polyline2DVertex(c.X, c.Y - w - extra, 0));
+                                            cornerVertices.Add(new Polyline2DVertex(c.X + profileOffset, c.Y, 0));
+                                            cornerVertices.Add(new Polyline2DVertex(c.X + profileOffset, c.Y - profileOffset, 0));
+                                            cornerVertices.Add(new Polyline2DVertex(c.X, c.Y - profileOffset, 0));
                                             break;
                                     }
 
-                                    var cornerPoly = new Polyline2D(cornerVertices, true) { Layer = layer };
-                                    var hatch = new Hatch(HatchPattern.Solid, true) { Layer = layer, Color = new AciColor(7) };
-                                    hatch.BoundaryPaths.Add(new HatchBoundaryPath(new List<EntityObject> { cornerPoly }));
-
-                                    dxf.Entities.Add(hatch);
                                     idx++;
                                 }
                                 idx = 0;
                             }
-
-                            if ((!string.IsNullOrEmpty(el.type) && el.label != Lab.Block) &&
-                                (el.View == view.Name || el.label == Lab.Hole) || 
-                                (el.label == Lab.Connector && view.Name is (ViewName.LeftFront or ViewName.RightFront)) ||
-                                (el.label is (ViewName.LeftFront or ViewName.RightFront)))
-                            {
-                                // zakrywanie elementów na frontach
-                                if (view.Name is (ViewName.LeftFront or ViewName.RightFront))
-                                {
-                                    if (Lab.ExternalElements.Any(l => l == el.label) && (el.View == view.Name))
-                                    {
-                                        var firstblock = view.Name is ViewName.LeftFront ?
-                                            elements.OrderBy(e => e.x1).FirstOrDefault(e => e.label == Lab.Block) :
-                                            elements.OrderBy(e => e.x2).FirstOrDefault(e => e.label == Lab.Block);
-                                        
-                                        if (el.label is (Lab.AD or Lab.FC or Lab.Connector))
-                                        {
-                                            if (view.Name is ViewName.LeftFront)
-                                            {
-                                                if (!((el.x1 < firstblock.x1 && el.x1 < firstblock.x2) || (el.x1 < firstblock.x2 && el.y1 > firstblock.y1)))
-                                                {
-                                                    continue;
-                                                }
-                                            }
-                                            else
-                                            {
-                                                if (!((el.x2 > firstblock.x2 && el.x2 > firstblock.x1) || (el.x2 > firstblock.x1 && el.y1 > firstblock.y1)))
-                                                {
-                                                    continue;
-                                                }
-                                            }
-                                        }                                                                                
-                                    }
-                                }
-
-                                // dodawanie konektora
-                                if ((el.label == Lab.Connector || el.type == Lab.Porthole) && (view.Name == ViewName.Operational || view.Name == ViewName.Back))
-                                {
-                                    AddCircle(outer2D, dxf, el, layer);
-                                    continue;
-                                }                                
-
-                                // dopasowywanie elementów zewnętrznych do widoku                                                               
-                                if (Lab.ExternalElements.Any(l => l == el.label))
-                                {
-                                    // AD, FC na widokach up, down, back, operational
-                                    if (Lab.ExternalElements.Any(l => l == el.label) && (el.View == view.Name) ||
-                                        (el.label == Lab.Hole && view.Name is (ViewName.Operational or ViewName.Back)) ||
-                                        (el.label == Lab.Connector && el.View is (ViewName.LeftFront or ViewName.RightFront)))
-                                        {
-                                        externalElementShow = true;
-                                    }
-                                    
-                                    if (el.label == Lab.Frame && view.Name == Lab.Operational)
-                                    {
-                                        externalElementShow = true;
-                                    }
-                                    else if (el.additionalInfos != null)
-                                    {
-                                        if (el.additionalInfos.direction == "Front" && el.additionalInfos.direction != "Back" && view.Name == Lab.Operational && el.label != Lab.Hole)
-                                            externalElementShow = true;
-                                        if (el.additionalInfos.direction == "Back" && view.Name == Lab.Back)
-                                            externalElementShow = true;
-                                        if (el.additionalInfos.direction == "Up" && view.Name == Lab.Back)
-                                            externalElementShow = true;
-                                    }                                                                       
-                                }
-
-                                // przesunięcie dla elementów zewnętrznych w Y, żeby się nie nakładały
-                                if (externalElementShow)
-                                {
-                                    if (view.Name == ViewName.Operational || view.Name == ViewName.Back)
-                                    {
-                                        externalElementsYOffset = el.label switch
-                                        {
-                                            Lab.AD => 30,
-                                            Lab.FC => 60,
-                                            Lab.INTK => 90,
-                                            _ => 0
-                                        };
-                                    }
-                                    // Up/Down/UpUp/DownUp
-                                    else
-                                    {
-                                        externalElementsYOffset = -170;
-                                    }                                    
-                                }
-
-                                var isFront = el.View is (ViewName.LeftFront or ViewName.RightFront) || 
-                                    (view.Name is (ViewName.LeftFront or ViewName.RightFront));
-
-                                if (el.label == view.Name ||
-                                   (view.Name is (ViewName.Down or ViewName.DownUp) && el.label is (Lab.Down_Div or Lab.Down_DrainTray or Lab.Down_Wall)) ||
-                                   (view.Name is (ViewName.Up) && el.label is Lab.Wall) ||
-                                   (view.Name is (ViewName.UpUp) && el.label is Lab.Up) ||
-                                   (externalElementShow && el.View == view.Name) ||
-                                   (el.label == Lab.Connector && isFront) ||
-                                   (el.type == Lab.Wall && isFront && view.Name is not (ViewName.Up or ViewName.UpUp or ViewName.DownUp or ViewName.FrameUp or ViewName.RoofUp))
-                                   )
-                                {
-                                    dxf.Entities.Add(outerPoly); // &&*
-                                }
-
-                                // dodajemy kwadraciki - Up/Down ożebrowanie / znaczniki płyt na Up/Down
-                                if (!externalElementShow
-                                    && (el.type == "Wall" || el.type.Contains("Removable"))
-                                    && (view.Name == "Up" || view.Name == "Down")
-                                    && (el.label == "Operational" || el.label == "Back"))
-                                {
-                                    if (el.x2 + 50 < Views.AhuLength)
-                                    {
-                                        var cornerService = new CornerService(dxf, layer);
-                                        cornerService.AddFilledCorner(
-                                            outer2D[1].X + 50,
-                                            outer2D[1].Y,
-                                            size: 50,
-                                            anchor: AnchorPos.BottomRight
-                                        );
-                                    }                                    
-                                }
-
-                                if ((el.type == "Wall" || el.type == "DrainTray" || el.type.Contains("Removable") || el.type.Contains("Door"))
-                                    || el.label.Contains("_") || externalElementShow)
-                                {
-                                    var idx = 0;
-                                    foreach (var c in outer2D)
-                                    {
-                                        var cornerVertices = new List<Polyline2DVertex>();
-                                        switch (idx)
-                                        {
-                                            case 0: // lewy dół
-                                                cornerVertices.Add(new Polyline2DVertex(c.X, c.Y, 0));
-                                                cornerVertices.Add(new Polyline2DVertex(c.X + profileOffset, c.Y, 0));
-                                                cornerVertices.Add(new Polyline2DVertex(c.X + profileOffset, c.Y + profileOffset, 0));
-                                                cornerVertices.Add(new Polyline2DVertex(c.X, c.Y + profileOffset, 0));
-                                                break;
-
-                                            case 1: // prawy dół
-                                                cornerVertices.Add(new Polyline2DVertex(c.X - profileOffset, c.Y, 0));
-                                                cornerVertices.Add(new Polyline2DVertex(c.X, c.Y, 0));
-                                                cornerVertices.Add(new Polyline2DVertex(c.X, c.Y + profileOffset, 0));
-                                                cornerVertices.Add(new Polyline2DVertex(c.X - profileOffset, c.Y + profileOffset, 0));
-
-                                                if (el.type == "Wall" || el.type.Contains("Removable") || el.type.Contains("Door")
-                                                    || externalElementShow // elementy zewnętrzne
-                                                    || (el.label.Contains("_") && view.Name == "Down"))
-                                                {
-                                                    shapeAdded = true;
-                                                    var wallDescription = el.label switch
-                                                    {
-                                                        "Up" => "UP",
-                                                        "UpUp" => "UP",
-                                                        "Operational" => "INS",
-                                                        "Back" => "BACK",
-                                                        "Down" => "Down",
-                                                        "DownUp" => "Down",
-                                                        "Down_Wall" => "DOWN",
-                                                        "Down_DrainTray" => "DRN_TRY",
-                                                        "Frame" => "",
-                                                        _ => el.label
-                                                    };
-                                                    
-                                                    // nadpisanie przesuniętych Down, które jako label mają ustawione DownUp, ale trzymają typ
-                                                    if (el.type == "DrainTray" && el.label == ViewName.DownUp)
-                                                    {
-                                                        wallDescription = "DRN_TRY";
-                                                    }
-
-                                                    if (wallDescription == "INS")
-                                                    {
-                                                        wallDescription = el.type switch
-                                                        {
-                                                            "Door" => "DOOR",
-                                                            "Removable" => "PNL_GRIP",
-                                                            "Removable_2" => "PNL_HH",
-                                                            "Removable_3" => "PNL_BSH",
-                                                            "Wall" => "PNL", //operational, back, frontLeft, frontRight, up, down, middle
-                                                            "DrainTray" => "DRN_TY", //down, middle
-                                                            "Hole" => "HOLE", //operational, back, frontLeft, frontRight, up, down, middle
-                                                            "Div" => "", //operational, back, frontLeft, frontRight, up, down, middle  
-                                                            _ => "INS"
-                                                        };
-                                                    }
-
-                                                    if (el.label == view.Name ||
-                                                        Lab.ExternalElements.Any(l => l == el.label) ||
-                                                        el.label == Lab.Hole && string.IsNullOrEmpty(el.View) ||
-                                                        el.View is (ViewName.Down or ViewName.DownUp or ViewName.Up or ViewName.UpUp))
-                                                    {
-                                                        var text = new Text(wallDescription,
-                                                        new Vector3(c.X - ((el.x2 - el.x1) / 2) - profileOffset, c.Y + 4 * profileOffset + externalElementsYOffset, 0), 20);
-
-                                                        text.Style = new TextStyle("ArialBold", "arialbd.ttf");
-                                                        text.Layer = layer;
-                                                        text.Color = new AciColor(3);
-                                                        dxf.Entities.Add(text);
-                                                    }                                                    
-                                                }
-                                                break;
-
-                                            case 2: // prawy góra
-                                                cornerVertices.Add(new Polyline2DVertex(c.X - profileOffset, c.Y - profileOffset, 0));
-                                                cornerVertices.Add(new Polyline2DVertex(c.X, c.Y - profileOffset, 0));
-                                                cornerVertices.Add(new Polyline2DVertex(c.X, c.Y, 0));
-                                                cornerVertices.Add(new Polyline2DVertex(c.X - profileOffset, c.Y, 0));
-                                                break;
-
-                                            case 3: // lewy góra
-                                                cornerVertices.Add(new Polyline2DVertex(c.X, c.Y, 0));
-                                                cornerVertices.Add(new Polyline2DVertex(c.X + profileOffset, c.Y, 0));
-                                                cornerVertices.Add(new Polyline2DVertex(c.X + profileOffset, c.Y - profileOffset, 0));
-                                                cornerVertices.Add(new Polyline2DVertex(c.X, c.Y - profileOffset, 0));
-                                                break;
-                                        }
-
-                                        idx++;
-                                    }
-                                    idx = 0;
-                                }
-                            }
                         }
+                    }
 
-                        if (createDimension)
+                    if (createDimension && el.ShowDimension)
+                    {
+                        double dimOffset = 30.0;
+                        var wStart = outer2D[0];
+                        var wEnd = outer2D[1];
+                        var widthDim = new LinearDimension(wStart, wEnd, -dimOffset, 0.0, dimStyle)
                         {
-                            //var frameDimOnlyFor
-                            double dimOffset = 30.0;
-                            var wStart = outer2D[0];
-                            var wEnd = outer2D[1];
-                            var widthDim = new LinearDimension(wStart, wEnd, -dimOffset, 0.0, dimStyle)
+                            Layer = layer
+                        };
+
+                        var notForBlock = el.label != Lab.Block && el.View != ViewName.Frame;
+
+                        if (!string.IsNullOrEmpty(el.type))
+                        {
+                            // elementy zewnętrzne
+                            if (externalElementShow)
                             {
-                                Layer = layer
-                            };
-                            
-                            var notForBlock = el.label != Lab.Block && el.View != ViewName.Frame;
-
-                            if (!string.IsNullOrEmpty(el.type))
-                            {                                
-                                // elementy zewnętrzne
-                                if (externalElementShow)
-                                {
-                                    widthDim = new LinearDimension(wStart, wEnd, (el.y2 - el.y1) / 2, 0.0, dimStyle);
-                                }
-
-                                // widok operational
-                                if ((el.type == Lab.Wall || el.type == Lab.Door || el.type.Contains(Lab.Removable)) && el.label == Lab.Operational && view.Name == ViewName.Operational && notForBlock)
-                                {
-                                    widthDim = new LinearDimension(wStart, wEnd, (el.y2 - el.y1) / 2 - profileOffset, 0.0, dimStyle);
-                                }
-
-                                // widok back
-                                if ((el.type == Lab.Wall || el.type == Lab.Door || el.type.Contains(Lab.Removable) || el.label == Lab.Frame) && el.label == Lab.Back && view.Name == ViewName.Back && notForBlock)
-                                {
-                                    widthDim = new LinearDimension(wStart, wEnd, (el.y2 - el.y1) / 2, 0.0, dimStyle);
-                                }
-
-                                // widok up
-                                if (el.type == Lab.Wall && el.label == Lab.Up && view.Name == ViewName.Up && notForBlock)
-                                {
-                                    widthDim = new LinearDimension(wStart, wEnd, (el.z2 - el.z1) / 2, 0.0, dimStyle);
-                                }
-
-                                // widok down
-                                if ((el.label == Lab.Down_Wall || el.label == Lab.Down_DrainTray) && view.Name == ViewName.Down && notForBlock)
-                                {
-                                    widthDim = new LinearDimension(wStart, wEnd, (el.z2 - el.z1) / 2, 0.0, dimStyle);
-                                    widthDim.Layer = layer;
-                                    dxf.Entities.Add(widthDim);
-                                }
+                                widthDim = new LinearDimension(wStart, wEnd, (el.y2 - el.y1) / 2, 0.0, dimStyle);
                             }
 
-                            if (el.View == view.Name && (el.label == Lab.Function || (el.label == Lab.Block && el.View == ViewName.RightFront) || Lab.ExternalElements.Any(l => l == el.label)))
-                            {                                
+                            // widok operational
+                            if ((el.type == Lab.Wall || el.type == Lab.Door || el.type.Contains(Lab.Removable)) && el.label == Lab.Operational && view.Name == ViewName.Operational && notForBlock)
+                            {
+                                widthDim = new LinearDimension(wStart, wEnd, (el.y2 - el.y1) / 2 - profileOffset, 0.0, dimStyle);
+                            }
+
+                            // widok back
+                            if ((el.type == Lab.Wall || el.type == Lab.Door || el.type.Contains(Lab.Removable) || el.label == Lab.Frame) && el.label == Lab.Back && view.Name == ViewName.Back && notForBlock)
+                            {
+                                widthDim = new LinearDimension(wStart, wEnd, (el.y2 - el.y1) / 2, 0.0, dimStyle);
+                            }
+
+                            // widok up
+                            if (el.type == Lab.Wall && el.label == Lab.Up && view.Name == ViewName.Up && notForBlock)
+                            {
+                                widthDim = new LinearDimension(wStart, wEnd, (el.z2 - el.z1) / 2, 0.0, dimStyle);
+                            }
+
+                            // widok down
+                            if ((el.label == Lab.Down_Wall || el.label == Lab.Down_DrainTray) && view.Name == ViewName.Down && notForBlock)
+                            {
+                                widthDim = new LinearDimension(wStart, wEnd, (el.z2 - el.z1) / 2, 0.0, dimStyle);
                                 widthDim.Layer = layer;
                                 dxf.Entities.Add(widthDim);
                             }
+                        }
 
-                            var hStart = outer2D[1];
-                            var hEnd = outer2D[2];
-                            var heightDim = new LinearDimension(hStart, hEnd, dimOffset, 90.0, dimStyle)
+                        if (el.View == view.Name && (el.label == Lab.Function || (el.label == Lab.Block && el.View == ViewName.RightFront) || Lab.ExternalElements.Any(l => l == el.label)))
+                        {
+                            widthDim.Layer = layer;
+                            dxf.Entities.Add(widthDim);
+                        }
+
+                        var hStart = outer2D[1];
+                        var hEnd = outer2D[2];
+                        var heightDim = new LinearDimension(hStart, hEnd, dimOffset, 90.0, dimStyle)
+                        {
+                            Layer = layer
+                        };
+
+                        if (!string.IsNullOrEmpty(el.type))
+                        {
+                            // elementy zewnętrzne
+                            if (externalElementShow)
                             {
-                                Layer = layer
-                            };
-
-                            if (!string.IsNullOrEmpty(el.type))
-                            {
-                                // elementy zewnętrzne
-                                if (externalElementShow)
-                                {
-                                    heightDim = new LinearDimension(hStart, hEnd, dimOffset, 90.0, dimStyle);
-                                }
-
-                                // widok operational
-                                if ((el.type == Lab.Wall || el.type == Lab.Door || el.type.Contains(Lab.Removable)) && el.label == Lab.Operational && view.Name == ViewName.Operational && notForBlock)
-                                {
-                                    heightDim = new LinearDimension(hStart, hEnd, dimOffset, 90.0, dimStyle);
-                                }
-
-                                // widok back
-                                if ((el.type == Lab.Wall || el.type == Lab.Door || el.type.Contains(Lab.Removable)) && el.label == Lab.Back && view.Name == ViewName.Back && notForBlock)
-                                {
-                                    heightDim = new LinearDimension(hStart, hEnd, dimOffset + 100, 90.0, dimStyle);
-                                }
-
-                                // widok up
-                                if ((el.type == Lab.Wall || el.type == Lab.Door || el.type.Contains(Lab.Removable)) && el.label == Lab.Up && view.Name == ViewName.Up && notForBlock)
-                                {
-                                    heightDim = new LinearDimension(hStart, hEnd, dimOffset + 100, 90.0, dimStyle);
-                                }
-
-                                // widok down
-                                if ((el.label == Lab.Down || el.label == Lab.Down_DrainTray || el.label == Lab.Down_Wall) && view.Name == Lab.Down && notForBlock)
-                                {
-                                    heightDim.Layer = layer;
-                                    dxf.Entities.Add(heightDim);
-                                    heightDim = new LinearDimension(hStart, hEnd, dimOffset + 100, 90.0, dimStyle);
-                                }
-                            }
-                            
-                            if (el.View == view.Name && (el.label == Lab.Function || (el.label == Lab.Block && el.View == ViewName.RightFront) || Lab.ExternalElements.Any(l => l == el.label)))
-                            {
-                                heightDim.Layer = layer;
-                                dxf.Entities.Add(heightDim);
+                                heightDim = new LinearDimension(hStart, hEnd, dimOffset, 90.0, dimStyle);
                             }
 
-                            if (view.Name != ViewName.Frame && el.label == Lab.Frame && frameXYmoved)
+                            // widok operational
+                            if ((el.type == Lab.Wall || el.type == Lab.Door || el.type.Contains(Lab.Removable)) && el.label == Lab.Operational && view.Name == ViewName.Operational && notForBlock)
                             {
-                                dxf.Entities.Remove(heightDim);
-                                dxf.Entities.Remove(widthDim);
+                                heightDim = new LinearDimension(hStart, hEnd, dimOffset, 90.0, dimStyle);
                             }
+
+                            // widok back
+                            if ((el.type == Lab.Wall || el.type == Lab.Door || el.type.Contains(Lab.Removable)) && el.label == Lab.Back && view.Name == ViewName.Back && notForBlock)
+                            {
+                                heightDim = new LinearDimension(hStart, hEnd, dimOffset + 100, 90.0, dimStyle);
+                            }
+
+                            // widok up
+                            if ((el.type == Lab.Wall || el.type == Lab.Door || el.type.Contains(Lab.Removable)) && el.label == Lab.Up && view.Name == ViewName.Up && notForBlock)
+                            {
+                                heightDim = new LinearDimension(hStart, hEnd, dimOffset + 100, 90.0, dimStyle);
+                            }
+
+                            // widok down
+                            if ((el.label == Lab.Down || el.label == Lab.Down_DrainTray || el.label == Lab.Down_Wall) && view.Name == Lab.Down && notForBlock)
+                            {
+                                heightDim.Layer = layer;                                
+                                heightDim = new LinearDimension(hStart, hEnd, dimOffset + ((el.x2 - el.x1)/3), 90.0, dimStyle);
+                                dxf.Entities.Add(heightDim);                                
+                            }
+                        }
+
+                        if (el.View == view.Name && (el.label == Lab.Function || (el.label == Lab.Block && el.View == ViewName.RightFront) || Lab.ExternalElements.Any(l => l == el.label)))
+                        {
+                            heightDim.Layer = layer;
+                            dxf.Entities.Add(heightDim);
+                        }
+
+                        if (view.Name != ViewName.Frame && el.label == Lab.Frame && frameXYmoved)
+                        {
+                            dxf.Entities.Remove(heightDim);
+                            dxf.Entities.Remove(widthDim);
                         }
                     }
                 }
@@ -879,13 +848,7 @@ namespace Klimor.WebApi.DXF.Services
         }
 
         // Wstawia tekst na środku całej jednostki (po X) i "w profilu" (na górnym profilu – w połowie jego grubości)
-        private void AddWatermarkText(
-            DxfDocument dxf,
-            Layer textLayer,
-            IEnumerable<Coordinates> allElements,
-            ViewElement view,
-            string textValue,
-            double textHeight = 35)
+        private void AddWatermarkText(DxfDocument dxf, Layer textLayer, IEnumerable<Coordinates> allElements, ViewElement view, string textValue, double textHeight = 35)
         {
             var blocks = allElements.Where(e => e.label == Lab.Block).ToList();
             if (blocks.Count == 0) return;

@@ -1011,8 +1011,9 @@ namespace Klimor.WebApi.DXF
             // powiązanie external elements z funkcjami
             AssignExternalElementsToFunctions(elements);
 
-            // ustawianie widoczności elementów
-            SetElementsVisibility(elements, [Lab.Block], [Views.Operational, Views.LeftFront] , false, false);
+            // ustawianie widoczności elementów (kolejność ma znaczenie)
+            SetElementsVisibility(elements, [Lab.Frame, Lab.FrameUp], Views.Except(ViewName.Frame) , null, false);
+            SetElementsVisibility(elements, [Lab.Frame], Views.Select(ViewName.RightFront), true, true);
 
             if (true)
             {
@@ -1062,21 +1063,24 @@ namespace Klimor.WebApi.DXF
             dxf.Save(fileOutput);
         }
 
-        private void SetElementsVisibility(List<Coordinates> elements, IEnumerable<string> labels, IEnumerable<ViewElement> views, bool show, bool show_dimension)
+        private void SetElementsVisibility(List<Coordinates> elements, IEnumerable<string> labels, IEnumerable<ViewElement> views, bool? show, bool? show_dimension)
         {
-            var labelSet = new HashSet<string>(labels);            
+            var labelSet = new HashSet<string>(labels);
             var viewSet = new HashSet<string>(views.Select(v => v.Name));
 
             foreach (var el in elements)
             {
                 if (labelSet.Contains(el.label) && viewSet.Contains(el.View))
                 {
-                    el.Show = show;
-                    el.ShowDimension = show_dimension;
+                    if (show.HasValue)
+                        el.Show = show.Value;
+
+                    if (show_dimension.HasValue)
+                        el.ShowDimension = show_dimension.Value;
                 }
             }
         }
-        
+
         private void SetElementsVisibility(
             List<Coordinates> elements,
             string label,
