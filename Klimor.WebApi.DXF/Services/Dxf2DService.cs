@@ -692,9 +692,11 @@ namespace Klimor.WebApi.DXF.Services
                             {
                                 Layer = layer
                             };
+                            
+                            var notForBlock = el.label != Lab.Block && el.View != ViewName.Frame;
 
                             if (!string.IsNullOrEmpty(el.type))
-                            {
+                            {                                
                                 // elementy zewnętrzne
                                 if (externalElementShow)
                                 {
@@ -702,25 +704,25 @@ namespace Klimor.WebApi.DXF.Services
                                 }
 
                                 // widok operational
-                                if ((el.type == Lab.Wall || el.type == Lab.Door || el.type.Contains(Lab.Removable)) && el.label == Lab.Operational && view.Name == ViewName.Operational)
+                                if ((el.type == Lab.Wall || el.type == Lab.Door || el.type.Contains(Lab.Removable)) && el.label == Lab.Operational && view.Name == ViewName.Operational && notForBlock)
                                 {
                                     widthDim = new LinearDimension(wStart, wEnd, (el.y2 - el.y1) / 2 - profileOffset, 0.0, dimStyle);
                                 }
 
                                 // widok back
-                                if ((el.type == Lab.Wall || el.type == Lab.Door || el.type.Contains(Lab.Removable) || el.label == Lab.Frame) && el.label == Lab.Back && view.Name == ViewName.Back)
+                                if ((el.type == Lab.Wall || el.type == Lab.Door || el.type.Contains(Lab.Removable) || el.label == Lab.Frame) && el.label == Lab.Back && view.Name == ViewName.Back && notForBlock)
                                 {
                                     widthDim = new LinearDimension(wStart, wEnd, (el.y2 - el.y1) / 2, 0.0, dimStyle);
                                 }
 
                                 // widok up
-                                if (el.type == Lab.Wall && el.label == Lab.Up && view.Name == ViewName.Up)
+                                if (el.type == Lab.Wall && el.label == Lab.Up && view.Name == ViewName.Up && notForBlock)
                                 {
                                     widthDim = new LinearDimension(wStart, wEnd, (el.z2 - el.z1) / 2, 0.0, dimStyle);
                                 }
 
                                 // widok down
-                                if ((el.label == Lab.Down_Wall || el.label == Lab.Down_DrainTray) && view.Name == ViewName.Down)
+                                if ((el.label == Lab.Down_Wall || el.label == Lab.Down_DrainTray) && view.Name == ViewName.Down && notForBlock)
                                 {
                                     widthDim = new LinearDimension(wStart, wEnd, (el.z2 - el.z1) / 2, 0.0, dimStyle);
                                     widthDim.Layer = layer;
@@ -728,7 +730,7 @@ namespace Klimor.WebApi.DXF.Services
                                 }
                             }
 
-                            if (el.View == view.Name && (el.label == Lab.Function || el.label == Lab.Block || Lab.ExternalElements.Any(l => l == el.label)))
+                            if (el.View == view.Name && (el.label == Lab.Function || (el.label == Lab.Block && el.View == ViewName.RightFront) || Lab.ExternalElements.Any(l => l == el.label)))
                             {                                
                                 widthDim.Layer = layer;
                                 dxf.Entities.Add(widthDim);
@@ -750,33 +752,33 @@ namespace Klimor.WebApi.DXF.Services
                                 }
 
                                 // widok operational
-                                if ((el.type == Lab.Wall || el.type == Lab.Door || el.type.Contains(Lab.Removable)) && el.label == Lab.Operational && view.Name == ViewName.Operational)
+                                if ((el.type == Lab.Wall || el.type == Lab.Door || el.type.Contains(Lab.Removable)) && el.label == Lab.Operational && view.Name == ViewName.Operational && notForBlock)
                                 {
                                     heightDim = new LinearDimension(hStart, hEnd, dimOffset, 90.0, dimStyle);
                                 }
 
                                 // widok back
-                                if ((el.type == Lab.Wall || el.type == Lab.Door || el.type.Contains(Lab.Removable)) && el.label == Lab.Back && view.Name == ViewName.Back)
+                                if ((el.type == Lab.Wall || el.type == Lab.Door || el.type.Contains(Lab.Removable)) && el.label == Lab.Back && view.Name == ViewName.Back && notForBlock)
                                 {
-                                    heightDim = new LinearDimension(hStart, hEnd, dimOffset, 90.0, dimStyle);
+                                    heightDim = new LinearDimension(hStart, hEnd, dimOffset + 100, 90.0, dimStyle);
                                 }
 
                                 // widok up
-                                if ((el.type == Lab.Wall || el.type == Lab.Door || el.type.Contains(Lab.Removable)) && el.label == Lab.Up && view.Name == ViewName.Up)
+                                if ((el.type == Lab.Wall || el.type == Lab.Door || el.type.Contains(Lab.Removable)) && el.label == Lab.Up && view.Name == ViewName.Up && notForBlock)
                                 {
-                                    heightDim = new LinearDimension(hStart, hEnd, dimOffset, 90.0, dimStyle);
+                                    heightDim = new LinearDimension(hStart, hEnd, dimOffset + 100, 90.0, dimStyle);
                                 }
 
                                 // widok down
-                                if ((el.label == Lab.Down || el.label == Lab.Down_DrainTray || el.label == Lab.Down_Wall) && view.Name == Lab.Down)
+                                if ((el.label == Lab.Down || el.label == Lab.Down_DrainTray || el.label == Lab.Down_Wall) && view.Name == Lab.Down && notForBlock)
                                 {
                                     heightDim.Layer = layer;
                                     dxf.Entities.Add(heightDim);
-                                    heightDim = new LinearDimension(hStart, hEnd, dimOffset, 90.0, dimStyle);
+                                    heightDim = new LinearDimension(hStart, hEnd, dimOffset + 100, 90.0, dimStyle);
                                 }
                             }
                             
-                            if (el.View == view.Name && (el.label == Lab.Function || el.label == Lab.Block || Lab.ExternalElements.Any(l => l == el.label)))
+                            if (el.View == view.Name && (el.label == Lab.Function || (el.label == Lab.Block && el.View == ViewName.RightFront) || Lab.ExternalElements.Any(l => l == el.label)))
                             {
                                 heightDim.Layer = layer;
                                 dxf.Entities.Add(heightDim);
