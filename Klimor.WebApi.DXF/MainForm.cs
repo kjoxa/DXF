@@ -25,7 +25,7 @@ namespace Klimor.WebApi.DXF
     1. Bloki z narożnikami i wymiarami
     2. Funkcje z ikonami i wymiarami
     3. FL, FR, Op, Back, Up, Down z wymiarami
-
+    v 2.2
     */
     public partial class MainFrm : Form
     {
