@@ -755,11 +755,14 @@ namespace Klimor.WebApi.DXF
             elements.RemoveAll(e => string.IsNullOrWhiteSpace(e.View) && e.label is (Lab.Down_Wall or Lab.Down_Div or Lab.Down_DrainTray or Lab.Up) && (e.type is Lab.Wall or Lab.Div or Lab.Down_DrainTray or Lab.Down_DrainTray));
             elements.RemoveAll(e => e.type is (Lab.Div or Lab.Wall) && e.label != e.View && e.label is not (Lab.Down_Wall or Lab.Down_Div or Lab.Down_DrainTray or Lab.Up));
             elements.RemoveAll(e => string.IsNullOrWhiteSpace(e.View) && e.label is (Lab.Frame or Lab.Roof));
-            elements.RemoveAll(e => e.label is (Lab.Frame or Lab.Roof) && e.View is (ViewName.Down or ViewName.DownUp or ViewName.Up or ViewName.UpUp));
-            elements.RemoveAll(e => e.label is Lab.Frame && e.View is (ViewName.Down or ViewName.DownUp or ViewName.Up or ViewName.UpUp));            
+            elements.RemoveAll(e => e.label is (Lab.Frame or Lab.Roof) && e.View is (ViewName.Down or ViewName.DownUp or ViewName.Up or ViewName.UpUp));                      
             elements.RemoveAll(e => e.label is Lab.Roof && e.View is not (ViewName.Roof or ViewName.RoofUp));
             elements.RemoveAll(e => e.label is Lab.Frame && e.View is (ViewName.Roof or ViewName.RoofUp));
             elements.RemoveAll(e => e.label is (ViewName.Up or Lab.Down_Wall) && e.View is (ViewName.LeftFront or ViewName.RightFront));
+
+            // do weryfikacji
+            elements.RemoveAll(e => e.label is (Lab.Frame or Lab.FrameUp) && e.View is (ViewName.Down or ViewName.DownUp or ViewName.Up or ViewName.UpUp));
+            elements.RemoveAll(e => e.label is (Lab.Block or Lab.Function) && e.View is (ViewName.Roof or ViewName.RoofUp or ViewName.Frame or ViewName.FrameUp));
 
             // ikony
             var icons = elements.Where(e => e.label.Contains("icon")).ToList();
@@ -792,7 +795,7 @@ namespace Klimor.WebApi.DXF
             Views.ApplyNorm(norm);
             Views.SetWaterMark("EVO");
 
-            var grid = new ViewGrid(columns: 5, rows: 10, cellWidth: (int)Views.AhuLength, cellHeight: 1000 + (int)Views.AhuHeight);
+            var grid = new ViewGrid(columns: 5, rows: 10, cellWidth: (int)Views.AhuLength + (int)(Views.AhuLength * 2 / 3), cellHeight: (int)Views.AhuHeight + (int)(Views.AhuHeight * 2 / 3));
             grid.AlignCellToPoint(col: 1, row: 5, worldX: 0, worldY: 0);
 
             // Użycie presetów siatkowych:
@@ -969,8 +972,13 @@ namespace Klimor.WebApi.DXF
                 var layerRoofDim = dxf.Layers.Add(new Layer("Roof_dimensions") { Color = new AciColor(9) });
                 dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Roof }, true, false, layerRoofDim, textLayer, Views.Select(ViewName.Roof, ViewName.RoofUp));
             }
-            
+
             // rozszerzanie listy elementów o widoki globalne
+
+            /// Debug
+                elements.RemoveAll(e => e.label is not (Lab.Function or Lab.Block));
+            /// EndDebug
+
             MapElementsToViews(elements, isExtended);
             PrepareElementsToMode(elements, isExtended);
             if (!isExtended)
