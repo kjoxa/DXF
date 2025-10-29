@@ -876,8 +876,7 @@ namespace Klimor.WebApi.DXF.Services
             // offset widoku
             rect2D = rect2D.Select(p => new Vector2(p.X + view.XOffset, p.Y + view.YOffset)).ToList();
 
-            // wyliczamy środek po X oraz „górę” prostokąta po Y,
-            // a następnie schodzimy o połowę grubości profilu
+            // wyliczamy środek po X oraz „górę” prostokąta po Y, a następnie schodzimy o połowę grubości profilu
             double leftX = rect2D.Min(p => p.X);
             double rightX = rect2D.Max(p => p.X);
             double topY = rect2D.Max(p => p.Y);
