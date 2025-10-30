@@ -795,7 +795,9 @@ namespace Klimor.WebApi.DXF
             Views.ApplyNorm(norm);
             Views.SetWaterMark("EVO");
 
-            var grid = new ViewGrid(columns: 5, rows: 10, cellWidth: (int)Views.AhuLength + (int)(Views.AhuLength * 2 / 3), cellHeight: (int)Views.AhuHeight + (int)(Views.AhuHeight * 2 / 3));
+            var cellHeight = (int)Views.AhuHeight + (int)(Views.AhuHeight * 2 / 3);
+            var cellWidth = (int)Views.AhuLength + (int)(Views.AhuLength * 2 / 3);
+            var grid = new ViewGrid(columns: 5, rows: 10, cellWidth: cellWidth, cellHeight: cellHeight);
             grid.AlignCellToPoint(col: 1, row: 5, worldX: 0, worldY: 0);
 
             // Użycie presetów siatkowych:
@@ -838,6 +840,7 @@ namespace Klimor.WebApi.DXF
 
             void DrawFunctionsWithIcons(bool production)
             {
+                var backOffset = Views.Back.XOffset;
                 var upOffset = Views.Up.YOffset;
                 var upUpOffset = Views.UpUp.YOffset;
                 var iconsList = icons.Blocks.ToList();
@@ -846,7 +849,7 @@ namespace Klimor.WebApi.DXF
 
                 // dodawanie ikon
                 var sName = string.Empty;
-                var distinctList = elements.DistinctBy(e => (e.posUpDown, e.x1, e.y1)).Where(i => i.label.Contains("icon") && i.additionalInfos != null).ToList();
+                var distinctList = elements.DistinctBy(e => (e.posUpDown, e.x1, e.y1, e.z1)).Where(i => i.label.Contains("icon") && i.additionalInfos != null).ToList();
                 foreach (var icon in distinctList)
                 {
                     sName = icon.additionalInfos.iconName;
@@ -871,6 +874,25 @@ namespace Klimor.WebApi.DXF
 
                                 if (icon.additionalInfos.iconPosition != Lab.Back)
                                     dxf.Entities.Add(insertIconOperational);
+                                break;
+
+                            case ViewName.Back:
+                                double newX1 = dxf2D.globalXMax + dxf2D.globalXMin - icon.x1;
+                                double newX2 = dxf2D.globalXMax + dxf2D.globalXMin - icon.x2;
+                                var insertIconBack = new Insert(insertIcon)
+                                {
+                                    Position = new Vector3(newX1 + backOffset, icon.y1, 0), 
+                                    Layer = layer,
+                                    Scale = new Vector3(1, 1, 1)
+                                };
+                                if (!isExhaust && icon.additionalInfos.sName == "VF")
+                                {
+                                    insertIconBack.Position = new Vector3(newX1 + (newX2 - newX1), icon.y1, 0);
+                                    insertIconBack.Scale = new Vector3(-1, 1, 1);
+                                }
+
+                                if (icon.additionalInfos.iconPosition == Lab.Back)
+                                    dxf.Entities.Add(insertIconBack);
                                 break;
 
                             case ViewName.Up:
@@ -976,7 +998,7 @@ namespace Klimor.WebApi.DXF
             // rozszerzanie listy elementów o widoki globalne
 
             /// Debug
-                elements.RemoveAll(e => e.label is not (Lab.Function or Lab.Block));
+                //elements.RemoveAll(e => e.label is not (Lab.Function or Lab.Block));
             /// EndDebug
 
             MapElementsToViews(elements, isExtended);
