@@ -102,9 +102,11 @@ namespace Klimor.WebApi.DXF
                     .ToList();
 
                 // usuwamy oryginały
-                elements.RemoveAll(e => e.y2 == upperLevels.FirstOrDefault() || e.y2 == upperLevels.LastOrDefault() && (e.label == Lab.Up || e.label == Lab.Block) && e.View == ViewName.Up);
-                elements.RemoveAll(e => e.y2 == levels.Take(1).FirstOrDefault() && !e.label.Contains("icon") && (e.label == Lab.Up || e.label == Lab.Block) && e.View == ViewName.UpUp);
-                
+                //elements.RemoveAll(e => e.y2 == upperLevels.FirstOrDefault() || e.y2 == upperLevels.LastOrDefault() && (e.label == Lab.Up || e.label == Lab.Block) && e.View == ViewName.Up);
+                //elements.RemoveAll(e => e.y2 == levels.Take(1).FirstOrDefault() && !e.label.Contains("icon") && (e.label == Lab.Up || e.label == Lab.Block) && e.View == ViewName.UpUp);
+                elements.RemoveAll(e => (e.y2 == upperLevels.FirstOrDefault() || e.y2 == upperLevels.LastOrDefault()) && e.label == Lab.Up && e.View == ViewName.Up);
+                elements.RemoveAll(e => e.y2 == levels.Take(1).FirstOrDefault() && !e.label.Contains("icon") && (e.label == Lab.Up) && e.View == ViewName.UpUp);
+
                 // ikony
                 levels = upBlocks
                     .Where(e => e.label.Contains("icon"))
@@ -411,8 +413,8 @@ namespace Klimor.WebApi.DXF
                     .ToList();
 
                 // usuwamy oryginały
-                elements.RemoveAll(e => e.y2 == upperLevels.FirstOrDefault() || e.y2 == upperLevels.LastOrDefault() && (e.label == Lab.Up && e.type == Lab.Wall) && e.View == ViewName.Up);
-                elements.RemoveAll(e => e.y2 == levels.Take(1).FirstOrDefault() && (e.label == Lab.Up && e.type == Lab.Wall) && e.View == ViewName.UpUp);                
+                elements.RemoveAll(e => (e.y2 == upperLevels.FirstOrDefault() || e.y2 == upperLevels.LastOrDefault()) && e.label == Lab.Up && e.type == Lab.Wall && e.View == ViewName.Up);
+                elements.RemoveAll(e => e.y2 == levels.Take(1).FirstOrDefault() && e.label == Lab.Up && e.type == Lab.Wall && e.View == ViewName.UpUp);                
             }
         }
 
@@ -795,9 +797,9 @@ namespace Klimor.WebApi.DXF
             Views.ApplyNorm(norm);
             Views.SetWaterMark("EVO");
 
-            var cellHeight = (int)Views.AhuHeight + (int)(Views.AhuHeight * 2 / 3);
-            var cellWidth = (int)Views.AhuLength + (int)(Views.AhuLength * 2 / 3);
-            var grid = new ViewGrid(columns: 5, rows: 10, cellWidth: cellWidth, cellHeight: cellHeight);
+            var cellHeight = Views.AhuHeight > Views.AhuWidth ? Views.AhuHeight + (Views.AhuHeight * 2 / 3) : Views.AhuWidth + (Views.AhuWidth * 2 / 3);
+            var cellWidth = Views.AhuLength + (Views.AhuLength * 1 / 5);
+            var grid = new ViewGrid(columns: 5, rows: 10, cellWidth: (int)cellWidth, cellHeight: (int)cellHeight);
             grid.AlignCellToPoint(col: 1, row: 5, worldX: 0, worldY: 0);
 
             // Użycie presetów siatkowych:
@@ -1030,7 +1032,7 @@ namespace Klimor.WebApi.DXF
                 SelectExternalElementsDownChannel(elements, Lab.FC);
                 SelectExternalElementsDownChannel(elements, Lab.INTK);
                 SelectFrameUpChannel(elements);
-                SelectRoofUpChannel(elements);                
+                SelectRoofUpChannel(elements);
                 SelectWallUpChannel(elements);
                 SelectWallDownChannel(elements);
             }
