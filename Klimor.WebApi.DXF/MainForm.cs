@@ -480,6 +480,10 @@ namespace Klimor.WebApi.DXF
                 elements.RemoveAll(e => e.y2 == upperLevels.FirstOrDefault() && (e.label == Lab.Frame) && e.View == ViewName.Frame);
                 elements.RemoveAll(e => e.y2 == levels.Take(1).FirstOrDefault() && (e.label == Lab.Frame) && e.View == ViewName.FrameUp);
             }
+            else
+            {
+                Views.FrameUp.Visibility = false;
+            }
         }
 
         private void SelectRoofUpChannel(List<Coordinates> elements)
@@ -511,6 +515,13 @@ namespace Klimor.WebApi.DXF
                 elements.RemoveAll(e => e.y2 == upperLevels.FirstOrDefault() && (e.label == Lab.Roof) && e.View == ViewName.Roof);
                 elements.RemoveAll(e => e.y2 == levels.Take(1).FirstOrDefault() && e.label == Lab.Roof && e.View == ViewName.RoofUp);
             }
+            else
+            {
+                Views.RoofUp.Visibility = false;
+            }
+
+            if (roofs.Count == 0)
+                Views.Roof.Visibility = false;
         }
 
         private void MapElementsToViews(List<Coordinates> elements, bool extended)
@@ -1015,7 +1026,7 @@ namespace Klimor.WebApi.DXF
                 Views.DownUp.Visibility = false;
                 Views.FrameUp.Visibility = false;
                 Views.RoofUp.Visibility = false;
-            }
+            }            
 
             // przypisywanie DownUp i UpUp, wybór górnych i dolnych kanałów
             if (isExtended)
