@@ -129,6 +129,10 @@ namespace Klimor.WebApi.DXF
                     item.additionalInfos.iconPosition = ViewName.UpUp;
                 }
             }
+            else
+            {
+                Views.UpUp.Visibility = false;
+            }
         }
 
         private void SelectExternalElementsUpChannel(List<Coordinates> elements, string extrLabel)
@@ -230,6 +234,10 @@ namespace Klimor.WebApi.DXF
 
                 elements.RemoveAll(e => e.y1 == topLevel && e.View == ViewName.Down && e.label == Lab.Block);
                 elements.RemoveAll(e => e.y1 != topLevel && e.View == ViewName.DownUp && e.label == Lab.Block);
+            }
+            else
+            {
+                Views.DownUp.Visibility = false;
             }
         }
 
@@ -1057,6 +1065,7 @@ namespace Klimor.WebApi.DXF
             // ustawianie widoczności elementów (kolejność ma znaczenie)
             SetElementsVisibility(elements, [Lab.Frame, Lab.FrameUp], Views.Except(ViewName.Frame) , null, false);
             SetElementsVisibility(elements, [Lab.Frame], Views.Select(ViewName.RightFront), true, true);
+            RepositioningOnGridWhenViewsHide(norm, grid);
 
             if (true)
             {
@@ -1104,6 +1113,36 @@ namespace Klimor.WebApi.DXF
             //}
             PrepareLayersToMode(dxf, isExtended);
             dxf.Save(fileOutput);
+        }
+
+        private void RepositioningOnGridWhenViewsHide(Norm norm, ViewGrid grid)
+        {
+            switch (norm)
+            {
+                case Norm.ISO_EXTENDED:
+                    // jeśli UpUp jest niewidoczny, to RoofUp też będzie niewidoczny
+                    if (Views.UpUp.Visibility == false)
+                    {
+                        if (GridPresets.Cells.TryGetValue(Norm.ISO_EXTENDED, out var views))
+                        {
+                            views[ViewName.Up] = (1, 4);
+                            views[ViewName.Roof] = (1, 3);
+                            views[ViewName.Frame] = (1, 7);
+                        }                        
+                    }
+                    break;
+
+                case Norm.US_EXTENDED:
+                    
+                    break;
+                case Norm.PROD_EXTENDED:
+                    
+                    break;
+                default:
+                    break;
+            }
+            // update
+            Views.ApplyNormOnGrid(norm, grid);
         }
 
         private void SetElementsVisibility(List<Coordinates> elements, IEnumerable<string> labels, IEnumerable<ViewElement> views, bool? show, bool? show_dimension)

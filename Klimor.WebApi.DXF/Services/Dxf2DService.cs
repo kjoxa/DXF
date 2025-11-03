@@ -16,6 +16,7 @@ using System.Threading.Channels;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
+using static netDxf.Entities.HatchBoundaryPath;
 
 namespace Klimor.WebApi.DXF.Services
 {
@@ -360,8 +361,7 @@ namespace Klimor.WebApi.DXF.Services
                             var innerPoly = new Polyline2D(inner2D.Select(v => new Polyline2DVertex(v.X, v.Y, 0)).ToList(), true)
                             {
                                 Layer = layer
-                            };
-
+                            };                            
                             dxf.Entities.Add(innerPoly);
 
                             var idx = 0;
@@ -652,7 +652,7 @@ namespace Klimor.WebApi.DXF.Services
                         }
                     }
 
-                    if (createDimension && el.ShowDimension && view.Name == ViewName.Up)
+                    if (createDimension && el.ShowDimension)
                     {
                         bool addDim = false;
                         double dimOffset = 30.0;
@@ -699,15 +699,18 @@ namespace Klimor.WebApi.DXF.Services
                             if ((el.label == Lab.Down_Wall || el.label == Lab.Down_DrainTray) && view.Name == ViewName.Down && notForBlock)
                             {
                                 widthDim = new LinearDimension(wStart, wEnd, (el.z2 - el.z1) / 2, 0.0, dimStyle);
-                                widthDim.Layer = layer;
-                                dxf.Entities.Add(widthDim);
+                                addDim = true;
                             }
                         }
 
-                        if (el.View == view.Name && ((el.label == Lab.Function || (el.label == Lab.Block && el.View == ViewName.RightFront) || Lab.ExternalElements.Any(l => l == el.label)) || addDim))
+                        if (el.View == view.Name)
                         {
-                            widthDim.Layer = layer;
-                            dxf.Entities.Add(widthDim);
+                            if (el.label == Lab.Function && !(el.View == ViewName.Operational /*|| el.View == ViewName.Back*/)) return;
+                            if (el.label == Lab.Function || (el.label == Lab.Block && el.View == ViewName.RightFront) || Lab.ExternalElements.Any(l => l == el.label) || addDim)
+                            {
+                                widthDim.Layer = layer;
+                                dxf.Entities.Add(widthDim);
+                            }                               
                         }
 
                         var hStart = outer2D[1];
@@ -749,17 +752,19 @@ namespace Klimor.WebApi.DXF.Services
 
                             // widok down
                             if ((el.label == Lab.Down || el.label == Lab.Down_DrainTray || el.label == Lab.Down_Wall) && view.Name == Lab.Down && notForBlock)
-                            {
-                                heightDim.Layer = layer;                                
+                            {                          
                                 heightDim = new LinearDimension(hStart, hEnd, dimOffset + ((el.x2 - el.x1)/3), 90.0, dimStyle);
-                                dxf.Entities.Add(heightDim);                                
+                                addDim = true;
                             }
                         }
 
-                        if (el.View == view.Name && ((el.label == Lab.Function || (el.label == Lab.Block && el.View == ViewName.RightFront) || Lab.ExternalElements.Any(l => l == el.label)) || addDim))
+                        if (el.View == view.Name)
                         {
-                            heightDim.Layer = layer;
-                            dxf.Entities.Add(heightDim);
+                            if (el.label == Lab.Function || (el.label == Lab.Block && el.View == ViewName.RightFront) || Lab.ExternalElements.Any(l => l == el.label) || addDim)
+                            {
+                                heightDim.Layer = layer;
+                                dxf.Entities.Add(heightDim);
+                            }                                
                         }                        
                     }
                 }
