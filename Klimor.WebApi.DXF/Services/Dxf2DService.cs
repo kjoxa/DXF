@@ -56,7 +56,6 @@ namespace Klimor.WebApi.DXF.Services
         public double globalYMax = 0;
         public double globalZMin = 0;
         public double globalZMax = 0;
-        bool frameXYmoved = false;
         public bool isExtended = true;
 
         int channelNumberTextSize = 200;
@@ -261,7 +260,7 @@ namespace Klimor.WebApi.DXF.Services
                         _ => view.Name
                     };
 
-                    var text = new Text(textToShow, new Vector3(view.XOffset, view.YOffset - 400, 0), 100)
+                    var text = new Text(textToShow, new Vector3(view.XOffset, view.YOffset - globalYMax/4, 0), globalXMax*2 / 100)
                     {
                         Layer = textLayer,
                         Rotation = 0,
@@ -503,7 +502,7 @@ namespace Klimor.WebApi.DXF.Services
                             // przesunięcie dla elementów zewnętrznych w Y, żeby się nie nakładały
                             if (externalElementShow)
                             {
-                                if (view.Name == ViewName.Operational || view.Name == ViewName.Back)
+                                if (view.Name == ViewName.Operational || view.Name == ViewName.Back || view.Name == ViewName.LeftFront || view.Name == ViewName.RightFront)
                                 {
                                     externalElementsYOffset = el.label switch
                                     {
@@ -653,8 +652,9 @@ namespace Klimor.WebApi.DXF.Services
                         }
                     }
 
-                    if (createDimension && el.ShowDimension)
+                    if (createDimension && el.ShowDimension && view.Name == ViewName.Up)
                     {
+                        bool addDim = false;
                         double dimOffset = 30.0;
                         var wStart = outer2D[0];
                         var wEnd = outer2D[1];
@@ -671,24 +671,28 @@ namespace Klimor.WebApi.DXF.Services
                             if (externalElementShow)
                             {
                                 widthDim = new LinearDimension(wStart, wEnd, (el.y2 - el.y1) / 2, 0.0, dimStyle);
+                                addDim = true;
                             }
 
                             // widok operational
                             if ((el.type == Lab.Wall || el.type == Lab.Door || el.type.Contains(Lab.Removable)) && el.label == Lab.Operational && view.Name == ViewName.Operational && notForBlock)
                             {
                                 widthDim = new LinearDimension(wStart, wEnd, (el.y2 - el.y1) / 2 - profileOffset, 0.0, dimStyle);
+                                addDim = true;
                             }
 
                             // widok back
                             if ((el.type == Lab.Wall || el.type == Lab.Door || el.type.Contains(Lab.Removable) || el.label == Lab.Frame) && el.label == Lab.Back && view.Name == ViewName.Back && notForBlock)
                             {
                                 widthDim = new LinearDimension(wStart, wEnd, (el.y2 - el.y1) / 2, 0.0, dimStyle);
+                                addDim = true;
                             }
 
                             // widok up
                             if (el.type == Lab.Wall && el.label == Lab.Up && view.Name == ViewName.Up && notForBlock)
                             {
                                 widthDim = new LinearDimension(wStart, wEnd, (el.z2 - el.z1) / 2, 0.0, dimStyle);
+                                addDim = true;
                             }
 
                             // widok down
@@ -700,7 +704,7 @@ namespace Klimor.WebApi.DXF.Services
                             }
                         }
 
-                        if (el.View == view.Name && (el.label == Lab.Function || (el.label == Lab.Block && el.View == ViewName.RightFront) || Lab.ExternalElements.Any(l => l == el.label)))
+                        if (el.View == view.Name && ((el.label == Lab.Function || (el.label == Lab.Block && el.View == ViewName.RightFront) || Lab.ExternalElements.Any(l => l == el.label)) || addDim))
                         {
                             widthDim.Layer = layer;
                             dxf.Entities.Add(widthDim);
@@ -719,24 +723,28 @@ namespace Klimor.WebApi.DXF.Services
                             if (externalElementShow)
                             {
                                 heightDim = new LinearDimension(hStart, hEnd, dimOffset, 90.0, dimStyle);
+                                addDim = true;
                             }
 
                             // widok operational
                             if ((el.type == Lab.Wall || el.type == Lab.Door || el.type.Contains(Lab.Removable)) && el.label == Lab.Operational && view.Name == ViewName.Operational && notForBlock)
                             {
                                 heightDim = new LinearDimension(hStart, hEnd, dimOffset, 90.0, dimStyle);
+                                addDim = true;
                             }
 
                             // widok back
                             if ((el.type == Lab.Wall || el.type == Lab.Door || el.type.Contains(Lab.Removable)) && el.label == Lab.Back && view.Name == ViewName.Back && notForBlock)
                             {
                                 heightDim = new LinearDimension(hStart, hEnd, dimOffset + 100, 90.0, dimStyle);
+                                addDim = true;
                             }
 
                             // widok up
                             if ((el.type == Lab.Wall || el.type == Lab.Door || el.type.Contains(Lab.Removable)) && el.label == Lab.Up && view.Name == ViewName.Up && notForBlock)
                             {
                                 heightDim = new LinearDimension(hStart, hEnd, dimOffset + 100, 90.0, dimStyle);
+                                addDim = true;
                             }
 
                             // widok down
@@ -748,17 +756,11 @@ namespace Klimor.WebApi.DXF.Services
                             }
                         }
 
-                        if (el.View == view.Name && (el.label == Lab.Function || (el.label == Lab.Block && el.View == ViewName.RightFront) || Lab.ExternalElements.Any(l => l == el.label)))
+                        if (el.View == view.Name && ((el.label == Lab.Function || (el.label == Lab.Block && el.View == ViewName.RightFront) || Lab.ExternalElements.Any(l => l == el.label)) || addDim))
                         {
                             heightDim.Layer = layer;
                             dxf.Entities.Add(heightDim);
-                        }
-
-                        if (view.Name != ViewName.Frame && el.label == Lab.Frame && frameXYmoved)
-                        {
-                            dxf.Entities.Remove(heightDim);
-                            dxf.Entities.Remove(widthDim);
-                        }
+                        }                        
                     }
                 }
             }
