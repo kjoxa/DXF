@@ -116,6 +116,7 @@ namespace Klimor.WebApi.DXF.Consts
                 [ViewName.FrameUp] = (1, 9),
                 [ViewName.Roof] = (1, 3),
                 [ViewName.RoofUp] = (1, 1),
+                [ViewName.Table] = (0, 4),
             },
             [Norm.ISO_EXTENDED] = new()
             {
@@ -131,6 +132,7 @@ namespace Klimor.WebApi.DXF.Consts
                 [ViewName.FrameUp] = (1, 9),
                 [ViewName.Roof] = (1, 2),
                 [ViewName.RoofUp] = (1, 1),
+                [ViewName.Table] = (0, 4),
             },
             [Norm.US] = new()
             {
@@ -143,7 +145,10 @@ namespace Klimor.WebApi.DXF.Consts
                 [ViewName.Up] = (1, 6),
                 [ViewName.UpUp] = (1, 7),
                 [ViewName.Frame] = (1, 3),
-                [ViewName.Roof] = (1, 2),
+                [ViewName.FrameUp] = (1, 2),
+                [ViewName.Roof] = (1, 8),
+                [ViewName.RoofUp] = (1, 9),
+                [ViewName.Table] = (0, 4),
             },
             [Norm.US_EXTENDED] = new()
             {
@@ -156,7 +161,10 @@ namespace Klimor.WebApi.DXF.Consts
                 [ViewName.Up] = (1, 6),
                 [ViewName.UpUp] = (1, 7),
                 [ViewName.Frame] = (1, 3),
-                [ViewName.Roof] = (1, 2),
+                [ViewName.FrameUp] = (1, 2),
+                [ViewName.Roof] = (1, 8),
+                [ViewName.RoofUp] = (1, 9),
+                [ViewName.Table] = (0, 4),
             },
             [Norm.PROD] = new()
             {
@@ -172,6 +180,7 @@ namespace Klimor.WebApi.DXF.Consts
                 [ViewName.FrameUp] = (1, 9),
                 [ViewName.Roof] = (1, 3),
                 [ViewName.RoofUp] = (1, 1),
+                [ViewName.Table] = (0, 4),
             },
             [Norm.PROD_EXTENDED] = new()
             {
@@ -187,6 +196,7 @@ namespace Klimor.WebApi.DXF.Consts
                 [ViewName.FrameUp] = (1, 9),
                 [ViewName.Roof] = (1, 2),
                 [ViewName.RoofUp] = (1, 1),
+                [ViewName.Table] = (0, 4),
             }
         };
     }

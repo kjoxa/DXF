@@ -821,6 +821,7 @@ namespace Klimor.WebApi.DXF
             var grid = new ViewGrid(columns: 5, rows: 10, cellWidth: (int)cellWidth, cellHeight: (int)cellHeight);
             grid.AlignCellToPoint(col: 1, row: 5, worldX: 0, worldY: 0);
 
+            Views.Table.Visibility = false;
             // Użycie presetów siatkowych:
             Views.ApplyNormOnGrid(norm, grid);
             var drawer = new GridDrawer(dxf);
@@ -1112,8 +1113,108 @@ namespace Klimor.WebApi.DXF
             //    GenerateSwitchboxDimension();
             //}
             PrepareLayersToMode(dxf, isExtended);
+
+            //DrawTable(dxf);
             dxf.Save(fileOutput);
         }
+
+        void DrawTable(DxfDocument dxf)
+        {
+            var data = new List<(string Element, string Quantity, string Date)>
+            {
+                ("AD",        "2", "11.2025"),
+                ("FC",        "2", "-"),
+                ("INTK",      "0", "-"),
+                ("DrainTray", "3", "03.2024"),
+                ("Portholes", "2", "09.2023")
+            };
+
+            CreateTable(dxf, offset_x: Views.Table.XOffset, offset_y: Views.Table.YOffset, rows: data, title: "NW1 EVO-S Compact");
+        }
+
+        private void CreateTable(
+            DxfDocument dxf,
+            double offset_x,
+            double offset_y,
+            IEnumerable<(string Element, string Quantity, string Date)> rows,
+            string title = "NW1 EVO-S Compact",
+            double cellWidth = 300,
+            double cellHeight = 100)
+        {
+            // --- helpers ---
+            void AddText(string text, double x, double y, double height, bool bold = false)
+            {
+                var t = new Text(text, new Vector3(x, y, 0), height)
+                {
+                    Alignment = TextAlignment.MiddleCenter
+                };
+                if (bold) t.Style = new TextStyle("ArialBold", "arialbd.ttf");
+                dxf.Entities.Add(t);
+            }
+
+            void AddLine(double x1, double y1, double x2, double y2, Lineweight lw = Lineweight.ByLayer)
+            {
+                var line = new netDxf.Entities.Line(new Vector3(x1, y1, 0), new Vector3(x2, y2, 0)) { Lineweight = lw };
+                dxf.Entities.Add(line);
+            }
+
+            // --- geometry ---
+            double startX = offset_x;
+            double startY = offset_y;
+
+            int cols = 3;
+            int dataCount = rows is ICollection<(string, string, string)> c ? c.Count : rows.Count(); // policz wiersze
+            int gridRows = 1 + dataCount; // 1 = wiersz nagłówka; tytuł jest NAD tabelą
+
+            // siatka pozioma
+            for (int i = 0; i <= gridRows; i++)
+            {
+                double y = startY - i * cellHeight;
+                var lw = (i == 0 || i == gridRows) ? Lineweight.W50 : Lineweight.W25;
+                AddLine(startX, y, startX + cols * cellWidth, y, lw);
+            }
+            // siatka pionowa
+            for (int j = 0; j <= cols; j++)
+            {
+                double x = startX + j * cellWidth;
+                var lw = (j == 0 || j == cols) ? Lineweight.W50 : Lineweight.W25;
+                AddLine(x, startY, x, startY - gridRows * cellHeight, lw);
+            }
+
+            // środki kolumn
+            double cx0 = startX + 0.5 * cellWidth;
+            double cx1 = startX + 1.5 * cellWidth;
+            double cx2 = startX + 2.5 * cellWidth;
+
+            // rozmiary czcionek (skalują się z komórką)
+            double titleTextH = cellHeight * 0.55;
+            double headerTextH = cellHeight * 0.35;
+            double dataTextH = cellHeight * 0.32;
+
+            // tytuł nad tabelą
+            double centerX = startX + (cols * cellWidth) / 2.0;
+            double titleGap = cellHeight * 0.60;
+            double titleY = startY + titleGap;
+            AddText(title, centerX, titleY, titleTextH, bold: true);
+
+            // nagłówki (wiersz 1 siatki)
+            double headerY = startY - 0.5 * cellHeight;
+            AddText("Element", cx0, headerY, headerTextH);
+            AddText("Quantity", cx1, headerY, headerTextH);
+            AddText("Date", cx2, headerY, headerTextH);
+
+            // dane
+            int iRow = 0;
+            foreach (var (Element, Quantity, Date) in rows)
+            {
+                double cy = startY - ((iRow + 1) + 0.5) * cellHeight; // +1 bo po nagłówku
+                AddText(Element ?? "", cx0, cy, dataTextH);
+                AddText(Quantity ?? "", cx1, cy, dataTextH);
+                AddText(Date ?? "", cx2, cy, dataTextH);
+                iRow++;
+            }
+        }
+
 
         private void RepositioningOnGridWhenViewsHide(Norm norm, ViewGrid grid)
         {
@@ -1133,8 +1234,18 @@ namespace Klimor.WebApi.DXF
                     break;
 
                 case Norm.US_EXTENDED:
-                    
+                    // jeśli UpUp jest niewidoczny, to RoofUp też będzie niewidoczny
+                    if (Views.UpUp.Visibility == false)
+                    {
+                        if (GridPresets.Cells.TryGetValue(Norm.ISO_EXTENDED, out var views))
+                        {
+                            views[ViewName.Up] = (1, 4);
+                            views[ViewName.Roof] = (1, 3);
+                            views[ViewName.Frame] = (1, 7);
+                        }
+                    }
                     break;
+
                 case Norm.PROD_EXTENDED:
                     
                     break;

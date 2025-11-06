@@ -20,6 +20,7 @@ namespace Klimor.WebApi.DXF.Consts
         public const string FrameUp = "FrameUp";
         public const string Roof = "Roof";
         public const string RoofUp = "RoofUp";
+        public const string Table = "Table";
     }
 
     public class ViewElement
@@ -61,7 +62,8 @@ namespace Klimor.WebApi.DXF.Consts
             [ViewName.Frame] = new(ViewName.Frame, 0, 50000),
             [ViewName.FrameUp] = new(ViewName.FrameUp, 0, 50000),
             [ViewName.Roof] = new(ViewName.Roof, 0, -50000),
-            [ViewName.RoofUp] = new(ViewName.RoofUp, 0, -50000)
+            [ViewName.RoofUp] = new(ViewName.RoofUp, 0, -50000),
+            [ViewName.Table] = new(ViewName.Table, 0, -50000)
         };
 
         public ViewElement this[string name] => _views[name];
@@ -78,6 +80,8 @@ namespace Klimor.WebApi.DXF.Consts
         public ViewElement FrameUp => _views[ViewName.FrameUp];
         public ViewElement Roof => _views[ViewName.Roof];
         public ViewElement RoofUp => _views[ViewName.RoofUp];
+
+        public ViewElement Table => _views[ViewName.Table];
 
         public IEnumerable<ViewElement> All => _views.Values;
 
@@ -111,6 +115,7 @@ namespace Klimor.WebApi.DXF.Consts
                 [ViewName.FrameUp] = (0, -12000),
                 [ViewName.Roof] = (0, -17000),
                 [ViewName.RoofUp] = (0, -17000),
+                [ViewName.Table] = (0, -22000),
             },
             [Norm.ISO_EXTENDED] = new()
             {
@@ -126,6 +131,7 @@ namespace Klimor.WebApi.DXF.Consts
                 [ViewName.FrameUp] = (0, -12000),
                 [ViewName.Roof] = (0, -17000),
                 [ViewName.RoofUp] = (0, -17000),
+                [ViewName.Table] = (0, -22000),
             },
             [Norm.US] = new()
             {
@@ -139,6 +145,7 @@ namespace Klimor.WebApi.DXF.Consts
                 [ViewName.UpUp] = (0, -16000),
                 [ViewName.Frame] = (0, -12000),
                 [ViewName.Roof] = (0, -17000),
+                [ViewName.Table] = (0, -22000),
             },
             [Norm.US_EXTENDED] = new()
             {
@@ -152,6 +159,7 @@ namespace Klimor.WebApi.DXF.Consts
                 [ViewName.UpUp] = (0, -16000),
                 [ViewName.Frame] = (0, -12000),
                 [ViewName.Roof] = (0, -17000),
+                [ViewName.Table] = (0, -22000),
             },
             [Norm.PROD] = new()
             {
@@ -165,6 +173,7 @@ namespace Klimor.WebApi.DXF.Consts
                 [ViewName.UpUp] = (0, -16000),
                 [ViewName.Frame] = (0, -12000),
                 [ViewName.Roof] = (0, -17000),
+                [ViewName.Table] = (0, -22000),
             },
             [Norm.PROD_EXTENDED] = new()
             {
@@ -178,6 +187,7 @@ namespace Klimor.WebApi.DXF.Consts
                 [ViewName.UpUp] = (0, -16000),
                 [ViewName.Frame] = (0, -12000),
                 [ViewName.Roof] = (0, -17000),
+                [ViewName.Table] = (0, -22000),
             }
         };
 

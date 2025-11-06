@@ -705,12 +705,22 @@ namespace Klimor.WebApi.DXF.Services
 
                         if (el.View == view.Name)
                         {
-                            if (el.label == Lab.Function && !(el.View == ViewName.Operational /*|| el.View == ViewName.Back*/)) return;
-                            if (el.label == Lab.Function || (el.label == Lab.Block && el.View == ViewName.RightFront) || Lab.ExternalElements.Any(l => l == el.label) || addDim)
+                            var dimensionMoved = el.label == Lab.Block && el.View == ViewName.RightFront;
+                            if (dimensionMoved)
+                            {
+                                dimOffset = 200;
+                                widthDim = new LinearDimension(wStart, wEnd, -dimOffset, 0.0, dimStyle);
+                                widthDim.Layer = layer;
+                                dxf.Entities.Add(widthDim);
+                            }
+                            else if (el.label == Lab.Function
+                                  || (el.label == Lab.Block && el.View == ViewName.RightFront)
+                                  || Lab.ExternalElements.Any(l => l == el.label)
+                                  || addDim)
                             {
                                 widthDim.Layer = layer;
                                 dxf.Entities.Add(widthDim);
-                            }                               
+                            }
                         }
 
                         var hStart = outer2D[1];
@@ -760,11 +770,22 @@ namespace Klimor.WebApi.DXF.Services
 
                         if (el.View == view.Name)
                         {
-                            if (el.label == Lab.Function || (el.label == Lab.Block && el.View == ViewName.RightFront) || Lab.ExternalElements.Any(l => l == el.label) || addDim)
+                            var dimensionMoved = el.label == Lab.Block && el.View == ViewName.RightFront;
+                            if (dimensionMoved)
+                            {
+                                dimOffset = 250;
+                                heightDim = new LinearDimension(hStart, hEnd, -dimOffset, 90.0, dimStyle);
+                                heightDim.Layer = layer;
+                                dxf.Entities.Add(heightDim);
+                            }
+                            else if (el.label == Lab.Function
+                                  || (el.label == Lab.Block && el.View == ViewName.RightFront)
+                                  || Lab.ExternalElements.Any(l => l == el.label)
+                                  || addDim)
                             {
                                 heightDim.Layer = layer;
                                 dxf.Entities.Add(heightDim);
-                            }                                
+                            }
                         }                        
                     }
                 }
