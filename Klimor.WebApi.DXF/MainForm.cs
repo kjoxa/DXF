@@ -1237,11 +1237,11 @@ namespace Klimor.WebApi.DXF
                     // jeśli UpUp jest niewidoczny, to RoofUp też będzie niewidoczny
                     if (Views.UpUp.Visibility == false)
                     {
-                        if (GridPresets.Cells.TryGetValue(Norm.ISO_EXTENDED, out var views))
+                        if (GridPresets.Cells.TryGetValue(Norm.US_EXTENDED, out var views))
                         {
-                            views[ViewName.Up] = (1, 4);
-                            views[ViewName.Roof] = (1, 3);
-                            views[ViewName.Frame] = (1, 7);
+                            views[ViewName.Down] = (1, 4);
+                            views[ViewName.Roof] = (1, 7);
+                            views[ViewName.Frame] = (1, 3);
                         }
                     }
                     break;
