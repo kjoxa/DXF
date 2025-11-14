@@ -501,7 +501,11 @@ namespace Klimor.WebApi.DXF
                 .ToList();
 
             if (roofs.Count == 0)
+            {
+                Views.Roof.Visibility = false;
+                Views.RoofUp.Visibility = false;
                 return;
+            }
             
             var levels = roofs
                 .Select(e => e.y2)
@@ -526,10 +530,7 @@ namespace Klimor.WebApi.DXF
             else
             {
                 Views.RoofUp.Visibility = false;
-            }
-
-            if (roofs.Count == 0)
-                Views.Roof.Visibility = false;
+            }                    
         }
 
         private void MapElementsToViews(List<Coordinates> elements, bool extended)
@@ -611,6 +612,50 @@ namespace Klimor.WebApi.DXF
                             additionalInfos = el.additionalInfos,
                         };
                         elements.Add(addBlock);
+                    }
+
+                    if (el.label is Lab.Porthole && vw.Name is (ViewName.Operational or ViewName.Back))
+                    {
+                        if (vw.Name == ViewName.Operational && el.z1 < 10)
+                        {
+                            var addBlock = new Coordinates
+                            {
+                                View = vw.Name,
+                                label = el.label,
+                                type = el.type,
+                                x1 = el.x1,
+                                x2 = el.x2,
+                                y1 = el.y1,
+                                y2 = el.y2,
+                                z1 = el.z1,
+                                z2 = el.z2,
+                                PositionUp = el.PositionUp,
+                                PositionDown = el.PositionDown,
+                                posUpDown = el.posUpDown,
+                                additionalInfos = el.additionalInfos,
+                            };
+                            elements.Add(addBlock);
+                        } 
+                        else if (vw.Name == ViewName.Back && el.z1 > 10)
+                        {
+                            var addBlock = new Coordinates
+                            {
+                                View = vw.Name,
+                                label = el.label,
+                                type = el.type,
+                                x1 = el.x1,
+                                x2 = el.x2,
+                                y1 = el.y1,
+                                y2 = el.y2,
+                                z1 = el.z1,
+                                z2 = el.z2,
+                                PositionUp = el.PositionUp,
+                                PositionDown = el.PositionDown,
+                                posUpDown = el.posUpDown,
+                                additionalInfos = el.additionalInfos,
+                            };
+                            elements.Add(addBlock);
+                        }                        
                     }
 
                     if (el.label == Lab.Up && (el.type == Lab.Wall || el.type == Lab.Div) && vw.Name is not (ViewName.Down or ViewName.DownUp))

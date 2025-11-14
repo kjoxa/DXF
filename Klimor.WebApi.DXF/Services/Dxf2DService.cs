@@ -284,8 +284,8 @@ namespace Klimor.WebApi.DXF.Services
                         case ViewName.DownUp:
                         //case ViewName.Frame:
                         //case ViewName.FrameUp:
-                        case ViewName.Roof:
-                        case ViewName.RoofUp:
+                        //case ViewName.Roof:
+                        //case ViewName.RoofUp:
                             GenerateChannelNumbers(elements, dxf, view, textLayer);
                             break;
                     }
