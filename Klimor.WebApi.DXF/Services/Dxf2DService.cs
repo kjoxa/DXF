@@ -433,7 +433,7 @@ namespace Klimor.WebApi.DXF.Services
                         }
 
                         if ((!string.IsNullOrEmpty(el.type) && el.label != Lab.Block && el.Show) &&
-                            (el.View == view.Name || el.label == Lab.Hole) ||
+                            (el.View == view.Name || el.label == Lab.Hole || el.label == Lab.Hatch) ||
                             (el.label == Lab.Connector && view.Name is (ViewName.LeftFront or ViewName.RightFront)) ||
                             (el.label is (ViewName.LeftFront or ViewName.RightFront)))
                         {
@@ -535,16 +535,14 @@ namespace Klimor.WebApi.DXF.Services
                             }
 
                             // dodajemy kwadraciki - Up/Down ożebrowanie / znaczniki płyt na Up/Down
-                            if (!externalElementShow
-                                && (el.type == "Wall" || el.type.Contains("Removable"))
-                                && (view.Name == "Up" || view.Name == "Down")
-                                && (el.label == "Operational" || el.label == "Back"))
+                            if ((el.View == ViewName.Up || el.View == ViewName.Down || el.View == ViewName.UpUp || el.View == ViewName.DownUp)
+                                && (el.label == Lab.Hatch))
                             {
-                                if (el.x2 + 50 < Views.AhuLength)
+                                if (el.x2 + 50 < Views.AhuLength && el.View == view.Name)
                                 {
                                     var cornerService = new CornerService(dxf, layer);
                                     cornerService.AddFilledCorner(
-                                        outer2D[1].X + 50,
+                                        inner2D[1].X,
                                         outer2D[1].Y,
                                         size: 50,
                                         anchor: AnchorPos.BottomRight
@@ -589,6 +587,7 @@ namespace Klimor.WebApi.DXF.Services
                                                     "Down_Wall" => "DOWN",
                                                     "Down_DrainTray" => "DRN_TRY",
                                                     "Frame" => "",
+                                                    "Hatch" => "",
                                                     _ => el.label
                                                 };
 

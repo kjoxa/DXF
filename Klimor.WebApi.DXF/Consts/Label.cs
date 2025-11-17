@@ -8,6 +8,9 @@ namespace Klimor.WebApi.DXF.Consts
 {
     public static class Lab
     {
+        // znaczniki płyt op i bck na widokach Up/Down
+        public const string Hatch = "Hatch";
+
         // blocks & functions
         public const string Block = "Block";
         public const string Function = "Function";

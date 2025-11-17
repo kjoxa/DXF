@@ -78,9 +78,9 @@ namespace Klimor.WebApi.DXF
         }
 
         private void SelectBlockUpChannel(List<Coordinates> elements)
-        {            
+        {
             var upBlocks = elements
-                .Where(e => e.label == ViewName.Up || (e.label.Contains("icon") && e.View == ViewName.Up))
+                .Where(e => e.label == Lab.Block || (e.label.Contains("icon") && e.View == ViewName.Up))
                 .ToList();
 
             if (upBlocks.Count == 0)
@@ -93,8 +93,7 @@ namespace Klimor.WebApi.DXF
                 .ToList();
 
             if (levels.Count > 1)
-            {
-                // bierzemy wszystkie poziomy poza najniższym
+            {                
                 var upperLevels = levels.Skip(1).ToList();
 
                 var upperWalls = upBlocks
@@ -102,10 +101,10 @@ namespace Klimor.WebApi.DXF
                     .ToList();
 
                 // usuwamy oryginały
-                //elements.RemoveAll(e => e.y2 == upperLevels.FirstOrDefault() || e.y2 == upperLevels.LastOrDefault() && (e.label == Lab.Up || e.label == Lab.Block) && e.View == ViewName.Up);
-                //elements.RemoveAll(e => e.y2 == levels.Take(1).FirstOrDefault() && !e.label.Contains("icon") && (e.label == Lab.Up || e.label == Lab.Block) && e.View == ViewName.UpUp);
-                elements.RemoveAll(e => (e.y2 == upperLevels.FirstOrDefault() || e.y2 == upperLevels.LastOrDefault()) && e.label == Lab.Up && e.View == ViewName.Up);
-                elements.RemoveAll(e => e.y2 == levels.Take(1).FirstOrDefault() && !e.label.Contains("icon") && (e.label == Lab.Up) && e.View == ViewName.UpUp);
+                elements.RemoveAll(e => e.y2 == upperLevels.FirstOrDefault() && (e.label == Lab.Block) && e.View == ViewName.Up);
+                elements.RemoveAll(e => e.y2 == levels.Take(1).FirstOrDefault() && !e.label.Contains("icon") && (e.label == Lab.Block) && e.View == ViewName.UpUp);
+                //elements.RemoveAll(e => (e.y2 == upperLevels.FirstOrDefault() || e.y2 == upperLevels.LastOrDefault()) && e.label == Lab.Up && e.View == ViewName.Up);
+                //elements.RemoveAll(e => e.y2 == levels.Take(1).FirstOrDefault() && !e.label.Contains("icon") && (e.label == Lab.Up) && e.View == ViewName.UpUp);
 
                 // ikony
                 levels = upBlocks
@@ -164,7 +163,7 @@ namespace Klimor.WebApi.DXF
 
                 // usuwamy oryginały
                 elements.RemoveAll(e => (e.y2 == upperLevels.FirstOrDefault() || e.y2 == upperLevels.LastOrDefault()) && (e.label == extrLabel) && e.View == ViewName.Up);
-                elements.RemoveAll(e => e.y2 == levels.Take(1).FirstOrDefault() && (e.label == extrLabel) && e.View == ViewName.UpUp);                
+                elements.RemoveAll(e => e.y2 == levels.Take(1).FirstOrDefault() && (e.label == extrLabel) && e.View == ViewName.UpUp);
             }
         }
 
@@ -176,13 +175,13 @@ namespace Klimor.WebApi.DXF
 
             if (downEls.Count == 0)
                 return;
-            
+
             var levels = downEls
                 .Select(e => e.y1)
                 .Distinct()
                 .OrderBy(v => v)
                 .ToList();
-            
+
             if (levels.Count > 1)
             {
                 // zamiast levels.Count - 1 => C# 8 [^1]                
@@ -203,25 +202,25 @@ namespace Klimor.WebApi.DXF
                 {
                     elements.RemoveAll(e => e.y1 == topLevel && e.View == ViewName.Down && e.label == extrLabel);
                     elements.RemoveAll(e => e.y1 != topLevel && e.View == ViewName.DownUp && e.label == extrLabel);
-                }                    
+                }
             }
         }
 
         private void SelectBlockDownChannel(List<Coordinates> elements)
-        {            
+        {
             var downBlocks = elements
                 .Where(e => (e.label == Lab.Down_Wall || e.label == Lab.Down_DrainTray) || (e.View == ViewName.Down && e.label == Lab.Block))
                 .ToList();
 
             if (downBlocks.Count == 0)
                 return;
-            
+
             var levels = downBlocks
                 .Select(e => e.y1)
                 .Distinct()
                 .OrderBy(v => v)
                 .ToList();
-            
+
             if (levels.Count > 1)
             {
                 // zamiast levels.Count - 1 => C# 8 [^1]                
@@ -242,14 +241,14 @@ namespace Klimor.WebApi.DXF
         }
 
         private void SelectFunctionUpChannel(List<Coordinates> elements)
-        {            
+        {
             var upFunctions = elements
                 .Where(e => e.label == Lab.Function && e.View == ViewName.Up)
                 .ToList();
 
             if (upFunctions.Count == 0)
                 return;
-            
+
             var levels = upFunctions
                 .Select(e => e.y2)
                 .Distinct()
@@ -267,8 +266,8 @@ namespace Klimor.WebApi.DXF
                     .ToList();
 
                 // usuwamy oryginały
-                elements.RemoveAll(e => (e.y2 == upperLevels.FirstOrDefault() || e.y2 == upperLevels.LastOrDefault()) && e.View == ViewName.Up && (e.label == Lab.Function) && e.View == ViewName.Up);
-                elements.RemoveAll(e => e.y2 == levels.Take(1).FirstOrDefault() && (e.label == Lab.Function) && e.View == ViewName.UpUp);                            
+                elements.RemoveAll(e => (e.y2 == upperLevels.FirstOrDefault() || e.y2 == upperLevels.LastOrDefault()) && (e.label == Lab.Function) && e.View == ViewName.Up);
+                elements.RemoveAll(e => e.y2 == levels.Take(1).FirstOrDefault() && (e.label == Lab.Function) && e.View == ViewName.UpUp);
             }
         }
 
@@ -280,7 +279,7 @@ namespace Klimor.WebApi.DXF
 
             if (downWalls.Count == 0)
                 return;
-            
+
             var levels = downWalls
                 .Select(e => e.y1)
                 .Distinct()
@@ -333,7 +332,7 @@ namespace Klimor.WebApi.DXF
 
             // tu zarządzamy CONNECTORAMI - kopiujemy do pozostałych widoków
             foreach (var view in Views.Except("Frame", "FrameUp", "Roof", "RoofUp", "RightFront", "LeftFront", "DownUp", "UpUp", "Back", "Up"))
-            {                
+            {
                 foreach (var c in connectors)
                 {
                     elements.Add(new Coordinates
@@ -397,20 +396,22 @@ namespace Klimor.WebApi.DXF
         }
 
         private void SelectWallUpChannel(List<Coordinates> elements)
-        {            
+        {
             var upWalls = elements
-                .Where(e => e.label == ViewName.Up && (e.type == Lab.Wall && e.View == ViewName.Up))
+                .Where(e => (e.label == ViewName.Up || e.label == Lab.Hatch) && (e.type == Lab.Wall) && e.View == ViewName.Up)
                 .ToList();
 
             if (upWalls.Count == 0)
                 return;
-            
+
             var levels = upWalls
                 .Select(e => e.y2)
                 .Distinct()
                 .OrderBy(v => v)
                 .ToList();
-            
+
+            var upUpHatches = elements.Where(a => a.label == Lab.Hatch && a.View == ViewName.UpUp).Select(a => new { a.x1, a.x2 }).ToList();
+
             if (levels.Count > 1)
             {
                 // bierzemy wszystkie poziomy poza najniższym
@@ -418,12 +419,17 @@ namespace Klimor.WebApi.DXF
 
                 var upperWalls = upWalls
                     .Where(e => upperLevels.Contains(e.y2))
-                    .ToList();
+                    .ToList();                
 
-                // usuwamy oryginały
-                elements.RemoveAll(e => (e.y2 == upperLevels.FirstOrDefault() || e.y2 == upperLevels.LastOrDefault()) && e.label == Lab.Up && e.type == Lab.Wall && e.View == ViewName.Up);
-                elements.RemoveAll(e => e.y2 == levels.Take(1).FirstOrDefault() && e.label == Lab.Up && e.type == Lab.Wall && e.View == ViewName.UpUp);                
+                // czyszczenie UpUp
+                elements.RemoveAll(e => (e.y2 == upperLevels.FirstOrDefault()) && (e.label == Lab.Up || e.label == Lab.Hatch) && (e.type == Lab.Wall || e.type == Lab.Div || e.type.Contains("Removable")) && e.View == ViewName.Up);
+                // czyszczenie Up
+                elements.RemoveAll(e => e.y2 == levels.Take(1).FirstOrDefault() && (e.label == Lab.Up || e.label == Lab.Hatch) && (e.type == Lab.Wall || e.type == Lab.Div || e.type.Contains("Removable")) && e.View == ViewName.UpUp);
             }
+
+            // wykrywanie czy w Up nie są kwadraciki w miejscach UpUp (żeby nie były wyświetlanie kiedy blok, fuynkcje i resztą są w UpUp)
+            //elements.RemoveAll(e => e.label == Lab.Hatch && e.View == ViewName.Up && elements.Any(a => a.label == Lab.Hatch && a.View == ViewName.UpUp && e.x1 == a.x1 && e.x2 == a.x2));
+            elements.RemoveAll(e => e.label == Lab.Hatch && e.View == ViewName.Up && upUpHatches.Any(h => h.x1 == e.x1 && h.x2 == e.x2));
         }
 
         private void SelectWallDownChannel(List<Coordinates> elements)
@@ -438,13 +444,13 @@ namespace Klimor.WebApi.DXF
 
             if (downWalls.Count == 0)
                 return;
-            
+
             var levels = downWalls
                 .Select(e => e.y1)
                 .Distinct()
                 .OrderBy(v => v)
                 .ToList();
-            
+
             if (levels.Count > 1)
             {
                 // zamiast levels.Count - 1 => C# 8 [^1]                
@@ -461,20 +467,20 @@ namespace Klimor.WebApi.DXF
         }
 
         private void SelectFrameUpChannel(List<Coordinates> elements)
-        {            
+        {
             var frames = elements
                 .Where(e => e.label == Lab.Frame && e.View == ViewName.Frame)
                 .ToList();
 
             if (frames.Count == 0)
                 return;
-            
+
             var levels = frames
                 .Select(e => e.y2)
                 .Distinct()
                 .OrderBy(v => v)
                 .ToList();
-            
+
             if (levels.Count > 1)
             {
                 // bierzemy wszystkie poziomy poza najniższym
@@ -495,7 +501,7 @@ namespace Klimor.WebApi.DXF
         }
 
         private void SelectRoofUpChannel(List<Coordinates> elements)
-        {            
+        {
             var roofs = elements
                 .Where(e => e.label == ViewName.Roof && (e.View == ViewName.Roof))
                 .ToList();
@@ -506,7 +512,7 @@ namespace Klimor.WebApi.DXF
                 Views.RoofUp.Visibility = false;
                 return;
             }
-            
+
             var levels = roofs
                 .Select(e => e.y2)
                 .Distinct()
@@ -530,237 +536,109 @@ namespace Klimor.WebApi.DXF
             else
             {
                 Views.RoofUp.Visibility = false;
-            }                    
+            }
         }
 
         private void MapElementsToViews(List<Coordinates> elements, bool extended)
         {
+            void addElement(ViewElement vw, Coordinates el, int y2, string? newLabel)
+            {
+                var addBlock = new Coordinates
+                {
+                    View = vw.Name,
+                    label = string.IsNullOrEmpty(newLabel) ? el.label : newLabel,
+                    type = el.type,
+                    x1 = el.x1,
+                    x2 = el.x2,
+                    y1 = el.y1,
+                    y2 = y2 == 0 ? el.y2 : y2,
+                    z1 = el.z1,
+                    z2 = el.z2,
+                    PositionUp = el.PositionUp,
+                    PositionDown = el.PositionDown,
+                    posUpDown = el.posUpDown,
+                    additionalInfos = el.additionalInfos,
+                };
+                elements.Add(addBlock);
+            }
+
             foreach (var el in elements.ToList())
             {
                 if (el.label == "FrontRight")
-                {
                     el.label = "RightFront";
-                }
                 if (el.label == "FrontLeft")
-                {
                     el.label = "LeftFront";
-                }
             }
             var views = Views.Except("Frame", "Roof", "Connector");
             foreach (var el in elements.ToList())
-            {
+            {                
                 foreach (var vw in views)
                 {
+                    if (el.label is (Lab.Operational or Lab.Back) &&
+                        vw.Name is (ViewName.Up or ViewName.Down or ViewName.UpUp or ViewName.DownUp) &&
+                        el.type is (Lab.Wall or Lab.Door or Lab.Removable or Lab.Removable_2 or Lab.Removable_3))
+                    {
+                        /*
+                            Tworzymy elementy pod kwadraciki oznaczających operationale removable / 2 / 3 i back walle na widokach Up, UpUp, Down, DownUp
+                
+                            Operational: Wall, Door, Removable, Removable_2, Removable_3
+                            Back: Wall
+                        */
+                        var blockIgnore = elements.Any(e => e.label == Lab.Block && e.x1 == el.x1 - 50 && e.x2 == el.x2 + 50);
+                        if (!blockIgnore)
+                        addElement(vw, el, el.y2 + 50, Lab.Hatch);
+                    }
+
                     if ((el.label == vw.Name || el.label == Lab.Block) && el.type != Lab.Wall)
                     {
-                        var addBlock = new Coordinates
-                        {
-                            View = vw.Name,
-                            label = el.label,
-                            type = el.type,
-                            x1 = el.x1,
-                            x2 = el.x2,
-                            y1 = el.y1,
-                            y2 = el.y2,
-                            z1 = el.z1,
-                            z2 = el.z2,
-                            PositionUp = el.PositionUp,
-                            PositionDown = el.PositionDown,
-                            posUpDown = el.posUpDown,
-                            additionalInfos = el.additionalInfos,
-                        };
-                        elements.Add(addBlock);
+                        addElement(vw, el, 0, null);
                     }
-                    
+
                     if (el.label == Lab.Function)
                     {
-                        var addBlock = new Coordinates
-                        {
-                            View = vw.Name,
-                            label = el.label,
-                            type = el.type,
-                            x1 = el.x1,
-                            x2 = el.x2,
-                            y1 = el.y1,
-                            y2 = el.y2,
-                            z1 = el.z1,
-                            z2 = el.z2,
-                            PositionUp = el.PositionUp,
-                            PositionDown = el.PositionDown,
-                            posUpDown = el.posUpDown,
-                            additionalInfos = el.additionalInfos,
-                        };
-                        elements.Add(addBlock);
+                        addElement(vw, el, 0, null);
                     }
 
                     if (el.label is (Lab.AD or Lab.FC or Lab.INTK))
                     {
-                        var addBlock = new Coordinates
-                        {
-                            View = vw.Name,
-                            label = el.label,
-                            type = el.type,
-                            x1 = el.x1,
-                            x2 = el.x2,
-                            y1 = el.y1,
-                            y2 = el.y2,
-                            z1 = el.z1,
-                            z2 = el.z2,
-                            PositionUp = el.PositionUp,
-                            PositionDown = el.PositionDown,
-                            posUpDown = el.posUpDown,
-                            additionalInfos = el.additionalInfos,
-                        };
-                        elements.Add(addBlock);
+                        addElement(vw, el, 0, null);
                     }
 
                     if (el.label is Lab.Porthole && vw.Name is (ViewName.Operational or ViewName.Back))
                     {
                         if (vw.Name == ViewName.Operational && el.z1 < 10)
                         {
-                            var addBlock = new Coordinates
-                            {
-                                View = vw.Name,
-                                label = el.label,
-                                type = el.type,
-                                x1 = el.x1,
-                                x2 = el.x2,
-                                y1 = el.y1,
-                                y2 = el.y2,
-                                z1 = el.z1,
-                                z2 = el.z2,
-                                PositionUp = el.PositionUp,
-                                PositionDown = el.PositionDown,
-                                posUpDown = el.posUpDown,
-                                additionalInfos = el.additionalInfos,
-                            };
-                            elements.Add(addBlock);
-                        } 
+                            addElement(vw, el, 0, null);
+                        }
                         else if (vw.Name == ViewName.Back && el.z1 > 10)
                         {
-                            var addBlock = new Coordinates
-                            {
-                                View = vw.Name,
-                                label = el.label,
-                                type = el.type,
-                                x1 = el.x1,
-                                x2 = el.x2,
-                                y1 = el.y1,
-                                y2 = el.y2,
-                                z1 = el.z1,
-                                z2 = el.z2,
-                                PositionUp = el.PositionUp,
-                                PositionDown = el.PositionDown,
-                                posUpDown = el.posUpDown,
-                                additionalInfos = el.additionalInfos,
-                            };
-                            elements.Add(addBlock);
-                        }                        
+                            addElement(vw, el, 0, null);
+                        }
                     }
 
                     if (el.label == Lab.Up && (el.type == Lab.Wall || el.type == Lab.Div) && vw.Name is not (ViewName.Down or ViewName.DownUp))
                     {
-                        var addBlock = new Coordinates
-                        {
-                            View = vw.Name,
-                            label = el.label,
-                            type = el.type,
-                            x1 = el.x1,
-                            x2 = el.x2,
-                            y1 = el.y1,
-                            y2 = el.y2,
-                            z1 = el.z1,
-                            z2 = el.z2,
-                            PositionUp = el.PositionUp,
-                            PositionDown = el.PositionDown,
-                            posUpDown = el.posUpDown,
-                            additionalInfos = el.additionalInfos,
-                        };
-                        elements.Add(addBlock);
+                        addElement(vw, el, 0, null);
                     }
 
                     if (el.label is (Lab.Down_Wall or Lab.Down_Div or Lab.Down_DrainTray) && (el.type is Lab.Wall or Lab.Div or Lab.Down_DrainTray or Lab.DrainTray) && vw.Name is not (ViewName.Up or ViewName.UpUp))
                     {
-                        var addBlock = new Coordinates
-                        {
-                            View = vw.Name,
-                            label = el.label,
-                            type = el.type,
-                            x1 = el.x1,
-                            x2 = el.x2,
-                            y1 = el.y1,
-                            y2 = el.y2,
-                            z1 = el.z1,
-                            z2 = el.z2,
-                            PositionUp = el.PositionUp,
-                            PositionDown = el.PositionDown,
-                            posUpDown = el.posUpDown,
-                            additionalInfos = el.additionalInfos,
-                        };
-                        elements.Add(addBlock);
+                        addElement(vw, el, 0, null);
                     }
 
                     if (el.label is Lab.Back && el.type is Lab.Wall)
                     {
-                        var addBlock = new Coordinates
-                        {
-                            View = vw.Name,
-                            label = el.label,
-                            type = el.type,
-                            x1 = el.x1,
-                            x2 = el.x2,
-                            y1 = el.y1,
-                            y2 = el.y2,
-                            z1 = el.z1,
-                            z2 = el.z2,
-                            PositionUp = el.PositionUp,
-                            PositionDown = el.PositionDown,
-                            posUpDown = el.posUpDown,
-                            additionalInfos = el.additionalInfos,
-                        };
-                        elements.Add(addBlock);
+                        addElement(vw, el, 0, null);
                     }
 
                     if (el.label is Lab.Frame)
                     {
-                        var addBlock = new Coordinates
-                        {
-                            View = vw.Name,
-                            label = el.label,
-                            type = el.type,
-                            x1 = el.x1,
-                            x2 = el.x2,
-                            y1 = el.y1,
-                            y2 = el.y2,
-                            z1 = el.z1,
-                            z2 = el.z2,
-                            PositionUp = el.PositionUp,
-                            PositionDown = el.PositionDown,
-                            posUpDown = el.posUpDown,
-                            additionalInfos = el.additionalInfos,
-                        };
-                        elements.Add(addBlock);
+                        addElement(vw, el, 0, null);
                     }
 
                     if ((el.label is (ViewName.LeftFront or ViewName.RightFront)) && el.type == Lab.Wall && (vw.Name is (ViewName.LeftFront or ViewName.RightFront)))
                     {
-                        var addBlock = new Coordinates
-                        {
-                            View = vw.Name,
-                            label = el.label,
-                            type = el.type,
-                            x1 = el.x1,
-                            x2 = el.x2,
-                            y1 = el.y1,
-                            y2 = el.y2,
-                            z1 = el.z1,
-                            z2 = el.z2,
-                            PositionUp = el.PositionUp,
-                            PositionDown = el.PositionDown,
-                            posUpDown = el.posUpDown,
-                            additionalInfos = el.additionalInfos,
-                        };
-                        elements.Add(addBlock);
+                        addElement(vw, el, 0, null);
                     }
                 }
             }
@@ -769,59 +647,27 @@ namespace Klimor.WebApi.DXF
             foreach (var el in elements.ToList())
             {
                 foreach (var vw in views)
-                {                    
+                {
                     if (el.label is Lab.Frame && vw.Name is (ViewName.Frame or ViewName.FrameUp))
                     {
-                        var addBlock = new Coordinates
-                        {
-                            View = vw.Name,
-                            label = el.label,
-                            type = el.type,
-                            x1 = el.x1,
-                            x2 = el.x2,
-                            y1 = el.y1,
-                            y2 = el.y2,
-                            z1 = el.z1,
-                            z2 = el.z2,
-                            PositionUp = el.PositionUp,
-                            PositionDown = el.PositionDown,
-                            posUpDown = el.posUpDown,
-                            additionalInfos = el.additionalInfos,
-                        };
-                        elements.Add(addBlock);
+                        addElement(vw, el, 0, null);
                     }
 
                     if (el.label is Lab.Roof && vw.Name is (ViewName.Roof or ViewName.RoofUp))
                     {
-                        var addBlock = new Coordinates
-                        {
-                            View = vw.Name,
-                            label = el.label,
-                            type = el.type,
-                            x1 = el.x1,
-                            x2 = el.x2,
-                            y1 = el.y1,
-                            y2 = el.y2,
-                            z1 = el.z1,
-                            z2 = el.z2,
-                            PositionUp = el.PositionUp,
-                            PositionDown = el.PositionDown,
-                            posUpDown = el.posUpDown,
-                            additionalInfos = el.additionalInfos,
-                        };
-                        elements.Add(addBlock);
+                        addElement(vw, el, 0, null);
                     }
                 }
             }
-            
+
             elements.RemoveAll(e => string.IsNullOrWhiteSpace(e.View) && e.label is (Lab.Operational or Lab.Back) && e.label != ViewName.RightFront);
-            elements.RemoveAll(e => string.IsNullOrWhiteSpace(e.View) && e.label is (Lab.Block or Lab.Function));            
-            elements.RemoveAll(e => string.IsNullOrWhiteSpace(e.View) && (e.label is Lab.AD or Lab.FC or Lab.INTK));            
+            elements.RemoveAll(e => string.IsNullOrWhiteSpace(e.View) && e.label is (Lab.Block or Lab.Function));
+            elements.RemoveAll(e => string.IsNullOrWhiteSpace(e.View) && (e.label is Lab.AD or Lab.FC or Lab.INTK));
             elements.RemoveAll(e => string.IsNullOrWhiteSpace(e.View) && e.label == Lab.Up && (e.type == Lab.Wall || e.type == Lab.Div));
             elements.RemoveAll(e => string.IsNullOrWhiteSpace(e.View) && e.label is (Lab.Down_Wall or Lab.Down_Div or Lab.Down_DrainTray or Lab.Up) && (e.type is Lab.Wall or Lab.Div or Lab.Down_DrainTray or Lab.Down_DrainTray));
-            elements.RemoveAll(e => e.type is (Lab.Div or Lab.Wall) && e.label != e.View && e.label is not (Lab.Down_Wall or Lab.Down_Div or Lab.Down_DrainTray or Lab.Up));
             elements.RemoveAll(e => string.IsNullOrWhiteSpace(e.View) && e.label is (Lab.Frame or Lab.Roof));
-            elements.RemoveAll(e => e.label is (Lab.Frame or Lab.Roof) && e.View is (ViewName.Down or ViewName.DownUp or ViewName.Up or ViewName.UpUp));                      
+            elements.RemoveAll(e => e.type is (Lab.Div or Lab.Wall) && e.label != e.View && e.label is not (Lab.Down_Wall or Lab.Down_Div or Lab.Down_DrainTray or Lab.Up) && e.label != Lab.Hatch);
+            elements.RemoveAll(e => e.label is (Lab.Frame or Lab.Roof) && e.View is (ViewName.Down or ViewName.DownUp or ViewName.Up or ViewName.UpUp));
             elements.RemoveAll(e => e.label is Lab.Roof && e.View is not (ViewName.Roof or ViewName.RoofUp));
             elements.RemoveAll(e => e.label is Lab.Frame && e.View is (ViewName.Roof or ViewName.RoofUp));
             elements.RemoveAll(e => e.label is (ViewName.Up or Lab.Down_Wall) && e.View is (ViewName.LeftFront or ViewName.RightFront));
@@ -835,8 +681,45 @@ namespace Klimor.WebApi.DXF
             foreach (var icon in icons)
             {
                 icon.View = icon.additionalInfos.iconPosition;
-            }
+            }            
         }
+
+        //private void ShowHatchesOnUpDown(List<Coordinates> elements)
+        //{
+        //    void addElement(ViewElement vw, Coordinates el)
+        //    {
+        //        var addBlock = new Coordinates
+        //        {
+        //            View = vw.Name,
+        //            label = el.label,
+        //            type = el.type,
+        //            x1 = el.x1,
+        //            x2 = el.x2,
+        //            y1 = el.y1,
+        //            y2 = el.y2,
+        //            z1 = el.z1,
+        //            z2 = el.z2,
+        //            PositionUp = el.PositionUp,
+        //            PositionDown = el.PositionDown,
+        //            posUpDown = el.posUpDown,
+        //            additionalInfos = el.additionalInfos,
+        //        };
+        //        elements.Add(addBlock);
+        //    }
+
+        //    foreach (var el in elements.ToList())
+        //    {
+        //        if (el.label == "FrontRight")
+        //            el.label = "RightFront";
+        //        if (el.label == "FrontLeft")
+        //            el.label = "LeftFront";
+        //    }
+        //    var views = Views.Except("Frame", "Roof", "Connector");
+        //    foreach (var el in elements.ToList())
+        //    {
+        //    }
+        //}
+    
 
         private void Generate2D(List<Coordinates> elements, string fileOutput, bool isExtended, Norm norm)
         {            
@@ -1020,6 +903,12 @@ namespace Klimor.WebApi.DXF
                 dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Porthole }, false, true, layer, textLayer, Views.Except(ViewName.Frame, ViewName.Roof));
             }
 
+            void GenerateHatches()
+            {
+                var layer = dxf.Layers.Add(new Layer("Operational_Back_Hatches") { Color = AciColor.Magenta });
+                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Hatch }, false, true, layer, textLayer, Views.Select(ViewName.Up, ViewName.UpUp, ViewName.Down, ViewName.DownUp));
+            }
+
             void GeneratePortholeDimension()
             {
                 var layerDim = dxf.Layers.Add(new Layer("Porthole_dimensions") { Color = AciColor.Magenta });
@@ -1128,7 +1017,11 @@ namespace Klimor.WebApi.DXF
                 GenerateRoofDimensions();
                 GeneratePorthole();
                 GeneratePortholeDimension();
-            }                        
+                GenerateHatches();
+            }
+
+            // budowanie listy dla znaczników płyt, aby walle Operational i Back były widoczne na Up i Down
+            //ShowHatchesOnUpDown(elements);
 
             // do zrobienia
             //GeneratePorthole();
@@ -1273,8 +1166,14 @@ namespace Klimor.WebApi.DXF
                         {
                             views[ViewName.Up] = (1, 4);
                             views[ViewName.Roof] = (1, 3);
-                            views[ViewName.Frame] = (1, 7);
                         }                        
+                    }
+                    if (Views.DownUp.Visibility == false)
+                    {
+                        if (GridPresets.Cells.TryGetValue(Norm.ISO_EXTENDED, out var views))
+                        {
+                            views[ViewName.Frame] = (1, 7);
+                        }
                     }
                     break;
 
