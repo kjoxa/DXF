@@ -302,7 +302,6 @@ namespace Klimor.WebApi.DXF
             }
         }
 
-        // przypisanie connectorów do funkcji
         private void AssignDrainTrayConnectorsToFunctions(List<Coordinates> elements)
         {
             var filtered = elements
@@ -397,8 +396,11 @@ namespace Klimor.WebApi.DXF
 
         private void SelectWallUpChannel(List<Coordinates> elements)
         {
+            /*
+             Przyjęte założenie: na górze Hatch-e pojawią się tylko te, które mają ten sam Y2 co Wall UpUp Y2
+            */
             var upWalls = elements
-                .Where(e => (e.label == ViewName.Up || e.label == Lab.Hatch) && (e.type == Lab.Wall) && e.View == ViewName.Up)
+                .Where(e => (e.label == ViewName.Up) && (e.type == Lab.Wall) && e.View == ViewName.Up)
                 .ToList();
 
             if (upWalls.Count == 0)
@@ -412,6 +414,21 @@ namespace Klimor.WebApi.DXF
 
             var upUpHatches = elements.Where(a => a.label == Lab.Hatch && a.View == ViewName.UpUp).Select(a => new { a.x1, a.x2 }).ToList();
 
+            //if (levels.Count > 1)
+            //{
+            //    // bierzemy wszystkie poziomy poza najniższym
+            //    var upperLevels = levels.Skip(1).ToList();
+
+            //    var upperWalls = upWalls
+            //        .Where(e => upperLevels.Contains(e.y2))
+            //        .ToList();                
+
+            //    // czyszczenie UpUp
+            //    elements.RemoveAll(e => (e.y2 == upperLevels.FirstOrDefault()) && (e.label == Lab.Up || e.label == Lab.Hatch) && (e.type == Lab.Wall || e.type == Lab.Div || e.type.Contains("Removable")) && e.View == ViewName.Up);
+            //    // czyszczenie Up
+            //    elements.RemoveAll(e => e.y2 == levels.Take(1).FirstOrDefault() && (e.label == Lab.Up || e.label == Lab.Hatch) && (e.type == Lab.Wall || e.type == Lab.Div || e.type.Contains("Removable")) && e.View == ViewName.UpUp);
+            //}
+
             if (levels.Count > 1)
             {
                 // bierzemy wszystkie poziomy poza najniższym
@@ -419,17 +436,28 @@ namespace Klimor.WebApi.DXF
 
                 var upperWalls = upWalls
                     .Where(e => upperLevels.Contains(e.y2))
-                    .ToList();                
+                    .ToList();
 
                 // czyszczenie UpUp
-                elements.RemoveAll(e => (e.y2 == upperLevels.FirstOrDefault()) && (e.label == Lab.Up || e.label == Lab.Hatch) && (e.type == Lab.Wall || e.type == Lab.Div || e.type.Contains("Removable")) && e.View == ViewName.Up);
+                elements.RemoveAll(e => (e.y2 == upperLevels.FirstOrDefault()) && (e.label == Lab.Up) && (e.type == Lab.Wall || e.type == Lab.Div || e.type.Contains("Removable")) && e.View == ViewName.Up);
+                //elements.RemoveAll(e => (e.y2 == upperLevels.FirstOrDefault()) && (e.label == Lab.Hatch) && (e.type == Lab.Wall || e.type.Contains("Removable")) && e.View == ViewName.Up);
+
                 // czyszczenie Up
-                elements.RemoveAll(e => e.y2 == levels.Take(1).FirstOrDefault() && (e.label == Lab.Up || e.label == Lab.Hatch) && (e.type == Lab.Wall || e.type == Lab.Div || e.type.Contains("Removable")) && e.View == ViewName.UpUp);
+                elements.RemoveAll(e => e.y2 == levels.Take(1).FirstOrDefault() && (e.label == Lab.Up) && (e.type == Lab.Wall || e.type == Lab.Div || e.type.Contains("Removable")) && e.View == ViewName.UpUp);
             }
 
-            // wykrywanie czy w Up nie są kwadraciki w miejscach UpUp (żeby nie były wyświetlanie kiedy blok, fuynkcje i resztą są w UpUp)
-            //elements.RemoveAll(e => e.label == Lab.Hatch && e.View == ViewName.Up && elements.Any(a => a.label == Lab.Hatch && a.View == ViewName.UpUp && e.x1 == a.x1 && e.x2 == a.x2));
+            // usuwanie duplikatów Hatchy na Up
             elements.RemoveAll(e => e.label == Lab.Hatch && e.View == ViewName.Up && upUpHatches.Any(h => h.x1 == e.x1 && h.x2 == e.x2));
+            elements.RemoveAll(e => e.label == Lab.Hatch && e.View == ViewName.UpUp && e.y2 < levels.Skip(1).FirstOrDefault());
+
+            // przesuwanie Hatchy, które wychodzą poza obręb UpUp
+            var minUpUpX1 = elements.Where(e => e.label == Lab.Up && e.View == ViewName.UpUp).Min(e => e.x1);
+            var maxUpUpX2 = elements.Where(e => e.label == Lab.Up && e.View == ViewName.UpUp).Max(e => e.x2);
+            foreach (var hatch in elements.Where(e => e.label == Lab.Hatch))
+            {
+                if (hatch.x1 < minUpUpX1 || hatch.x2 > maxUpUpX2)
+                    hatch.View = ViewName.Up;
+            }
         }
 
         private void SelectWallDownChannel(List<Coordinates> elements)
@@ -445,6 +473,7 @@ namespace Klimor.WebApi.DXF
             if (downWalls.Count == 0)
                 return;
 
+            var downUpHatches = elements.Where(a => a.label == Lab.Hatch && a.View == ViewName.DownUp).Select(a => new { a.x1, a.x2 }).ToList();
             var levels = downWalls
                 .Select(e => e.y1)
                 .Distinct()
@@ -463,6 +492,19 @@ namespace Klimor.WebApi.DXF
 
                 elements.RemoveAll(e => e.y1 == topLevel && e.View == ViewName.Down && downCondition(e));
                 elements.RemoveAll(e => e.y1 != topLevel && e.View == ViewName.DownUp && downCondition(e));
+            }
+
+            // usuwanie duplikatów Hatchy na Up
+            elements.RemoveAll(e => e.label == Lab.Hatch && e.View == ViewName.Down && downUpHatches.Any(h => h.x1 == e.x1 && h.x2 == e.x2));
+            elements.RemoveAll(e => e.label == Lab.Hatch && e.View == ViewName.DownUp && e.y2 < levels.Skip(1).FirstOrDefault());
+
+            // przesuwanie Hatchy, które wychodzą poza obręb UpUp
+            var minUpUpX1 = elements.Where(e => downCondition(e) && e.View == ViewName.DownUp).Min(e => e.x1);
+            var maxUpUpX2 = elements.Where(e => downCondition(e) && e.View == ViewName.DownUp).Max(e => e.x2);
+            foreach (var hatch in elements.Where(e => e.label == Lab.Hatch))
+            {
+                if (hatch.x1 < minUpUpX1 || hatch.x2 > maxUpUpX2)
+                    hatch.View = ViewName.Down;
             }
         }
 
@@ -903,9 +945,9 @@ namespace Klimor.WebApi.DXF
                 dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Porthole }, false, true, layer, textLayer, Views.Except(ViewName.Frame, ViewName.Roof));
             }
 
-            void GenerateHatches()
+            void GenerateRips()
             {
-                var layer = dxf.Layers.Add(new Layer("Operational_Back_Hatches") { Color = AciColor.Magenta });
+                var layer = dxf.Layers.Add(new Layer("Rips") { Color = AciColor.Magenta });
                 dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Hatch }, false, true, layer, textLayer, Views.Select(ViewName.Up, ViewName.UpUp, ViewName.Down, ViewName.DownUp));
             }
 
@@ -1017,7 +1059,7 @@ namespace Klimor.WebApi.DXF
                 GenerateRoofDimensions();
                 GeneratePorthole();
                 GeneratePortholeDimension();
-                GenerateHatches();
+                GenerateRips();
             }
 
             // budowanie listy dla znaczników płyt, aby walle Operational i Back były widoczne na Up i Down
