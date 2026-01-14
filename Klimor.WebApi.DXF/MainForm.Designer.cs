@@ -43,6 +43,8 @@
             // prodBox
             // 
             resources.ApplyResources(prodBox, "prodBox");
+            prodBox.Checked = true;
+            prodBox.CheckState = CheckState.Checked;
             prodBox.Name = "prodBox";
             prodBox.UseVisualStyleBackColor = true;
             // 
