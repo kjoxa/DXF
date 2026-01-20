@@ -103,6 +103,11 @@ namespace Klimor.WebApi.DXF
                 // usuwamy oryginały
                 elements.RemoveAll(e => e.y2 == upperLevels.FirstOrDefault() && (e.label == Lab.Block) && e.View == ViewName.Up);
                 elements.RemoveAll(e => e.y2 == levels.Take(1).FirstOrDefault() && !e.label.Contains("icon") && (e.label == Lab.Block) && e.View == ViewName.UpUp);
+
+                // ikony jak wentylator jest pod drugim
+                elements.RemoveAll(e => (e.y2 == levels.FirstOrDefault() + 1) && e.label.Contains("icon") && e.View == ViewName.Up);                
+
+
                 //elements.RemoveAll(e => (e.y2 == upperLevels.FirstOrDefault() || e.y2 == upperLevels.LastOrDefault()) && e.label == Lab.Up && e.View == ViewName.Up);
                 //elements.RemoveAll(e => e.y2 == levels.Take(1).FirstOrDefault() && !e.label.Contains("icon") && (e.label == Lab.Up) && e.View == ViewName.UpUp);
 
@@ -265,9 +270,15 @@ namespace Klimor.WebApi.DXF
                     .Where(e => upperLevels.Contains(e.y2))
                     .ToList();
 
+                var removeUps = elements.Where(e => (e.y2 == upperLevels.FirstOrDefault() || e.y2 == upperLevels.LastOrDefault()) && (e.label == Lab.Function) && e.View == ViewName.Up).ToList();
+
+                // pokazywał ikonę wentylatora Supply na Up mimo, że zakrywa go wentylator Exhaust na UpUp [75033]
+                var removeUpUps = elements.Where(e => (e.y2 == levels.Take(1).FirstOrDefault() && (e.label == Lab.Function) && e.View == ViewName.UpUp) ||
+                                  (e.label == Lab.Function) && e.View == ViewName.Up && e.y2 == levels.Take(1).LastOrDefault()).ToList();
+
                 // usuwamy oryginały
-                elements.RemoveAll(e => (e.y2 == upperLevels.FirstOrDefault() || e.y2 == upperLevels.LastOrDefault()) && (e.label == Lab.Function) && e.View == ViewName.Up);
-                elements.RemoveAll(e => e.y2 == levels.Take(1).FirstOrDefault() && (e.label == Lab.Function) && e.View == ViewName.UpUp);
+                elements.RemoveAll(e => removeUps.Contains(e));
+                elements.RemoveAll(e => removeUpUps.Contains(e));                
             }
         }
 

@@ -268,6 +268,9 @@ namespace Klimor.WebApi.DXF.Services
                         Color = AciColor.LightGray,
                         WidthFactor = 1.2,
                     };
+
+                    // EVO-T miało niskie globalYMax, co powodowało zbyt małą odległość napisu [75038]
+                    if (globalYMax < 1000) text.Position = new Vector3(text.Position.X, view.YOffset - 250, 0);
                     dxf.Entities.Add(text);
                 }
 
