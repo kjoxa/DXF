@@ -167,8 +167,8 @@ namespace Klimor.WebApi.DXF
                     .ToList();
 
                 // usuwamy oryginały
-                elements.RemoveAll(e => (e.y2 == upperLevels.FirstOrDefault() || e.y2 == upperLevels.LastOrDefault()) && (e.label == extrLabel) && e.View == ViewName.Up);
-                elements.RemoveAll(e => e.y2 == levels.Take(1).FirstOrDefault() && (e.label == extrLabel) && e.View == ViewName.UpUp);
+                elements.RemoveAll(e => (e.y2 == upperLevels.FirstOrDefault() || e.y2 == upperLevels.LastOrDefault()) && (e.label == extrLabel) && e.View == ViewName.Up && e.y2 != upperLevels.FirstOrDefault());
+                elements.RemoveAll(e => e.y2 == levels.Take(1).FirstOrDefault() && (e.label == extrLabel) && e.View == ViewName.UpUp); // && e.y2 != upperLevels.FirstOrDefault() ??
             }
         }
 
@@ -772,10 +772,100 @@ namespace Klimor.WebApi.DXF
         //    {
         //    }
         //}
-    
+
+        //private void MoveElementsFor_SeparatellyUnits_M(List<Coordinates> elements)
+        //{
+
+        //    /*              
+        //        EVO-S: Separatelly Units: 
+        //        Z odsunięty o 700 
+        //        Y odsunięty o 500
+
+        //        Wyszukujemy bloki góra i dół, sprawdzamy czy różnica Z1 wynosi 700 oraz czy różnica pomiędzy y1 wynosi 1000
+        //        jeśli tak jest, to w kolejnym kroku szukamy elementów oddalonych maksymalnie o 500 w X,Y,Z od danego toru i tak przyrównujemy co do czego należy 
+        //    */
+        //    var separatellyUnitsOffset_Z = 700;
+        //    var separatellyUnitsOffset_Y = 500;
+        //    var maxOffset_Z = 350; // INTK + AD
+        //    var maxOffset_Y = 350; // INTK + AD
+
+        //    var blockUp = elements.FirstOrDefault(e => e.label == Lab.Block && e.PositionUp > 0 && e.PositionDown == 0);
+        //    var blockDown = elements.FirstOrDefault(e => e.label == Lab.Block && e.PositionDown > 0 && e.PositionUp == 0);
+        //    if (blockUp != null && blockDown != null)
+        //    {
+        //        if (blockUp.z1 - blockDown.z2 == separatellyUnitsOffset_Z && 
+        //            blockUp.y1 - blockDown.y2 == separatellyUnitsOffset_Y)
+        //        {
+        //            var elementsUp = elements.Where(e => (e.z1 <= blockUp.z1 && e.z2 >= blockUp.z2) || (e.z1 >= blockUp.z1 + maxOffset_Z && e.z2 <= blockUp.z2 + maxOffset_Z)).ToList();
+        //            var elementsDown = elements.Where(e => (e.z1 <= blockDown.z1 && e.z2 >= blockDown.z2) || (e.z1 >= blockDown.z1 + maxOffset_Z && e.z2 <= blockDown.z2 + maxOffset_Z)).ToList();
+        //        }
+        //    }            
+        //}
+        
+        private void MoveElementsFor_SeparatellyUnits_M(List<Coordinates> elements)
+        {
+            bool Overlaps1D(double aMin, double aMax, double bMin, double bMax) => aMin <= bMax && aMax >= bMin;
+
+            (double min, double max) MinMax(double v1, double v2) => (Math.Min(v1, v2), Math.Max(v1, v2));
+
+            bool BelongsToBlock(Coordinates e, Coordinates block, double maxOffsetZ, double maxOffsetY)
+            {
+                var (bzMin, bzMax) = MinMax(block.z1, block.z2);
+                var (byMin, byMax) = MinMax(block.y1, block.y2);
+
+                // rozszerzamy obszar bloku o tolerancję “dołączonych” elementów
+                bzMin -= maxOffsetZ; bzMax += maxOffsetZ;
+                byMin -= maxOffsetY; byMax += maxOffsetY;
+
+                var (ezMin, ezMax) = MinMax(e.z1, e.z2);
+                var (eyMin, eyMax) = MinMax(e.y1, e.y2);
+
+                return Overlaps1D(ezMin, ezMax, bzMin, bzMax) &&
+                       Overlaps1D(eyMin, eyMax, byMin, byMax);
+            }
+
+            /*              
+                EVO-S: Separatelly Units: 
+                Z odsunięty o 700 
+                Y odsunięty o 500
+
+                Wyszukujemy bloki góra i dół, sprawdzamy czy różnica Z1 wynosi 700 oraz czy różnica pomiędzy y1 wynosi 1000
+                jeśli tak jest, to w kolejnym kroku szukamy elementów oddalonych maksymalnie o 500 w X,Y,Z od danego toru i tak przyrównujemy co do czego należy 
+            */
+
+            var separatellyUnitsOffset_Z = 700;
+            var separatellyUnitsOffset_Y = 500;
+            var maxOffset_Z = 350;
+            var maxOffset_Y = 350;
+
+            var blockUp = elements.FirstOrDefault(e => e.label == Lab.Block && e.PositionUp > 0 && e.PositionDown == 0);
+            var blockDown = elements.FirstOrDefault(e => e.label == Lab.Block && e.PositionDown > 0 && e.PositionUp == 0);
+
+            if (blockUp == null || blockDown == null) return;
+
+            // (z1 - z2) czy (z2 - z1), to bezpieczniej            
+            var dz = Math.Abs((blockUp.z1 - blockDown.z2));
+            var dy = Math.Abs((blockUp.y1 - blockDown.y2));
+
+            if (dz == separatellyUnitsOffset_Z && dy == separatellyUnitsOffset_Y)
+            {
+                var elementsUp = elements
+                    .Where(e => e.label != Lab.Block) // opcjonalnie: nie wrzucaj samych bloków
+                    .Where(e => BelongsToBlock(e, blockUp, maxOffset_Z, maxOffset_Y))
+                    .ToList();
+
+                var elementsDown = elements
+                    .Where(e => e.label != Lab.Block)
+                    .Where(e => BelongsToBlock(e, blockDown, maxOffset_Z, maxOffset_Y))
+                    .ToList();
+
+                // tu masz już sensowny podział
+            }
+        }
 
         private void Generate2D(List<Coordinates> elements, string fileOutput, bool isExtended, Norm norm)
-        {            
+        {
+            MoveElementsFor_SeparatellyUnits_M(elements);
             dxf2D.isExtended = isExtended;
 
             Views.AhuLength = elements.Where(el => el.label == Lab.Block).Max(e => e.x2);
@@ -875,7 +965,7 @@ namespace Klimor.WebApi.DXF
                                     insertIconOperational.Scale = new Vector3(-1, 1, 1);
                                 }
 
-                                if (icon.additionalInfos.iconPosition != Lab.Back)
+                                if (icon.View == ViewName.Operational)
                                     dxf.Entities.Add(insertIconOperational);
                                 break;
 
@@ -886,15 +976,15 @@ namespace Klimor.WebApi.DXF
                                 {
                                     Position = new Vector3(newX1 + backOffset, icon.y1, 0), 
                                     Layer = layer,
-                                    Scale = new Vector3(1, 1, 1)
+                                    Scale = new Vector3(-1, 1, 1)
                                 };
                                 if (!isExhaust && icon.additionalInfos.sName == "VF")
                                 {
-                                    insertIconBack.Position = new Vector3(newX1 + (newX2 - newX1), icon.y1, 0);
-                                    insertIconBack.Scale = new Vector3(-1, 1, 1);
+                                    insertIconBack.Position = new Vector3(newX1 + (newX2 - newX1) + backOffset, icon.y1, 0);
+                                    insertIconBack.Scale = new Vector3(1, 1, 1);
                                 }
 
-                                if (icon.additionalInfos.iconPosition == Lab.Back)
+                                if (icon.View == ViewName.Back)
                                     dxf.Entities.Add(insertIconBack);
                                 break;
 

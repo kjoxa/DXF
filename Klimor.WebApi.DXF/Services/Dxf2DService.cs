@@ -449,7 +449,10 @@ namespace Klimor.WebApi.DXF.Services
                                         elements.OrderBy(e => e.x1).FirstOrDefault(e => e.label == Lab.Block) :
                                         elements.OrderBy(e => e.x2).FirstOrDefault(e => e.label == Lab.Block);
 
-                                    if (el.label is (Lab.AD or Lab.FC or Lab.Connector))
+                                    // zakrywanie i ukrywanie elementów zewnętrznych poza blokiem - chodzi o to jak są elementy na dachu, by nie brać ich pod uwagę
+                                    bool exElmsOutsideBlock_OnUp = el.y1 >= firstblock.y1 && el.y2 <= firstblock.y2;
+
+                                    if (el.label is (Lab.AD or Lab.FC or Lab.Connector) && exElmsOutsideBlock_OnUp)
                                     {
                                         if (view.Name is ViewName.LeftFront)
                                         {
