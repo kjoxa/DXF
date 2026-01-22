@@ -801,29 +801,11 @@ namespace Klimor.WebApi.DXF
         //        }
         //    }            
         //}
+
         
+
         private void MoveElementsFor_SeparatellyUnits_M(List<Coordinates> elements)
         {
-            bool Overlaps1D(double aMin, double aMax, double bMin, double bMax) => aMin <= bMax && aMax >= bMin;
-
-            (double min, double max) MinMax(double v1, double v2) => (Math.Min(v1, v2), Math.Max(v1, v2));
-
-            bool BelongsToBlock(Coordinates e, Coordinates block, double maxOffsetZ, double maxOffsetY)
-            {
-                var (bzMin, bzMax) = MinMax(block.z1, block.z2);
-                var (byMin, byMax) = MinMax(block.y1, block.y2);
-
-                // rozszerzamy obszar bloku o tolerancję “dołączonych” elementów
-                bzMin -= maxOffsetZ; bzMax += maxOffsetZ;
-                byMin -= maxOffsetY; byMax += maxOffsetY;
-
-                var (ezMin, ezMax) = MinMax(e.z1, e.z2);
-                var (eyMin, eyMax) = MinMax(e.y1, e.y2);
-
-                return Overlaps1D(ezMin, ezMax, bzMin, bzMax) &&
-                       Overlaps1D(eyMin, eyMax, byMin, byMax);
-            }
-
             /*              
                 EVO-S: Separatelly Units: 
                 Z odsunięty o 700 
@@ -832,6 +814,26 @@ namespace Klimor.WebApi.DXF
                 Wyszukujemy bloki góra i dół, sprawdzamy czy różnica Z1 wynosi 700 oraz czy różnica pomiędzy y1 wynosi 1000
                 jeśli tak jest, to w kolejnym kroku szukamy elementów oddalonych maksymalnie o 500 w X,Y,Z od danego toru i tak przyrównujemy co do czego należy 
             */
+
+            (int min, int max) MinMax(int a, int b) => (Math.Min(a, b), Math.Max(a, b));
+
+            bool BelongsToBlockByCenter(Coordinates e, Coordinates block, int maxOffsetZ, int maxOffsetY)
+            {
+                var (bzMin, bzMax) = MinMax(block.z1, block.z2);
+                var (byMin, byMax) = MinMax(block.y1, block.y2);
+
+                bzMin -= maxOffsetZ; bzMax += maxOffsetZ;
+                byMin -= maxOffsetY; byMax += maxOffsetY;
+
+                var (ezMin, ezMax) = MinMax(e.z1, e.z2);
+                var (eyMin, eyMax) = MinMax(e.y1, e.y2);
+
+                var ezC = (ezMin + ezMax) / 2.0;
+                var eyC = (eyMin + eyMax) / 2.0;
+
+                return ezC >= bzMin && ezC <= bzMax &&
+                       eyC >= byMin && eyC <= byMax;
+            }        
 
             var separatellyUnitsOffset_Z = 700;
             var separatellyUnitsOffset_Y = 500;
@@ -850,23 +852,42 @@ namespace Klimor.WebApi.DXF
             if (dz == separatellyUnitsOffset_Z && dy == separatellyUnitsOffset_Y)
             {
                 var elementsUp = elements
-                    .Where(e => e.label != Lab.Block) // opcjonalnie: nie wrzucaj samych bloków
-                    .Where(e => BelongsToBlock(e, blockUp, maxOffset_Z, maxOffset_Y))
-                    .ToList();
+                    .Where(e => !ReferenceEquals(e, blockDown))   // lub e.Id != blockDown.Id
+                    .Where(e => BelongsToBlockByCenter(e, blockUp, maxOffset_Z, maxOffset_Y))
+                .ToList();
 
-                var elementsDown = elements
-                    .Where(e => e.label != Lab.Block)
-                    .Where(e => BelongsToBlock(e, blockDown, maxOffset_Z, maxOffset_Y))
-                    .ToList();
+                //bierzemy tę samą referencję w obu blokach: np. "min" narożnik
+                var (upZMin, _) = MinMax(blockUp.z1, blockUp.z2);
+                var (downZMin, _) = MinMax(blockDown.z1, blockDown.z2);
+                var (upYMin, _) = MinMax(blockUp.y1, blockUp.y2);
+                var (downYMin, _) = MinMax(blockDown.y1, blockDown.y2);
 
-                // tu masz już sensowny podział
+                var shiftZ = upZMin - downZMin;   // ile "góra" jest przesunięta względem "dołu"
+                var shiftY = upYMin - downYMin;
+
+                foreach (var e in elementsUp)
+                {
+                    e.z1 -= shiftZ;
+                    e.z2 -= shiftZ;
+                    e.y1 = e.y1 - 350;
+                    e.y2 = e.y2 - 350;
+                }
+                // na frazie nieużywane, ale może się przydać w przyszłości
+                //var elementsDown = elements
+                //    .Where(e => e.label != Lab.Block)
+                //    .Where(e => BelongsToBlock(e, blockDown, maxOffset_Z, maxOffset_Y))
+                //    .ToList();
             }
         }
 
         private void Generate2D(List<Coordinates> elements, string fileOutput, bool isExtended, Norm norm)
-        {
-            MoveElementsFor_SeparatellyUnits_M(elements);
+        {            
             dxf2D.isExtended = isExtended;
+
+            MoveElementsFor_SeparatellyUnits_M(elements);
+            
+            // EVO-S-D: fix na popsute ikony
+            elements.RemoveAll(e => e.z1 == 2101);
 
             Views.AhuLength = elements.Where(el => el.label == Lab.Block).Max(e => e.x2);
             Views.AhuHeight = elements.Where(el => el.label == Lab.Block).Max(e => e.y2);
