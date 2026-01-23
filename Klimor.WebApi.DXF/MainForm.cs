@@ -458,7 +458,7 @@ namespace Klimor.WebApi.DXF
             }
 
             // usuwanie duplikatów Hatchy na Up
-            elements.RemoveAll(e => e.label == Lab.Hatch && e.View == ViewName.Up && upUpHatches.Any(h => h.x1 == e.x1 && h.x2 == e.x2));
+ //elements.RemoveAll(e => e.label == Lab.Hatch && e.View == ViewName.Up && upUpHatches.Any(h => h.x1 == e.x1 && h.x2 == e.x2));
             elements.RemoveAll(e => e.label == Lab.Hatch && e.View == ViewName.UpUp && e.y2 < levels.Skip(1).FirstOrDefault());
 
             // przesuwanie Hatchy, które wychodzą poza obręb UpUp
@@ -506,7 +506,7 @@ namespace Klimor.WebApi.DXF
             }
 
             // usuwanie duplikatów Hatchy na Up
-            elements.RemoveAll(e => e.label == Lab.Hatch && e.View == ViewName.Down && downUpHatches.Any(h => h.x1 == e.x1 && h.x2 == e.x2));
+ //elements.RemoveAll(e => e.label == Lab.Hatch && e.View == ViewName.Down && downUpHatches.Any(h => h.x1 == e.x1 && h.x2 == e.x2));
             elements.RemoveAll(e => e.label == Lab.Hatch && e.View == ViewName.DownUp && e.y2 < levels.Skip(1).FirstOrDefault());
 
             // przesuwanie Hatchy, które wychodzą poza obręb UpUp
