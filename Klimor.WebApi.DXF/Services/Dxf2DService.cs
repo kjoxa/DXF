@@ -510,18 +510,34 @@ namespace Klimor.WebApi.DXF.Services
                             {
                                 if (view.Name == ViewName.Operational || view.Name == ViewName.Back || view.Name == ViewName.LeftFront || view.Name == ViewName.RightFront)
                                 {
-                                    externalElementsYOffset = el.label switch
+                                    var direction = el.additionalInfos?.direction ?? "Front";
+                                    if (direction == "Front")
                                     {
-                                        Lab.AD => 30,
-                                        Lab.FC => 60,
-                                        Lab.INTK => 90,
-                                        _ => 0
-                                    };
-                                }
-                                // Up/Down/UpUp/DownUp
-                                else
-                                {
-                                    externalElementsYOffset = -170;
+                                        externalElementsYOffset = el.label switch
+                                        {
+                                            Lab.AD => 30,
+                                            Lab.FC => 60,
+                                            Lab.INTK => 90,
+                                            Lab.Hole => -90,
+                                            _ => 0
+                                        };
+                                    }
+                                    else if (direction == "Up")
+                                    {
+                                        externalElementsYOffset = el.label switch
+                                        {
+                                            Lab.AD => -165,
+                                            Lab.FC => -180,
+                                            Lab.INTK => -200,
+                                            Lab.Hole => -220,
+                                            _ => 0
+                                        };
+                                    }
+                                    // Up/Down/UpUp/DownUp
+                                    else
+                                    {
+                                        externalElementsYOffset = -170;
+                                    }
                                 }
                             }
 
