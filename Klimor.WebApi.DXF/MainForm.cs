@@ -887,7 +887,7 @@ namespace Klimor.WebApi.DXF
             MoveElementsFor_SeparatellyUnits_M(elements);
             
             // EVO-S-D: fix na popsute ikony
-            elements.RemoveAll(e => e.z1 == 2101);
+            //elements.RemoveAll(e => e.z1 == 2101);
 
             Views.AhuLength = elements.Where(el => el.label == Lab.Block).Max(e => e.x2);
             Views.AhuHeight = elements.Where(el => el.label == Lab.Block).Max(e => e.y2);

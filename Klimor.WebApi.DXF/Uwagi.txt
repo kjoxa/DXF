@@ -1,3 +1,238 @@
-﻿DownUp i UpUp
+﻿using Klimor.WebApi.DXF.Structures;
+using netDxf;
+using netDxf.Entities;
+using netDxf.Tables;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-1. Elements otrzymuje nowe pole: View i będzie w nim opcja 
+namespace Klimor.WebApi.DXF.Services
+{
+    public class Dxf3DService
+    {
+        public void Generate3D(List<Coordinates> elements, string filePath)
+        {
+            var dxf = new DxfDocument();
+            if (elements == null || elements.Count == 0)
+            {
+                dxf.Save(filePath);
+                return;
+            }
+
+            // 1) Stary bounding box (referencja do "siatki")
+            double oldMinX = double.PositiveInfinity, oldMinY = double.PositiveInfinity, oldMinZ = double.PositiveInfinity;
+            double oldMaxX = double.NegativeInfinity, oldMaxY = double.NegativeInfinity, oldMaxZ = double.NegativeInfinity;
+
+            foreach (var el in elements)
+            {
+                oldMinX = Math.Min(oldMinX, Math.Min(el.x1, el.x2));
+                oldMaxX = Math.Max(oldMaxX, Math.Max(el.x1, el.x2));
+
+                oldMinY = Math.Min(oldMinY, Math.Min(el.y1, el.y2));
+                oldMaxY = Math.Max(oldMaxY, Math.Max(el.y1, el.y2));
+
+                oldMinZ = Math.Min(oldMinZ, Math.Min(el.z1, el.z2));
+                oldMaxZ = Math.Max(oldMaxZ, Math.Max(el.z1, el.z2));
+            }
+
+            // Środek modelu (oś obrotu/odbicia)
+            double cx = (oldMinX + oldMaxX) / 2.0;
+            double cy = (oldMinY + oldMaxY) / 2.0;
+            double cz = (oldMinZ + oldMaxZ) / 2.0;
+
+            // Bottom -> Top (obrót 180° wokół osi X)
+            Vector3 RotX180(Vector3 p) => new Vector3(
+                p.X,
+                2 * cy - p.Y,
+                2 * cz - p.Z
+            );
+
+            // Żeby TOP nie był "do góry nogami" (obrót 180° wokół Z)
+            Vector3 RotZ180(Vector3 p) => new Vector3(
+                2 * cx - p.X,
+                2 * cy - p.Y,
+                p.Z
+            );
+
+            // Przywrócenie lewo->prawo (odbicie po X względem środka)
+            Vector3 MirrorX(Vector3 p) => new Vector3(
+                2 * cx - p.X,
+                p.Y,
+                p.Z
+            );
+
+            // 2) Policz nowy min po transformacjach (bez przesunięcia), żeby ustawić na siatce
+            double newMinX = double.PositiveInfinity, newMinY = double.PositiveInfinity, newMinZ = double.PositiveInfinity;
+
+            Vector3 PreMove(Vector3 p) => MirrorX(RotZ180(RotX180(p)));
+
+            void Consider(Vector3 p)
+            {
+                if (p.X < newMinX) newMinX = p.X;
+                if (p.Y < newMinY) newMinY = p.Y;
+                if (p.Z < newMinZ) newMinZ = p.Z;
+            }
+
+            foreach (var el in elements)
+            {
+                Consider(PreMove(new Vector3(el.x1, el.y1, el.z1)));
+                Consider(PreMove(new Vector3(el.x2, el.y1, el.z1)));
+                Consider(PreMove(new Vector3(el.x2, el.y2, el.z1)));
+                Consider(PreMove(new Vector3(el.x1, el.y2, el.z1)));
+
+                Consider(PreMove(new Vector3(el.x1, el.y1, el.z2)));
+                Consider(PreMove(new Vector3(el.x2, el.y1, el.z2)));
+                Consider(PreMove(new Vector3(el.x2, el.y2, el.z2)));
+                Consider(PreMove(new Vector3(el.x1, el.y2, el.z2)));
+            }
+
+            // 3) Translation:
+            // - trzymamy minX/minY jak w oryginale (żeby nie "uciekało w głąb")
+            // - ustawiamy minZ = 0 (żeby stało na podłożu/siatce)
+            double dx = oldMinX - newMinX;
+            double dy = oldMinY - newMinY;
+            double dz = 0.0 - newMinZ;
+
+            Vector3 Move(Vector3 p) => new Vector3(p.X + dx, p.Y + dy, p.Z + dz);
+
+            // Finalna transformacja
+            Vector3 Fix(Vector3 p) => Move(PreMove(p));
+
+            foreach (var el in elements)
+            {
+                var p1 = Fix(new Vector3(el.x1, el.y1, el.z1));
+                var p2 = Fix(new Vector3(el.x2, el.y1, el.z1));
+                var p3 = Fix(new Vector3(el.x2, el.y2, el.z1));
+                var p4 = Fix(new Vector3(el.x1, el.y2, el.z1));
+
+                var p5 = Fix(new Vector3(el.x1, el.y1, el.z2));
+                var p6 = Fix(new Vector3(el.x2, el.y1, el.z2));
+                var p7 = Fix(new Vector3(el.x2, el.y2, el.z2));
+                var p8 = Fix(new Vector3(el.x1, el.y2, el.z2));
+
+                var faces = new[]
+                {
+            new Face3D(p1, p2, p3), new Face3D(p1, p3, p4),
+            new Face3D(p5, p6, p7), new Face3D(p5, p7, p8),
+            new Face3D(p1, p2, p6), new Face3D(p1, p6, p5),
+            new Face3D(p4, p3, p7), new Face3D(p4, p7, p8),
+            new Face3D(p1, p4, p8), new Face3D(p1, p8, p5),
+            new Face3D(p2, p3, p7), new Face3D(p2, p7, p6),
+        };
+
+                var layer = new Layer(el.label) { Color = AciColor.Yellow };
+                foreach (var f in faces)
+                {
+                    f.Layer = layer;
+                    dxf.Entities.Add(f);
+                }
+            }
+
+            dxf.Save(filePath);
+        }
+
+        //public void Generate3D(List<Coordinates> elements, string filePath)
+        //{
+        //    var dxf = new DxfDocument();
+        //    if (elements == null || elements.Count == 0)
+        //    {
+        //        dxf.Save(filePath);
+        //        return;
+        //    }
+
+        //    // 1) Stary bounding box (referencja gdzie "leżało" na siatce)
+        //    double oldMinX = double.PositiveInfinity, oldMinY = double.PositiveInfinity, oldMinZ = double.PositiveInfinity;
+        //    double oldMaxX = double.NegativeInfinity, oldMaxY = double.NegativeInfinity, oldMaxZ = double.NegativeInfinity;
+
+        //    foreach (var el in elements)
+        //    {
+        //        oldMinX = Math.Min(oldMinX, Math.Min(el.x1, el.x2));
+        //        oldMaxX = Math.Max(oldMaxX, Math.Max(el.x1, el.x2));
+
+        //        oldMinY = Math.Min(oldMinY, Math.Min(el.y1, el.y2));
+        //        oldMaxY = Math.Max(oldMaxY, Math.Max(el.y1, el.y2));
+
+        //        oldMinZ = Math.Min(oldMinZ, Math.Min(el.z1, el.z2));
+        //        oldMaxZ = Math.Max(oldMaxZ, Math.Max(el.z1, el.z2));
+        //    }
+
+        //    // środek do obrotu
+        //    double cx = (oldMinX + oldMaxX) / 2.0;
+        //    double cy = (oldMinY + oldMaxY) / 2.0;
+        //    double cz = (oldMinZ + oldMaxZ) / 2.0;
+
+        //    Vector3 RotX180(Vector3 p) => new Vector3(p.X, 2 * cy - p.Y, 2 * cz - p.Z);
+        //    Vector3 RotZ180(Vector3 p) => new Vector3(2 * cx - p.X, 2 * cy - p.Y, p.Z);
+
+        //    Vector3 Fix(Vector3 p) => RotZ180(RotX180(p));
+
+        //    // 2) Policz nowy bounding box po transformacji (dla przesunięcia)
+        //    double newMinX = double.PositiveInfinity, newMinY = double.PositiveInfinity, newMinZ = double.PositiveInfinity;
+
+        //    void Consider(Vector3 p)
+        //    {
+        //        if (p.X < newMinX) newMinX = p.X;
+        //        if (p.Y < newMinY) newMinY = p.Y;
+        //        if (p.Z < newMinZ) newMinZ = p.Z;
+        //    }
+
+        //    foreach (var el in elements)
+        //    {
+        //        Consider(Fix(new Vector3(el.x1, el.y1, el.z1)));
+        //        Consider(Fix(new Vector3(el.x2, el.y1, el.z1)));
+        //        Consider(Fix(new Vector3(el.x2, el.y2, el.z1)));
+        //        Consider(Fix(new Vector3(el.x1, el.y2, el.z1)));
+
+        //        Consider(Fix(new Vector3(el.x1, el.y1, el.z2)));
+        //        Consider(Fix(new Vector3(el.x2, el.y1, el.z2)));
+        //        Consider(Fix(new Vector3(el.x2, el.y2, el.z2)));
+        //        Consider(Fix(new Vector3(el.x1, el.y2, el.z2)));
+        //    }
+
+        //    // 3) Translation:
+        //    // - przywróć minX/minY do starych wartości (żeby nie "odjechał w głąb")
+        //    // - ustaw minZ=0 (żeby stał na siatce/podłożu)
+        //    double dx = oldMinX - newMinX;
+        //    double dy = oldMinY - newMinY;
+        //    double dz = 0.0 - newMinZ;
+
+        //    Vector3 Move(Vector3 p) => new Vector3(p.X + dx, p.Y + dy, p.Z + dz);
+
+        //    foreach (var el in elements)
+        //    {
+        //        var p1 = Move(Fix(new Vector3(el.x1, el.y1, el.z1)));
+        //        var p2 = Move(Fix(new Vector3(el.x2, el.y1, el.z1)));
+        //        var p3 = Move(Fix(new Vector3(el.x2, el.y2, el.z1)));
+        //        var p4 = Move(Fix(new Vector3(el.x1, el.y2, el.z1)));
+
+        //        var p5 = Move(Fix(new Vector3(el.x1, el.y1, el.z2)));
+        //        var p6 = Move(Fix(new Vector3(el.x2, el.y1, el.z2)));
+        //        var p7 = Move(Fix(new Vector3(el.x2, el.y2, el.z2)));
+        //        var p8 = Move(Fix(new Vector3(el.x1, el.y2, el.z2)));
+
+        //        var faces = new[]
+        //        {
+        //    new Face3D(p1, p2, p3), new Face3D(p1, p3, p4),
+        //    new Face3D(p5, p6, p7), new Face3D(p5, p7, p8),
+        //    new Face3D(p1, p2, p6), new Face3D(p1, p6, p5),
+        //    new Face3D(p4, p3, p7), new Face3D(p4, p7, p8),
+        //    new Face3D(p1, p4, p8), new Face3D(p1, p8, p5),
+        //    new Face3D(p2, p3, p7), new Face3D(p2, p7, p6),
+        //};
+
+        //        var layer = new Layer(el.label) { Color = AciColor.Yellow };
+        //        foreach (var f in faces)
+        //        {
+        //            f.Layer = layer;
+        //            dxf.Entities.Add(f);
+        //        }
+        //    }
+
+        //    dxf.Save(filePath);
+        //}
+
+
+    }
+}
