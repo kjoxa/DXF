@@ -134,15 +134,18 @@ namespace Klimor.WebApi.DXF.Services
                                     break;
 
                                 case ViewName.Up:
+                                case ViewName.UpUp:
                                     var insertIconUp = new Insert(insertIcon)
                                     {
-                                        Position = new Vector3(X(el.x1), Y(el.y1), Z(el.z1)),
+                                        Position = new Vector3(X(el.x1 + (el.x2 - el.x1)), Y(el.y1), Z(el.z1 + (el.z2 - el.z1))),
                                         Layer = iconLayer,
+                                        Normal = new Vector3(0, 1, 0)
                                     };
                                     if (!isExhaust && el.additionalInfos.sName == "VF")
                                     {
-                                        insertIconUp.Position = new Vector3(X(el.x1), Y(el.y1), Z(el.z1));
-                                        insertIconUp.Scale = new Vector3(-1, 1, 1);
+                                        insertIconUp.Position = new Vector3(X(el.x1 + (el.x2 - el.x1)), Y(el.y1), Z(el.z1));
+                                        insertIconUp.Scale = new Vector3(-1, 1, 1);        
+                                        insertIconUp.Rotation = 180;
                                     }
 
                                     dxf.Entities.Add(insertIconUp);
