@@ -726,7 +726,7 @@ namespace Klimor.WebApi.DXF.Services
 
                         if (el.View == view.Name)
                         {
-                            var dimensionMoved = el.label == Lab.Block && el.View == ViewName.RightFront;
+                            var dimensionMoved = el.label == Lab.Block && el.View is (ViewName.RightFront or ViewName.Operational);
                             if (dimensionMoved)
                             {
                                 dimOffset = 200;
@@ -791,7 +791,7 @@ namespace Klimor.WebApi.DXF.Services
 
                         if (el.View == view.Name)
                         {
-                            var dimensionMoved = el.label == Lab.Block && el.View == ViewName.RightFront;
+                            var dimensionMoved = el.label == Lab.Block && el.View is (ViewName.RightFront or ViewName.Operational);
                             if (dimensionMoved)
                             {
                                 dimOffset = 250;

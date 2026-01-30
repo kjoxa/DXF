@@ -1164,6 +1164,10 @@ namespace Klimor.WebApi.DXF
             // ustawianie widoczności elementów (kolejność ma znaczenie)
             SetElementsVisibility(elements, [Lab.Frame, Lab.FrameUp], Views.Except(ViewName.Frame) , null, false);
             SetElementsVisibility(elements, [Lab.Frame], Views.Select(ViewName.RightFront), true, true);
+
+            // widoczność wymiarów blokow
+            //SetElementsVisibility(elements, [Lab.Block], Views.Select(ViewName.Operational), true, true);
+
             RepositioningOnGridWhenViewsHide(norm, grid);
 
             if (true)
@@ -1217,7 +1221,39 @@ namespace Klimor.WebApi.DXF
             PrepareLayersToMode(dxf, isExtended);
 
             //DrawTable(dxf);
+
+            // usuwanie duplikatów wymiarów
+            DedupLinearDimensions(dxf);
             dxf.Save(fileOutput);
+        }
+
+        static double R(double v, double step = 0.01) => Math.Round(v / step) * step;
+
+        static string Key(LinearDimension d)
+        {
+            var a = d.FirstReferencePoint;
+            var b = d.SecondReferencePoint;
+
+            string p1 = $"{R(a.X)},{R(a.Y)}";
+            string p2 = $"{R(b.X)},{R(b.Y)}";
+            var pts = string.CompareOrdinal(p1, p2) <= 0 ? $"{p1}|{p2}" : $"{p2}|{p1}";
+
+            return $"{pts}__rot:{R(d.Rotation, 0.001)}__off:{R(d.Offset)}__layer:{d.Layer?.Name}";
+        }
+
+        static void DedupLinearDimensions(DxfDocument dxf)
+        {
+            // Wariant A: tylko wymiary (najczyściej)
+            var dims = dxf.Entities.Dimensions.OfType<LinearDimension>().ToList();
+
+            // Wariant B: jeśli w Twojej wersji nie ma Dimensions, to zwykle działa:
+            // var dims = dxf.Entities.All.OfType<LinearDimension>().ToList();
+
+            var keep = dims.DistinctBy(Key).ToHashSet();
+
+            foreach (var dim in dims)
+                if (!keep.Contains(dim))
+                    dxf.Entities.Remove(dim);
         }
 
         void DrawTable(DxfDocument dxf)
