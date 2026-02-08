@@ -309,6 +309,7 @@ namespace Klimor.WebApi.DXF.Services
                 }
 
                 int fillIndexColor = 0;
+                int connXoffset = 0;
                 // dla innych widoków bez przycinania
                 foreach (var el in groupElements)
                 {
@@ -674,7 +675,7 @@ namespace Klimor.WebApi.DXF.Services
                     }
 
                     if (createDimension && el.ShowDimension)
-                    {
+                    {                        
                         bool addDim = false;
                         double dimOffset = 30.0;
                         var wStart = outer2D[0];
@@ -684,7 +685,19 @@ namespace Klimor.WebApi.DXF.Services
                             Layer = layer
                         };
 
-                        var notForBlock = el.label != Lab.Block && el.View != ViewName.Frame;
+                        var notForBlock = el.label != Lab.Block && el.View != ViewName.Frame;                        
+                        //DrainTraye / Connectory od punktu zero do połowy średnicy
+                        if (el.View == ViewName.Operational && el.label == Lab.Connector)
+                        {
+                            var halfDia = (el.x2 - el.x1) / 2.0;
+
+                            // start od zera
+                            wStart = new Vector2(0, el.y1);                                                                                                         
+                            wEnd = new Vector2(el.x2 - halfDia, wStart.Y);
+                            widthDim = new LinearDimension(wStart, wEnd, -dimOffset - connXoffset, 0.0, dimStyle);
+                            addDim = true;
+                            connXoffset += 30;
+                        }
 
                         if (!string.IsNullOrEmpty(el.type))
                         {
@@ -729,7 +742,7 @@ namespace Klimor.WebApi.DXF.Services
                             var dimensionMoved = el.label == Lab.Block && el.View is (ViewName.RightFront or ViewName.Operational);
                             if (dimensionMoved)
                             {
-                                dimOffset = 200;
+                                dimOffset = -1000;
                                 widthDim = new LinearDimension(wStart, wEnd, -dimOffset, 0.0, dimStyle);
                                 widthDim.Layer = layer;
                                 dxf.Entities.Add(widthDim);
@@ -753,6 +766,12 @@ namespace Klimor.WebApi.DXF.Services
 
                         if (!string.IsNullOrEmpty(el.type))
                         {
+                            // nie dodajemy wysokości drainTraya/connectora na widoku operational
+                            if (el.View == ViewName.Operational && el.label == Lab.Connector)
+                            {
+                                continue;
+                            }
+
                             // elementy zewnętrzne
                             if (externalElementShow)
                             {

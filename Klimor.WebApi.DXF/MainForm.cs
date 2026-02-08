@@ -77,6 +77,70 @@ namespace Klimor.WebApi.DXF
                 Application.Exit();
         }
 
+        public void IconRotation_CorrectXY(List<Coordinates> coordinates)
+        {
+            var dbg = coordinates.Where(e => e.label.Contains("icon")).ToList();
+            var allIcons = coordinates.DistinctBy(e => (e.posUpDown, e.x1, e.y1, e.z1)).Where(i => i.label.Contains("icon") && i.additionalInfos != null).ToList();
+            foreach (var i in allIcons)
+            {
+                var ir = i.additionalInfos.iconRotation;
+                if (ir != 0)
+                {
+                    var lenX = i.x2 - i.x1;
+                    var lenY = i.y2 - i.y1;
+                    var lenZ = i.z2 - i.z1;
+
+                    switch (i.View)
+                    {
+                        case ViewName.Operational:                        
+                            if (ir == 90 || ir == 180)
+                            {
+                                i.y1 += lenY;
+                                i.y2 += lenY;
+                                i.x1 += lenX;
+                                i.x2 += lenX;
+                            }
+                            else
+                            {
+                                if (ir == 270)
+                                {
+                                    i.x1 += lenX;
+                                    i.x2 += lenX;
+                                }                                
+                            }
+                            break;
+                        case ViewName.Back:
+                            if (ir == 90 || ir == 180)
+                            {
+                                i.y1 += lenY;
+                                i.y2 += lenY;
+                                //i.x1 -= lenX;
+                                //i.x2 -= lenX;
+                            }
+                            
+                            break;
+                        case ViewName.Up:
+                        case ViewName.UpUp:
+                            if (ir > 0)
+                            {
+                                i.z1 += lenZ;
+                                i.z2 += lenZ;
+                                i.x1 += lenX;
+                                i.x2 += lenX;
+                            }
+                            else
+                            {
+                                i.x1 -= lenX;
+                                i.x2 -= lenX;
+                            }
+                            break;                        
+                        default:
+                            break;
+                    }                    
+                }
+            }
+        }
+
         private void SelectBlockUpChannel(List<Coordinates> elements)
         {
             var upBlocks = elements
@@ -961,9 +1025,19 @@ namespace Klimor.WebApi.DXF
                 var layer = dxf.Layers.Add(new Layer(Lab.Function) { Color = new AciColor(4) });
                 dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Function }, false, true, layer, textLayer, Views.Except(ViewName.Frame, ViewName.FrameUp, ViewName.Roof, ViewName.RoofUp));
 
+                // usunięcie ikon Back które powinny zostac zasłonięte
+                var iconsBck = elements.Where(e => e.label.Contains("icon") && e.View == ViewName.Back);
+                var iconsBckMax = iconsBck.Max(e => e.z2);
+                foreach (var iconBack in iconsBck.ToList())
+                {
+                    if (iconBack.z1 < iconsBckMax) 
+                        elements.Remove(iconBack);
+                }
+
                 // dodawanie ikon
                 var sName = string.Empty;
                 var distinctList = elements.DistinctBy(e => (e.posUpDown, e.x1, e.y1, e.z1)).Where(i => i.label.Contains("icon") && i.additionalInfos != null).ToList();
+               
                 foreach (var icon in distinctList)
                 {
                     sName = icon.additionalInfos.iconName;
@@ -971,6 +1045,16 @@ namespace Klimor.WebApi.DXF
                     if (Dxf2DService.IconMap.ContainsKey(sName!))
                     {
                         var insertIcon = iconsList.FirstOrDefault(b => b.Name.Equals(sName, StringComparison.OrdinalIgnoreCase));
+                        // dxf rotuje przeciwnie do ruchu wskazówek zegara
+                        static double Normalize360(double deg)
+                        {
+                            deg %= 360.0;
+                            if (deg < 0) deg += 360.0;
+                            return deg;
+                        }
+
+                        var cw = icon.additionalInfos.iconRotation;
+                        var dxfIconRotation = Normalize360(360.0 - cw);
                         switch (icon.additionalInfos.iconPosition)
                         {
                             case ViewName.Operational:
@@ -978,48 +1062,67 @@ namespace Klimor.WebApi.DXF
                                 {
                                     Position = new Vector3(icon.x1, icon.y1, 0), // przesunięcie w bok
                                     Layer = layer,
-                                    Scale = new Vector3(1, 1, 1)
-                                };
-                                if (!isExhaust && icon.additionalInfos.sName == "VF")
-                                {
-                                    insertIconOperational.Position = new Vector3(icon.x1 + (icon.x2 - icon.x1), icon.y1, 0);
-                                    insertIconOperational.Scale = new Vector3(-1, 1, 1);
-                                }
+                                    Scale = new Vector3(1, 1, 1),
+                                    Rotation = dxfIconRotation
+                                };                                
 
                                 if (icon.View == ViewName.Operational)
                                     dxf.Entities.Add(insertIconOperational);
                                 break;
 
                             case ViewName.Back:
-                                double newX1 = dxf2D.globalXMax + dxf2D.globalXMin - icon.x1;
-                                double newX2 = dxf2D.globalXMax + dxf2D.globalXMin - icon.x2;
+                                double newX1 = dxf2D.globalXMax + dxf2D.globalXMin - icon.x1 - (icon.x2 - icon.x1);
+                                double newX2 = dxf2D.globalXMax + dxf2D.globalXMin - icon.x2 - (icon.x2 - icon.x1);
                                 var insertIconBack = new Insert(insertIcon)
                                 {
                                     Position = new Vector3(newX1 + backOffset, icon.y1, 0), 
                                     Layer = layer,
-                                    Scale = new Vector3(-1, 1, 1)
-                                };
-                                if (!isExhaust && icon.additionalInfos.sName == "VF")
-                                {
-                                    insertIconBack.Position = new Vector3(newX1 + (newX2 - newX1) + backOffset, icon.y1, 0);
-                                    insertIconBack.Scale = new Vector3(1, 1, 1);
-                                }
+                                    Scale = new Vector3(1, 1, 1),
+                                    Rotation = dxfIconRotation
+                                };                                
 
-                                if (icon.View == ViewName.Back)
+                                if (icon.additionalInfos.iconPosition == ViewName.Back)
                                     dxf.Entities.Add(insertIconBack);
                                 break;
 
+                            //case ViewName.Up:
+                            //    var insertIconUp = new Insert(insertIcon)
+                            //    {
+                            //        Position = new Vector3(icon.x1, icon.z1 + upOffset, 0),
+                            //        Layer = layer,
+                            //    };
+                            //    if (!isExhaust && icon.additionalInfos.sName == "VF")
+                            //    {
+                            //        insertIconUp.Position = new Vector3(icon.x1 + (icon.x2 - icon.x1), icon.z1 + upOffset, 0);
+                            //        insertIconUp.Scale = new Vector3(-1, 1, 1);
+                            //    }
+
+                            //    dxf.Entities.Add(insertIconUp);
+                            //    break;
+
+                            //case ViewName.UpUp when production:
+                            //    var insertIconUpUp = new Insert(insertIcon)
+                            //    {
+                            //        Position = new Vector3(icon.x1, icon.z1 + upUpOffset, 0),
+                            //        Layer = layer,
+                            //    };
+                            //    if (!isExhaust && icon.additionalInfos.sName == "VF")
+                            //    {
+                            //        insertIconUpUp.Position = new Vector3(icon.x1 + (icon.x2 - icon.x1), icon.z1 + upUpOffset, 0);
+                            //        insertIconUpUp.Scale = new Vector3(-1, 1, 1);
+                            //    }
+
+                            //    dxf.Entities.Add(insertIconUpUp);
+                            //    break;
                             case ViewName.Up:
                                 var insertIconUp = new Insert(insertIcon)
                                 {
                                     Position = new Vector3(icon.x1, icon.z1 + upOffset, 0),
                                     Layer = layer,
+                                    Scale = new Vector3(1, 1, 1),
+                                    Rotation = dxfIconRotation
                                 };
-                                if (!isExhaust && icon.additionalInfos.sName == "VF")
-                                {
-                                    insertIconUp.Position = new Vector3(icon.x1 + (icon.x2 - icon.x1), icon.z1 + upOffset, 0);
-                                    insertIconUp.Scale = new Vector3(-1, 1, 1);
-                                }
+                                //insertIconUp.Scale = new Vector3(-1, 1, 1);
 
                                 dxf.Entities.Add(insertIconUp);
                                 break;
@@ -1029,12 +1132,10 @@ namespace Klimor.WebApi.DXF
                                 {
                                     Position = new Vector3(icon.x1, icon.z1 + upUpOffset, 0),
                                     Layer = layer,
+                                    Scale = new Vector3(1, 1, 1),
+                                    Rotation = dxfIconRotation
                                 };
-                                if (!isExhaust && icon.additionalInfos.sName == "VF")
-                                {
-                                    insertIconUpUp.Position = new Vector3(icon.x1 + (icon.x2 - icon.x1), icon.z1 + upUpOffset, 0);
-                                    insertIconUpUp.Scale = new Vector3(-1, 1, 1);
-                                }
+                                
 
                                 dxf.Entities.Add(insertIconUpUp);
                                 break;
@@ -1123,6 +1224,7 @@ namespace Klimor.WebApi.DXF
 
             MapElementsToViews(elements, isExtended);
             PrepareElementsToMode(elements, isExtended);
+            IconRotation_CorrectXY(elements);
             if (!isExtended)
             {
                 if (!elements.Any(e => e.label == Lab.Roof))
@@ -1173,18 +1275,18 @@ namespace Klimor.WebApi.DXF
             if (true)
             {
                 DrawBlocks();
-                DrawBlockDimensions();
+                //DrawBlockDimensions();
                 DrawFunctionsWithIcons(isExtended);
-                DrawFunctionsDimensions();
+                //DrawFunctionsDimensions();
                 DrawExternalElements();
                 GenerateWalls();
-                GenerateWallsDimensions();
+                //GenerateWallsDimensions();
                 GenerateFrame();
-                GenerateFrameDimensions();
+                //GenerateFrameDimensions();
                 GenerateRoof();
-                GenerateRoofDimensions();
+                //GenerateRoofDimensions();
                 GeneratePorthole();
-                GeneratePortholeDimension();
+                //GeneratePortholeDimension();
                 GenerateRips();
             }
 

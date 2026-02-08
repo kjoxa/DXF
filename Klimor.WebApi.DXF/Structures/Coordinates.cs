@@ -51,6 +51,8 @@ namespace Klimor.WebApi.DXF.Structures
 
         public string iconName { get; set; }
 
+        public int iconRotation { get; set; }
+
         // bloki
         public int positionUp { get; set; }
 
