@@ -1037,7 +1037,13 @@ namespace Klimor.WebApi.DXF
                 // dodawanie ikon
                 var sName = string.Empty;
                 var distinctList = elements.DistinctBy(e => (e.posUpDown, e.x1, e.y1, e.z1)).Where(i => i.label.Contains("icon") && i.additionalInfos != null).ToList();
-               
+
+                foreach (var b in icons.Blocks)
+                {
+                    // jeśli bloki ikon są zawsze 100x100 i rysowane od (0,0) do (100,100)
+                    b.Origin = new Vector3(50, 50, 0);
+                }
+
                 foreach (var icon in distinctList)
                 {
                     sName = icon.additionalInfos.iconName;
@@ -1060,85 +1066,71 @@ namespace Klimor.WebApi.DXF
                             case ViewName.Operational:
                                 var insertIconOperational = new Insert(insertIcon)
                                 {
-                                    Position = new Vector3(icon.x1, icon.y1, 0), // przesunięcie w bok
+                                    Position = new Vector3(icon.x1 + 50, icon.y1 + 50, 0),
                                     Layer = layer,
                                     Scale = new Vector3(1, 1, 1),
                                     Rotation = dxfIconRotation
-                                };                                
+                                };
 
                                 if (icon.View == ViewName.Operational)
                                     dxf.Entities.Add(insertIconOperational);
+
                                 break;
 
                             case ViewName.Back:
-                                double newX1 = dxf2D.globalXMax + dxf2D.globalXMin - icon.x1 - (icon.x2 - icon.x1);
-                                double newX2 = dxf2D.globalXMax + dxf2D.globalXMin - icon.x2 - (icon.x2 - icon.x1);
-                                var insertIconBack = new Insert(insertIcon)
                                 {
-                                    Position = new Vector3(newX1 + backOffset, icon.y1, 0), 
-                                    Layer = layer,
-                                    Scale = new Vector3(1, 1, 1),
-                                    Rotation = dxfIconRotation
-                                };                                
+                                    var cx = icon.x1 + 50.0;
+                                    var cy = icon.y1 + 50.0;
 
-                                if (icon.additionalInfos.iconPosition == ViewName.Back)
-                                    dxf.Entities.Add(insertIconBack);
-                                break;
+                                    var cxBack = (dxf2D.globalXMax + dxf2D.globalXMin) - cx;
 
-                            //case ViewName.Up:
-                            //    var insertIconUp = new Insert(insertIcon)
-                            //    {
-                            //        Position = new Vector3(icon.x1, icon.z1 + upOffset, 0),
-                            //        Layer = layer,
-                            //    };
-                            //    if (!isExhaust && icon.additionalInfos.sName == "VF")
-                            //    {
-                            //        insertIconUp.Position = new Vector3(icon.x1 + (icon.x2 - icon.x1), icon.z1 + upOffset, 0);
-                            //        insertIconUp.Scale = new Vector3(-1, 1, 1);
-                            //    }
+                                    var insertIconBack = new Insert(insertIcon)
+                                    {
+                                        Position = new Vector3(cxBack + backOffset, cy, 0),
+                                        Layer = layer,
+                                        Scale = new Vector3(1, 1, 1),
+                                        Rotation = dxfIconRotation
+                                    };
 
-                            //    dxf.Entities.Add(insertIconUp);
-                            //    break;
+                                    if (icon.View == ViewName.Back)
+                                        dxf.Entities.Add(insertIconBack);
 
-                            //case ViewName.UpUp when production:
-                            //    var insertIconUpUp = new Insert(insertIcon)
-                            //    {
-                            //        Position = new Vector3(icon.x1, icon.z1 + upUpOffset, 0),
-                            //        Layer = layer,
-                            //    };
-                            //    if (!isExhaust && icon.additionalInfos.sName == "VF")
-                            //    {
-                            //        insertIconUpUp.Position = new Vector3(icon.x1 + (icon.x2 - icon.x1), icon.z1 + upUpOffset, 0);
-                            //        insertIconUpUp.Scale = new Vector3(-1, 1, 1);
-                            //    }
+                                    break;
+                                }
 
-                            //    dxf.Entities.Add(insertIconUpUp);
-                            //    break;
                             case ViewName.Up:
-                                var insertIconUp = new Insert(insertIcon)
                                 {
-                                    Position = new Vector3(icon.x1, icon.z1 + upOffset, 0),
-                                    Layer = layer,
-                                    Scale = new Vector3(1, 1, 1),
-                                    Rotation = dxfIconRotation
-                                };
-                                //insertIconUp.Scale = new Vector3(-1, 1, 1);
+                                    var cx = icon.x1 + 50.0;
+                                    var cz = icon.z1 + 50.0;
 
-                                dxf.Entities.Add(insertIconUp);
-                                break;
+                                    var insertIconUp = new Insert(insertIcon)
+                                    {
+                                        Position = new Vector3(cx, cz + upOffset, 0),
+                                        Layer = layer,
+                                        Scale = new Vector3(1, 1, 1),
+                                        Rotation = dxfIconRotation
+                                    };
+
+                                    dxf.Entities.Add(insertIconUp);
+                                    break;
+                                }
 
                             case ViewName.UpUp when production:
-                                var insertIconUpUp = new Insert(insertIcon)
                                 {
-                                    Position = new Vector3(icon.x1, icon.z1 + upUpOffset, 0),
-                                    Layer = layer,
-                                    Scale = new Vector3(1, 1, 1),
-                                    Rotation = dxfIconRotation
-                                };
-                                
+                                    var cx = icon.x1 + 50.0;
+                                    var cz = icon.z1 + 50.0;
 
-                                dxf.Entities.Add(insertIconUpUp);
-                                break;
+                                    var insertIconUpUp = new Insert(insertIcon)
+                                    {
+                                        Position = new Vector3(cx, cz + upUpOffset, 0),
+                                        Layer = layer,
+                                        Scale = new Vector3(1, 1, 1),
+                                        Rotation = dxfIconRotation
+                                    };
+
+                                    dxf.Entities.Add(insertIconUpUp);
+                                    break;
+                                }
 
                             default:
                                 break;
@@ -1224,7 +1216,7 @@ namespace Klimor.WebApi.DXF
 
             MapElementsToViews(elements, isExtended);
             PrepareElementsToMode(elements, isExtended);
-            IconRotation_CorrectXY(elements);
+            //IconRotation_CorrectXY(elements);
             if (!isExtended)
             {
                 if (!elements.Any(e => e.label == Lab.Roof))
