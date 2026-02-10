@@ -62,7 +62,6 @@ namespace Klimor.WebApi.DXF
                         var norm = isExtended ? Norm.ISO_EXTENDED : Norm.ISO;
 
                         Generate2D(elements, $"{Path.GetFileNameWithoutExtension(ofd.FileName)}.dxf", isExtended, norm);
-                        //GenerateViews(elements, "output2D.dxf");
                         dxf3D.Generate3D(elements, $"{Path.GetFileNameWithoutExtension(ofd.FileName)}_3D.dxf");
 
                         //MessageBox.Show("Pliki DXF zostały wygenerowane.", "Sukces", MessageBoxButtons.OK, MessageBoxIcon.Information);
