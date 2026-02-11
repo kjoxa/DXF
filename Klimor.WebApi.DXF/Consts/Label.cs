@@ -47,6 +47,7 @@ namespace Klimor.WebApi.DXF.Consts
 
         // connectors
         public const string Connector = "Connector";
+        public const string InsideConnector = "InsideConnector";
         public const string Switchbox = "Switchbox";
 
         // drawing

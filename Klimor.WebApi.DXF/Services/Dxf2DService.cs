@@ -225,6 +225,10 @@ namespace Klimor.WebApi.DXF.Services
 
         public void GenerateView(DxfDocument dxf, List<Coordinates> elements, List<string> elementsGroup, bool createDimension, bool createShape, Layer layer, Layer textLayer, IEnumerable<ViewElement> views)
         {
+            // do niwelowania elementów ram
+            var drawnHorizontal = new HashSet<(int x1, int x2, int y1, int y2)>();
+            var drawnVertical = new HashSet<(int z1, int z2)>();
+
             var firstElement = elements.OrderBy(e => e.x1).FirstOrDefault(e => e.label == Lab.Block);
             var lastElement = elements.OrderByDescending(e => e.x1).FirstOrDefault(e => e.label == Lab.Block);
             var normTitle = new Text(Views.CurrentNorm.ToString(), new Vector3((lastElement.x2 - firstElement.x1) / 2, 30000, 0), 700)
@@ -677,6 +681,7 @@ namespace Klimor.WebApi.DXF.Services
                     if (createDimension && el.ShowDimension)
                     {                        
                         bool addDim = false;
+                        bool exceptionNotShow = false;
                         double dimOffset = 30.0;
                         var wStart = outer2D[0];
                         var wEnd = outer2D[1];
@@ -685,19 +690,50 @@ namespace Klimor.WebApi.DXF.Services
                             Layer = layer
                         };
 
-                        var notForBlock = el.label != Lab.Block && el.View != ViewName.Frame;                        
-                        //DrainTraye / Connectory od punktu zero do połowy średnicy
-                        if (el.View == ViewName.Operational && el.label == Lab.Connector)
-                        {
-                            var halfDia = (el.x2 - el.x1) / 2.0;
+                        var notForBlock = el.label != Lab.Block && el.View != ViewName.Frame;
 
-                            // start od zera
-                            wStart = new Vector2(0, el.y1);                                                                                                         
-                            wEnd = new Vector2(el.x2 - halfDia, wStart.Y);
-                            widthDim = new LinearDimension(wStart, wEnd, -dimOffset - connXoffset, 0.0, dimStyle);
-                            addDim = true;
-                            connXoffset += 30;
-                        }
+                        /* SZTUCZNE WYMIARY i wyjątki */
+                        {   
+                            if (el.View is (ViewName.Down or ViewName.DownUp) && el.label == Lab.Connector)
+                            {
+                                continue;
+                            }
+
+                            if (el.View is ViewName.RightFront && el.label is Lab.Connector)
+                            {
+                                exceptionNotShow = true;
+                            }
+
+                            //DrainTraye / Connectory od punktu zero do połowy średnicy
+                            if (el.View == ViewName.Operational && el.type == Lab.InsideConnector)
+                            {
+                                var halfDia = (el.x2 - el.x1) / 2.0;
+
+                                // start od zera
+                                wStart = new Vector2(0, el.y1);
+                                wEnd = new Vector2(el.x2 - halfDia, wStart.Y);
+                                widthDim = new LinearDimension(wStart, wEnd, -dimOffset - connXoffset, 0.0, dimStyle);
+                                addDim = true;
+                                connXoffset += 30;
+                            }
+
+                            if (el.View == ViewName.Frame && el.label == Lab.Frame && view.Name == ViewName.Frame)
+                            {
+                                var key = (el.x1, el.x2, el.y1, el.y2);
+                                bool yShowExist = drawnHorizontal.Any(e => e.x1 == el.x1 && e.x2 == el.x2);
+
+                                if (!drawnHorizontal.Add(key) || el.x1 == 0 || yShowExist)
+                                    continue;                                
+
+                                wStart = new Vector2(0, wStart.Y);
+                                wEnd = new Vector2(el.x1, wStart.Y);
+
+                                widthDim = new LinearDimension(wStart, wEnd, -dimOffset - connXoffset, 0.0, dimStyle);
+                                widthDim.Layer = layer;
+
+                                connXoffset += 30;
+                            }
+                        }                        
 
                         if (!string.IsNullOrEmpty(el.type))
                         {
@@ -747,10 +783,10 @@ namespace Klimor.WebApi.DXF.Services
                                 widthDim.Layer = layer;
                                 dxf.Entities.Add(widthDim);
                             }
-                            else if (el.label == Lab.Function
+                            else if ((el.label == Lab.Function
                                   || (el.label == Lab.Block && el.View == ViewName.RightFront)
                                   || Lab.ExternalElements.Any(l => l == el.label)
-                                  || addDim)
+                                  || addDim) && !exceptionNotShow)
                             {
                                 widthDim.Layer = layer;
                                 dxf.Entities.Add(widthDim);
@@ -764,10 +800,19 @@ namespace Klimor.WebApi.DXF.Services
                             Layer = layer
                         };
 
-                        if (!string.IsNullOrEmpty(el.type))
+                        if (el.View == ViewName.Frame && el.label == Lab.Frame && view.Name == ViewName.Frame)
                         {
+                            var key = (el.z1, el.z2);
+
+                            if (!drawnVertical.Add(key))
+                                continue;
+
+                        }
+
+                        if (!string.IsNullOrEmpty(el.type))
+                        {                            
                             // nie dodajemy wysokości drainTraya/connectora na widoku operational
-                            if (el.View == ViewName.Operational && el.label == Lab.Connector)
+                            if ((el.View == ViewName.Operational || el.View == ViewName.RightFront) && (el.label == Lab.Connector || el.label == Lab.InsideConnector))
                             {
                                 continue;
                             }

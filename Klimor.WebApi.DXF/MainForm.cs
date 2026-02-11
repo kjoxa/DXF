@@ -11,6 +11,7 @@ using netDxf.Objects;
 using netDxf.Tables;
 using System.Diagnostics;
 using System.Security.Cryptography;
+using System.Security.Cryptography.Xml;
 using System.Text.Json;
 using System.Windows.Forms;
 using System.Xml.Linq;
@@ -404,7 +405,7 @@ namespace Klimor.WebApi.DXF
             }
 
             // tu zarządzamy CONNECTORAMI - kopiujemy do pozostałych widoków
-            foreach (var view in Views.Except("Frame", "FrameUp", "Roof", "RoofUp", "RightFront", "LeftFront", "DownUp", "UpUp", "Back", "Up"))
+            foreach (var view in Views.Except("Frame", "FrameUp", "Roof", "RoofUp", "LeftFront", "DownUp", "UpUp", "Back", "Up"))
             {
                 foreach (var c in connectors)
                 {
@@ -1150,7 +1151,7 @@ namespace Klimor.WebApi.DXF
                 dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Hole, Lab.AD, Lab.FC, Lab.INTK, Lab.Connector }, false, true, layer, textLayer, Views.Except(ViewName.Frame, ViewName.FrameUp, ViewName.Roof, ViewName.RoofUp));
 
                 var layerDim = dxf.Layers.Add(new Layer("ExternalElements_dimensions") { Color = AciColor.Cyan });
-                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Hole, Lab.AD, Lab.FC, Lab.INTK, Lab.Connector }, true, false, layerDim, textLayer, Views.Except(ViewName.Frame, ViewName.FrameUp, ViewName.Roof, ViewName.RoofUp));
+                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Hole, Lab.AD, Lab.FC, Lab.INTK, Lab.Connector, Lab.InsideConnector }, true, false, layerDim, textLayer, Views.Except(ViewName.Frame, ViewName.FrameUp, ViewName.Roof, ViewName.RoofUp));
             }
 
             void GeneratePorthole()
@@ -1212,9 +1213,9 @@ namespace Klimor.WebApi.DXF
             /// Debug
                 //elements.RemoveAll(e => e.label is not (Lab.Function or Lab.Block));
             /// EndDebug
-
+            
             MapElementsToViews(elements, isExtended);
-            PrepareElementsToMode(elements, isExtended);
+            PrepareElementsToMode(elements, isExtended);            
             //IconRotation_CorrectXY(elements);
             if (!isExtended)
             {
@@ -1257,29 +1258,28 @@ namespace Klimor.WebApi.DXF
             // ustawianie widoczności elementów (kolejność ma znaczenie)
             SetElementsVisibility(elements, [Lab.Frame, Lab.FrameUp], Views.Except(ViewName.Frame) , null, false);
             SetElementsVisibility(elements, [Lab.Frame], Views.Select(ViewName.RightFront), true, true);
-
+            //HideDimensions(elements);
             // widoczność wymiarów blokow
             //SetElementsVisibility(elements, [Lab.Block], Views.Select(ViewName.Operational), true, true);
-
-            RepositioningOnGridWhenViewsHide(norm, grid);
-
+            Connector_AddInsideCircle(elements);
+            RepositioningOnGridWhenViewsHide(norm, grid);            
             if (true)
             {
                 DrawBlocks();
-                //DrawBlockDimensions();
+                DrawBlockDimensions();
                 DrawFunctionsWithIcons(isExtended);
-                //DrawFunctionsDimensions();
+                DrawFunctionsDimensions();
                 DrawExternalElements();
                 GenerateWalls();
-                //GenerateWallsDimensions();
+                GenerateWallsDimensions();
                 GenerateFrame();
-                //GenerateFrameDimensions();
+                GenerateFrameDimensions();
                 GenerateRoof();
-                //GenerateRoofDimensions();
+                GenerateRoofDimensions();
                 GeneratePorthole();
-                //GeneratePortholeDimension();
+                GeneratePortholeDimension();
                 GenerateRips();
-            }
+            }            
 
             // budowanie listy dla znaczników płyt, aby walle Operational i Back były widoczne na Up i Down
             //ShowHatchesOnUpDown(elements);
@@ -1319,6 +1319,67 @@ namespace Klimor.WebApi.DXF
             DedupLinearDimensions(dxf);
             dxf.Save(fileOutput);
         }
+
+        void Connector_AddInsideCircle(List<Coordinates> elements)
+        {
+            var connectors = elements.Where(e => e.label == Lab.Connector).ToList();
+            foreach (var connector in connectors.ToList())
+            {
+                var circle = new Coordinates
+                {
+                    label = "Connector",
+                    type = Lab.InsideConnector,
+                    x1 = connector.x1 + 3,
+                    x2 = connector.x2 - 3,
+                    y1 = connector.y1,
+                    y2 = connector.y2,
+                    z1 = connector.z1,
+                    z2 = connector.z2,
+                    View = connector.View,
+                    Show = connector.Show,
+                    ShowDimension = connector.ShowDimension,
+                };
+                elements.Add(circle);
+                connector.Show = false;
+                connector.ShowDimension = false;
+            }
+        }
+
+        void HideDimensions(List<Coordinates> elements)
+        {
+            bool IsFrameDim(Coordinates e) =>
+                (e.label is Lab.Frame or Lab.FrameUp) &&
+                (e.View is ViewName.Frame or ViewName.FrameUp);
+
+            var frameDims = elements.Where(IsFrameDim);
+
+            var groups = frameDims.GroupBy(e =>
+            {
+                var dx = Math.Abs(e.x2 - e.x1);
+                var dy = Math.Abs(e.y2 - e.y1);
+                var dz = Math.Abs(e.z2 - e.z1);
+
+                return (e.View, e.label, dx, dy, dz);
+            });
+
+            foreach (var g in groups)
+            {
+                bool first = true;
+                foreach (var el in g)
+                {
+                    if (first)
+                    {
+                        // el.ShowDimension = true;
+                        first = false;
+                    }
+                    else
+                    {
+                        el.ShowDimension = false;
+                    }
+                }
+            }
+        }
+
 
         static double R(double v, double step = 0.01) => Math.Round(v / step) * step;
 
