@@ -757,6 +757,11 @@ namespace Klimor.WebApi.DXF
                     {
                         addElement(vw, el, 0, null);
                     }
+
+                    if (el.label == Lab.SteamGenerator)
+                    {
+                        addElement(vw, el, 0, null);
+                    }
                 }
             }
 
@@ -1208,12 +1213,18 @@ namespace Klimor.WebApi.DXF
                 dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Roof }, true, false, layerRoofDim, textLayer, Views.Select(ViewName.Roof, ViewName.RoofUp));
             }
 
-            // rozszerzanie listy elementów o widoki globalne
+            void GenerateSteamGenerator(string[] exceptViews)
+            {
+                var layerRoof = dxf.Layers.Add(new Layer("SteamGenerator") { Color = new AciColor(9) });
+                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.SteamGenerator }, false, true, layerRoof, textLayer, Views.Except(exceptViews));
+            }
 
-            /// Debug
-                //elements.RemoveAll(e => e.label is not (Lab.Function or Lab.Block));
-            /// EndDebug
-            
+            void GenerateSteamGeneratorDimensions()
+            {
+                var layerRoofDim = dxf.Layers.Add(new Layer("SteamGenerator_dimensions") { Color = new AciColor(9) });
+                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.SteamGenerator }, true, false, layerRoofDim, textLayer, Views.Select(ViewName.Roof, ViewName.RoofUp));
+            }
+
             MapElementsToViews(elements, isExtended);
             PrepareElementsToMode(elements, isExtended);            
             //IconRotation_CorrectXY(elements);
@@ -1265,8 +1276,25 @@ namespace Klimor.WebApi.DXF
             RepositioningOnGridWhenViewsHide(norm, grid);            
             if (true)
             {
-                DrawBlocks();
-                DrawBlockDimensions();
+                // jeśli jest generator pary na froncie, to rysujemy go najpierw na operational, Bloki, potem SteamGen na back
+                var steamGenOnFront = elements.Any(e => e.type == "SteamGenerator_Front");
+                if (steamGenOnFront)
+                {
+                    GenerateSteamGenerator([ViewName.Frame, ViewName.Roof, ViewName.Operational]);                    
+                    DrawBlocks();
+                    DrawBlockDimensions();
+                    GenerateSteamGenerator([ViewName.Frame, ViewName.Roof, ViewName.Back]);
+                    GenerateSteamGeneratorDimensions();
+                }
+                else
+                {
+                    GenerateSteamGenerator([ViewName.Frame, ViewName.Roof, ViewName.Back]);
+                    DrawBlocks();
+                    DrawBlockDimensions();
+                    GenerateSteamGenerator([ViewName.Frame, ViewName.Roof, ViewName.Operational]);
+                    GenerateSteamGeneratorDimensions();
+                }
+                
                 DrawFunctionsWithIcons(isExtended);
                 DrawFunctionsDimensions();
                 DrawExternalElements();
@@ -1278,7 +1306,7 @@ namespace Klimor.WebApi.DXF
                 GenerateRoofDimensions();
                 GeneratePorthole();
                 GeneratePortholeDimension();
-                GenerateRips();
+                GenerateRips();                
             }            
 
             // budowanie listy dla znaczników płyt, aby walle Operational i Back były widoczne na Up i Down
@@ -1316,7 +1344,7 @@ namespace Klimor.WebApi.DXF
             //DrawTable(dxf);
 
             // usuwanie duplikatów wymiarów
-            DedupLinearDimensions(dxf);
+            DedupLinearDimensions(dxf);            
             dxf.Save(fileOutput);
         }
 

@@ -335,7 +335,7 @@ namespace Klimor.WebApi.DXF.Services
 
                     if (createShape)
                     {
-                        if (el.label == Lab.Block && el.View == view.Name && el.Show)
+                        if ((el.label == Lab.Block || el.label == Lab.SteamGenerator) && el.View == view.Name && el.Show)
                         {
                             fillIndexColor += 50;
                             AddSolidFill(dxf, layer, outerPoly, fillIndexColor);
