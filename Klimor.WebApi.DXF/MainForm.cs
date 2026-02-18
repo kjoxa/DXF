@@ -686,7 +686,7 @@ namespace Klimor.WebApi.DXF
                 if (el.label == "FrontLeft")
                     el.label = "LeftFront";
             }
-            var views = Views.Except("Frame", "Roof", "Connector");
+            var views = Views.Except("Frame", "FrameUp", "Roof", "Connector");
             foreach (var el in elements.ToList())
             {                
                 foreach (var vw in views)
@@ -770,15 +770,25 @@ namespace Klimor.WebApi.DXF
             {
                 foreach (var vw in views)
                 {
-                    if (el.label is Lab.Frame && vw.Name is (ViewName.Frame or ViewName.FrameUp))
+                    if (el.label is Lab.Frame && vw.Name is (ViewName.Frame or ViewName.FrameUp) && string.IsNullOrEmpty(el.View))
                     {
                         addElement(vw, el, 0, null);
                     }
 
-                    if (el.label is Lab.Roof && vw.Name is (ViewName.Roof or ViewName.RoofUp))
+                    if (el.label is Lab.Roof && vw.Name is (ViewName.Roof or ViewName.RoofUp) && string.IsNullOrEmpty(el.View))
                     {
                         addElement(vw, el, 0, null);
                     }
+
+                    //if (el.label is Lab.Frame && vw.Name is (ViewName.Frame or ViewName.FrameUp))
+                    //{
+                    //    addElement(vw, el, 0, null);
+                    //}
+
+                    //if (el.label is Lab.Roof && vw.Name is (ViewName.Roof or ViewName.RoofUp))
+                    //{
+                    //    addElement(vw, el, 0, null);
+                    //}
                 }
             }
 
@@ -977,8 +987,8 @@ namespace Klimor.WebApi.DXF
             Views.ApplyNorm(norm);
             Views.SetWaterMark("EVO");
 
-            var cellHeight = Views.AhuHeight > Views.AhuWidth ? Views.AhuHeight + (Views.AhuHeight * 2 / 3) : Views.AhuWidth + (Views.AhuWidth * 2 / 3);
-            var cellWidth = Views.AhuLength + (Views.AhuLength * 1 / 5);
+            var cellHeight = Views.AhuHeight > Views.AhuWidth ? Views.AhuHeight + (Views.AhuHeight) : Views.AhuWidth + (Views.AhuWidth);
+            var cellWidth = Views.AhuLength + (Views.AhuLength * 1 / 3);
             var grid = new ViewGrid(columns: 5, rows: 10, cellWidth: (int)cellWidth, cellHeight: (int)cellHeight);
             grid.AlignCellToPoint(col: 1, row: 5, worldX: 0, worldY: 0);
 
@@ -1146,7 +1156,7 @@ namespace Klimor.WebApi.DXF
 
             void DrawFunctionsDimensions()
             {
-                var layer = dxf.Layers.Add(new Layer("Function_dimensions") { Color = AciColor.Green });
+                var layer = dxf.Layers.Add(new Layer("Function_dimensions") { Color = AciColor.Green, IsVisible = false });
                 dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Function }, true, false, layer, textLayer, Views.Except(ViewName.Frame, ViewName.FrameUp, ViewName.Roof, ViewName.RoofUp));
             }
 
@@ -1173,7 +1183,7 @@ namespace Klimor.WebApi.DXF
 
             void GeneratePortholeDimension()
             {
-                var layerDim = dxf.Layers.Add(new Layer("Porthole_dimensions") { Color = AciColor.Magenta });
+                var layerDim = dxf.Layers.Add(new Layer("Porthole_dimensions") { Color = AciColor.Magenta, IsVisible = false });
                 dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Porthole }, true, false, layerDim, textLayer, Views.Except(ViewName.Frame, ViewName.Roof));
             }
 
@@ -1197,6 +1207,7 @@ namespace Klimor.WebApi.DXF
 
             void GenerateFrameDimensions()
             {
+                elements = elements.OrderByDescending(e => e.x2).ThenBy(e => e.z2).ToList();
                 var layerFrameDim = dxf.Layers.Add(new Layer("Frame_dimensions") { Color = AciColor.Blue });
                 dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Frame }, true, false, layerFrameDim, textLayer, Views.Except(ViewName.Up, ViewName.Down, ViewName.Roof));
             }
@@ -1225,7 +1236,7 @@ namespace Klimor.WebApi.DXF
                 dxf2D.GenerateView(dxf, elements, new List<string> { Lab.SteamGenerator }, true, false, layerRoofDim, textLayer, Views.Select(ViewName.Roof, ViewName.RoofUp));
             }
 
-            MapElementsToViews(elements, isExtended);
+            MapElementsToViews(elements, isExtended);            
             PrepareElementsToMode(elements, isExtended);            
             //IconRotation_CorrectXY(elements);
             if (!isExtended)
@@ -1346,6 +1357,29 @@ namespace Klimor.WebApi.DXF
             // usuwanie duplikatów wymiarów
             DedupLinearDimensions(dxf);            
             dxf.Save(fileOutput);
+            foreach (var vw in Views.All)
+            {
+                var cell = GridPresets.Cells[norm][vw.Name];
+                var cellY = grid.GetCellOrigin(cell.col, cell.row).y;
+
+                Debug.WriteLine($"{vw.Name} | cellY={cellY} | viewYOffset={vw.YOffset}");
+            }
+        }
+
+        void RemoveDuplicates(List<Coordinates> elements)
+        {
+            var set = new HashSet<(int x1, int x2, int y1, int y2, int z1, int z2,
+                                   string label, string view)>();
+
+            elements.RemoveAll(e =>
+            {
+                var key = (e.x1, e.x2,
+                           e.y1, e.y2,
+                           e.z1, e.z2,
+                           e.label, e.View);
+
+                return !set.Add(key); // jeśli już istnieje → usuń
+            });
         }
 
         void Connector_AddInsideCircle(List<Coordinates> elements)

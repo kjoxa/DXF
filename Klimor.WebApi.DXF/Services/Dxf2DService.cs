@@ -17,6 +17,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
 using static netDxf.Entities.HatchBoundaryPath;
+using System.Linq;
 
 namespace Klimor.WebApi.DXF.Services
 {
@@ -226,7 +227,7 @@ namespace Klimor.WebApi.DXF.Services
         public void GenerateView(DxfDocument dxf, List<Coordinates> elements, List<string> elementsGroup, bool createDimension, bool createShape, Layer layer, Layer textLayer, IEnumerable<ViewElement> views)
         {
             // do niwelowania elementów ram
-            var drawnHorizontal = new HashSet<(int x1, int x2, int y1, int y2)>();
+            var drawnHorizontal = new HashSet<(int x1, int x2, int z1, int z2)>();
             var drawnVertical = new HashSet<(int z1, int z2)>();
 
             var firstElement = elements.OrderBy(e => e.x1).FirstOrDefault(e => e.label == Lab.Block);
@@ -314,6 +315,8 @@ namespace Klimor.WebApi.DXF.Services
 
                 int fillIndexColor = 0;
                 int connXoffset = 0;
+                int frameDownYoffset = 0;
+                int frameUpYoffset = 0;
                 // dla innych widoków bez przycinania
                 foreach (var el in groupElements)
                 {
@@ -624,7 +627,7 @@ namespace Klimor.WebApi.DXF.Services
                                                     wallDescription = "DRN_TRY";
                                                 }
 
-                                                if (wallDescription == "INS")
+                                                if (wallDescription == "INS" || wallDescription == "BACK")
                                                 {
                                                     wallDescription = el.type switch
                                                     {
@@ -712,26 +715,41 @@ namespace Klimor.WebApi.DXF.Services
                                 // start od zera
                                 wStart = new Vector2(0, el.y1);
                                 wEnd = new Vector2(el.x2 - halfDia, wStart.Y);
-                                widthDim = new LinearDimension(wStart, wEnd, -dimOffset - connXoffset, 0.0, dimStyle);
+                                widthDim = new LinearDimension(wStart, wEnd, -dimOffset - connXoffset - 200, 0.0, dimStyle);
                                 addDim = true;
                                 connXoffset += 30;
                             }
 
                             if (el.View == ViewName.Frame && el.label == Lab.Frame && view.Name == ViewName.Frame)
                             {
-                                var key = (el.x1, el.x2, el.y1, el.y2);
-                                bool yShowExist = drawnHorizontal.Any(e => e.x1 == el.x1 && e.x2 == el.x2);
+                                var minXframes = elements.Where(e => e.label == Lab.Frame).Min(e => e.x1);
+                                dimOffset = -100;
+                                var length = 0;
+                                var key = (el.x1, el.x2, el.z1, el.z2);
+                                bool xShow = drawnHorizontal
+                                    .Any(e => 
+                                    (e.x1 == el.x1 && e.x2 == el.x2)
+                                    ||
+                                    (e.x1 == el.x1 + 50 || e.x1 == el.x1 - 50 || e.x2 == el.x2 - 50 || e.x2 == el.x2 + 50)
+                                    || e.x1 == el.x1 && e.z1 == el.z1);
+                                if (!drawnHorizontal.Add(key) || el.x1 == 0 || xShow)
+                                {
+                                    if (drawnVertical.Any(e => e.z1 == el.z1 && e.z2 == el.z2) || el.z2 - el.z1 == 50)
+                                    {
+                                        if (el.z1 <= 50)
+                                            frameUpYoffset -= 50;
+                                        continue;
+                                    }
+                                }
 
-                                if (!drawnHorizontal.Add(key) || el.x1 == 0 || yShowExist)
-                                    continue;                                
-
-                                wStart = new Vector2(0, wStart.Y);
+                                wStart = new Vector2(minXframes, wStart.Y);
                                 wEnd = new Vector2(el.x1, wStart.Y);
 
-                                widthDim = new LinearDimension(wStart, wEnd, -dimOffset - connXoffset, 0.0, dimStyle);
+                                widthDim = new LinearDimension(wStart, wEnd, -dimOffset - el.z1 > 50 ? dimOffset -frameUpYoffset - 50 : dimOffset -frameDownYoffset + 20, 0.0, dimStyle);
                                 widthDim.Layer = layer;
-
-                                connXoffset += 30;
+                                //widthDim.UserText = $"x1: {el.x1} x2: {el.x2} l: {el.x2 - el.x1} / z1: {el.z1} z2:{el.z2}";
+                                if (el.z1 >= 50)
+                                frameDownYoffset += 30;
                             }
                         }                        
 
