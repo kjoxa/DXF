@@ -92,7 +92,7 @@ namespace Klimor.WebApi.DXF
 
                     switch (i.View)
                     {
-                        case ViewName.Operational:                        
+                        case ViewName.Operational:
                             if (ir == 90 || ir == 180)
                             {
                                 i.y1 += lenY;
@@ -106,7 +106,7 @@ namespace Klimor.WebApi.DXF
                                 {
                                     i.x1 += lenX;
                                     i.x2 += lenX;
-                                }                                
+                                }
                             }
                             break;
                         case ViewName.Back:
@@ -117,7 +117,7 @@ namespace Klimor.WebApi.DXF
                                 //i.x1 -= lenX;
                                 //i.x2 -= lenX;
                             }
-                            
+
                             break;
                         case ViewName.Up:
                         case ViewName.UpUp:
@@ -133,10 +133,10 @@ namespace Klimor.WebApi.DXF
                                 i.x1 -= lenX;
                                 i.x2 -= lenX;
                             }
-                            break;                        
+                            break;
                         default:
                             break;
-                    }                    
+                    }
                 }
             }
         }
@@ -157,7 +157,7 @@ namespace Klimor.WebApi.DXF
                 .ToList();
 
             if (levels.Count > 1)
-            {                
+            {
                 var upperLevels = levels.Skip(1).ToList();
 
                 var upperWalls = upBlocks
@@ -169,7 +169,7 @@ namespace Klimor.WebApi.DXF
                 elements.RemoveAll(e => e.y2 == levels.Take(1).FirstOrDefault() && !e.label.Contains("icon") && (e.label == Lab.Block) && e.View == ViewName.UpUp);
 
                 // ikony jak wentylator jest pod drugim
-                elements.RemoveAll(e => (e.y2 == levels.FirstOrDefault() + 1) && e.label.Contains("icon") && e.View == ViewName.Up);                
+                elements.RemoveAll(e => (e.y2 == levels.FirstOrDefault() + 1) && e.label.Contains("icon") && e.View == ViewName.Up);
 
 
                 //elements.RemoveAll(e => (e.y2 == upperLevels.FirstOrDefault() || e.y2 == upperLevels.LastOrDefault()) && e.label == Lab.Up && e.View == ViewName.Up);
@@ -342,7 +342,7 @@ namespace Klimor.WebApi.DXF
 
                 // usuwamy oryginały
                 elements.RemoveAll(e => removeUps.Contains(e));
-                elements.RemoveAll(e => removeUpUps.Contains(e));                
+                elements.RemoveAll(e => removeUpUps.Contains(e));
             }
         }
 
@@ -522,7 +522,7 @@ namespace Klimor.WebApi.DXF
             }
 
             // usuwanie duplikatów Hatchy na Up
- //elements.RemoveAll(e => e.label == Lab.Hatch && e.View == ViewName.Up && upUpHatches.Any(h => h.x1 == e.x1 && h.x2 == e.x2));
+            //elements.RemoveAll(e => e.label == Lab.Hatch && e.View == ViewName.Up && upUpHatches.Any(h => h.x1 == e.x1 && h.x2 == e.x2));
             elements.RemoveAll(e => e.label == Lab.Hatch && e.View == ViewName.UpUp && e.y2 < levels.Skip(1).FirstOrDefault());
 
             // przesuwanie Hatchy, które wychodzą poza obręb UpUp
@@ -570,7 +570,7 @@ namespace Klimor.WebApi.DXF
             }
 
             // usuwanie duplikatów Hatchy na Up
- //elements.RemoveAll(e => e.label == Lab.Hatch && e.View == ViewName.Down && downUpHatches.Any(h => h.x1 == e.x1 && h.x2 == e.x2));
+            //elements.RemoveAll(e => e.label == Lab.Hatch && e.View == ViewName.Down && downUpHatches.Any(h => h.x1 == e.x1 && h.x2 == e.x2));
             elements.RemoveAll(e => e.label == Lab.Hatch && e.View == ViewName.DownUp && e.y2 < levels.Skip(1).FirstOrDefault());
 
             // przesuwanie Hatchy, które wychodzą poza obręb UpUp
@@ -688,7 +688,7 @@ namespace Klimor.WebApi.DXF
             }
             var views = Views.Except("Frame", "FrameUp", "Roof", "Connector");
             foreach (var el in elements.ToList())
-            {                
+            {
                 foreach (var vw in views)
                 {
                     if (el.label is (Lab.Operational or Lab.Back) &&
@@ -703,7 +703,7 @@ namespace Klimor.WebApi.DXF
                         */
                         var blockIgnore = elements.Any(e => e.label == Lab.Block && e.x1 == el.x1 - 50 && e.x2 == el.x2 + 50);
                         if (!blockIgnore)
-                        addElement(vw, el, el.y2 + 50, Lab.Hatch);
+                            addElement(vw, el, el.y2 + 50, Lab.Hatch);
                     }
 
                     if ((el.label == vw.Name || el.label == Lab.Block) && el.type != Lab.Wall)
@@ -813,7 +813,7 @@ namespace Klimor.WebApi.DXF
             foreach (var icon in icons)
             {
                 icon.View = icon.additionalInfos.iconPosition;
-            }            
+            }
         }
 
         //private void ShowHatchesOnUpDown(List<Coordinates> elements)
@@ -881,7 +881,7 @@ namespace Klimor.WebApi.DXF
         //    }            
         //}
 
-        
+
 
         private void MoveElementsFor_SeparatellyUnits_M(List<Coordinates> elements)
         {
@@ -912,7 +912,7 @@ namespace Klimor.WebApi.DXF
 
                 return ezC >= bzMin && ezC <= bzMax &&
                        eyC >= byMin && eyC <= byMax;
-            }        
+            }
 
             var separatellyUnitsOffset_Z = 700;
             var separatellyUnitsOffset_Y = 500;
@@ -960,11 +960,11 @@ namespace Klimor.WebApi.DXF
         }
 
         private void Generate2D(List<Coordinates> elements, string fileOutput, bool isExtended, Norm norm)
-        {            
+        {
             dxf2D.isExtended = isExtended;
 
             MoveElementsFor_SeparatellyUnits_M(elements);
-            
+
             // EVO-S-D: fix na popsute ikony
             //elements.RemoveAll(e => e.z1 == 2101);
 
@@ -975,7 +975,8 @@ namespace Klimor.WebApi.DXF
             var icons = DxfDocument.Load("BLOCKS.dxf");
             var dxf = new DxfDocument();
             var cornerLayer = new Layer("CornerFill") { Color = new AciColor(7) };
-            var textLayer = new Layer("Text_Views") { Color = AciColor.Blue };
+            var textLayer = new Layer("Text_Views") { Color = new AciColor(7) };
+            var backgroundLayer = new Layer("Background") { Color = new AciColor(7) };
 
             dxf2D.globalXMin = elements.Min(e => e.x1);
             dxf2D.globalXMax = elements.Max(e => e.x2);
@@ -1004,31 +1005,31 @@ namespace Klimor.WebApi.DXF
                 Views.SetView(ViewName.LeftFront, Views.LeftFront.XOffset + (Views.LeftFront.XOffset / 2) - ((int)Views.AhuWidth / 2), Views.LeftFront.YOffset);
                 Views.SetView(ViewName.RightFront, Views.RightFront.XOffset - (Views.RightFront.XOffset / 2) - ((int)Views.AhuWidth / 2), Views.RightFront.YOffset);
             }
-            
+
             //var vall = Views.All;
 
             void DrawBlocks()
             {
-                var layer = dxf.Layers.Add(new Layer(Lab.Block) { Color = AciColor.Default });
-                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Block }, false, true, layer, textLayer, Views.Except(ViewName.Frame, ViewName.FrameUp, ViewName.Roof, ViewName.RoofUp));
+                var layer = dxf.Layers.Add(new Layer(Lab.Block) { Color = new AciColor(7) });
+                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Block }, false, true, layer, textLayer, Views.Except(ViewName.Frame, ViewName.FrameUp, ViewName.Roof, ViewName.RoofUp), backgroundLayer);
             }
 
             void GenerateWalls()
             {
-                var layer = dxf.Layers.Add(new Layer("Walls") { Color = AciColor.Default });
-                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Operational, Lab.Up, Lab.Down, Lab.Down_DrainTray, Lab.Down_Wall, Lab.Back, ViewName.LeftFront, ViewName.RightFront }, false, true, layer, textLayer, Views.Except(ViewName.Frame, ViewName.Roof));
+                var layer = dxf.Layers.Add(new Layer("Walls") { Color = new AciColor(7) });
+                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Operational, Lab.Up, Lab.Down, Lab.Down_DrainTray, Lab.Down_Wall, Lab.Back, ViewName.LeftFront, ViewName.RightFront }, false, true, layer, textLayer, Views.Except(ViewName.Frame, ViewName.Roof), backgroundLayer);
             }
 
             void GenerateWallsDimensions()
             {
-                var layer = dxf.Layers.Add(new Layer("Walls_dimension") { Color = AciColor.Default });
-                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Operational, Lab.Up, Lab.Down, Lab.Down_DrainTray, Lab.Down_Wall, Lab.Back }, true, false, layer, textLayer, Views.Except(ViewName.Frame, ViewName.Roof));
+                var layer = dxf.Layers.Add(new Layer("Walls_dimension") { Color = new AciColor(7) });
+                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Operational, Lab.Up, Lab.Down, Lab.Down_DrainTray, Lab.Down_Wall, Lab.Back }, true, false, layer, textLayer, Views.Except(ViewName.Frame, ViewName.Roof), backgroundLayer);
             }
 
             void DrawBlockDimensions()
             {
-                var layer = dxf.Layers.Add(new Layer("Block_dimensions") { Color = AciColor.DarkGray });
-                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Block }, true, false, layer, textLayer, Views.Except(ViewName.Frame, ViewName.FrameUp, ViewName.Roof, ViewName.RoofUp));
+                var layer = dxf.Layers.Add(new Layer("Block_dimensions") { Color = new AciColor(7) });
+                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Block }, true, false, layer, textLayer, Views.Except(ViewName.Frame, ViewName.FrameUp, ViewName.Roof, ViewName.RoofUp), backgroundLayer);
             }
 
             void DrawFunctionsWithIcons(bool production)
@@ -1037,15 +1038,15 @@ namespace Klimor.WebApi.DXF
                 var upOffset = Views.Up.YOffset;
                 var upUpOffset = Views.UpUp.YOffset;
                 var iconsList = icons.Blocks.ToList();
-                var layer = dxf.Layers.Add(new Layer(Lab.Function) { Color = new AciColor(4) });
-                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Function }, false, true, layer, textLayer, Views.Except(ViewName.Frame, ViewName.FrameUp, ViewName.Roof, ViewName.RoofUp));
+                var layer = dxf.Layers.Add(new Layer(Lab.Function) { Color = new AciColor(7) });
+                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Function }, false, true, layer, textLayer, Views.Except(ViewName.Frame, ViewName.FrameUp, ViewName.Roof, ViewName.RoofUp), backgroundLayer);
 
                 // usunięcie ikon Back które powinny zostac zasłonięte
                 var iconsBck = elements.Where(e => e.label.Contains("icon") && e.View == ViewName.Back);
                 var iconsBckMax = iconsBck.Max(e => e.z2);
                 foreach (var iconBack in iconsBck.ToList())
                 {
-                    if (iconBack.z1 < iconsBckMax) 
+                    if (iconBack.z1 < iconsBckMax)
                         elements.Remove(iconBack);
                 }
 
@@ -1156,88 +1157,88 @@ namespace Klimor.WebApi.DXF
 
             void DrawFunctionsDimensions()
             {
-                var layer = dxf.Layers.Add(new Layer("Function_dimensions") { Color = AciColor.Green, IsVisible = false });
-                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Function }, true, false, layer, textLayer, Views.Except(ViewName.Frame, ViewName.FrameUp, ViewName.Roof, ViewName.RoofUp));
+                var layer = dxf.Layers.Add(new Layer("Function_dimensions") { Color = new AciColor(7), IsVisible = false });
+                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Function }, true, false, layer, textLayer, Views.Except(ViewName.Frame, ViewName.FrameUp, ViewName.Roof, ViewName.RoofUp), backgroundLayer);
             }
 
             void DrawExternalElements()
             {
-                var layer = dxf.Layers.Add(new Layer("ExternalElements") { Color = AciColor.Magenta });
-                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Hole, Lab.AD, Lab.FC, Lab.INTK, Lab.Connector }, false, true, layer, textLayer, Views.Except(ViewName.Frame, ViewName.FrameUp, ViewName.Roof, ViewName.RoofUp));
+                var layer = dxf.Layers.Add(new Layer("ExternalElements") { Color = new AciColor(7) });
+                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Hole, Lab.AD, Lab.FC, Lab.INTK, Lab.Connector }, false, true, layer, textLayer, Views.Except(ViewName.Frame, ViewName.FrameUp, ViewName.Roof, ViewName.RoofUp), backgroundLayer);
 
-                var layerDim = dxf.Layers.Add(new Layer("ExternalElements_dimensions") { Color = AciColor.Cyan });
-                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Hole, Lab.AD, Lab.FC, Lab.INTK, Lab.Connector, Lab.InsideConnector }, true, false, layerDim, textLayer, Views.Except(ViewName.Frame, ViewName.FrameUp, ViewName.Roof, ViewName.RoofUp));
+                var layerDim = dxf.Layers.Add(new Layer("ExternalElements_dimensions") { Color = new AciColor(7) });
+                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Hole, Lab.AD, Lab.FC, Lab.INTK, Lab.Connector, Lab.InsideConnector }, true, false, layerDim, textLayer, Views.Except(ViewName.Frame, ViewName.FrameUp, ViewName.Roof, ViewName.RoofUp), backgroundLayer);
             }
 
             void GeneratePorthole()
             {
-                var layer = dxf.Layers.Add(new Layer("Porthole") { Color = AciColor.Magenta });
-                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Porthole }, false, true, layer, textLayer, Views.Except(ViewName.Frame, ViewName.Roof));
+                var layer = dxf.Layers.Add(new Layer("Porthole") { Color = new AciColor(7) });
+                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Porthole }, false, true, layer, textLayer, Views.Except(ViewName.Frame, ViewName.Roof), backgroundLayer);
             }
 
             void GenerateRips()
             {
-                var layer = dxf.Layers.Add(new Layer("Rips") { Color = AciColor.Magenta });
-                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Hatch }, false, true, layer, textLayer, Views.Select(ViewName.Up, ViewName.UpUp, ViewName.Down, ViewName.DownUp));
+                var layer = dxf.Layers.Add(new Layer("Rips") { Color = new AciColor(7) });
+                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Hatch }, false, true, layer, textLayer, Views.Select(ViewName.Up, ViewName.UpUp, ViewName.Down, ViewName.DownUp), backgroundLayer);
             }
 
             void GeneratePortholeDimension()
             {
-                var layerDim = dxf.Layers.Add(new Layer("Porthole_dimensions") { Color = AciColor.Magenta, IsVisible = false });
-                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Porthole }, true, false, layerDim, textLayer, Views.Except(ViewName.Frame, ViewName.Roof));
+                var layerDim = dxf.Layers.Add(new Layer("Porthole_dimensions") { Color = new AciColor(7), IsVisible = false });
+                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Porthole }, true, false, layerDim, textLayer, Views.Except(ViewName.Frame, ViewName.Roof), backgroundLayer);
             }
 
             void GenerateSwitchbox()
             {
-                var layer = dxf.Layers.Add(new Layer("Switchbox") { Color = new AciColor(4) });
-                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Switchbox }, false, true, layer, textLayer, Views.Select(ViewName.Operational, ViewName.Back));
+                var layer = dxf.Layers.Add(new Layer("Switchbox") { Color = new AciColor(7) });
+                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Switchbox }, false, true, layer, textLayer, Views.Select(ViewName.Operational, ViewName.Back), backgroundLayer);
             }
 
             void GenerateSwitchboxDimension()
             {
-                var layerDim = dxf.Layers.Add(new Layer("Switchbox_dimensions") { Color = new AciColor(4) });
-                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Switchbox }, true, false, layerDim, textLayer, Views.Select(ViewName.Operational, ViewName.Back));
+                var layerDim = dxf.Layers.Add(new Layer("Switchbox_dimensions") { Color = new AciColor(7) });
+                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Switchbox }, true, false, layerDim, textLayer, Views.Select(ViewName.Operational, ViewName.Back), backgroundLayer);
             }
 
             void GenerateFrame()
             {
-                var layerFrame = dxf.Layers.Add(new Layer("Frame") { Color = AciColor.Blue });
-                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Frame, Lab.FrameUp }, false, true, layerFrame, textLayer, Views.Except(ViewName.Up, ViewName.Down, ViewName.Roof));
+                var layerFrame = dxf.Layers.Add(new Layer("Frame") { Color = new AciColor(7) });
+                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Frame, Lab.FrameUp }, false, true, layerFrame, textLayer, Views.Except(ViewName.Up, ViewName.Down, ViewName.Roof), backgroundLayer);
             }
 
             void GenerateFrameDimensions()
             {
                 elements = elements.OrderByDescending(e => e.x2).ThenBy(e => e.z2).ToList();
-                var layerFrameDim = dxf.Layers.Add(new Layer("Frame_dimensions") { Color = AciColor.Blue });
-                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Frame }, true, false, layerFrameDim, textLayer, Views.Except(ViewName.Up, ViewName.Down, ViewName.Roof));
+                var layerFrameDim = dxf.Layers.Add(new Layer("Frame_dimensions") { Color = new AciColor(7) });
+                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Frame }, true, false, layerFrameDim, textLayer, Views.Except(ViewName.Up, ViewName.Down, ViewName.Roof), backgroundLayer);
             }
 
             void GenerateRoof()
             {
-                var layerRoof = dxf.Layers.Add(new Layer("Roof") { Color = new AciColor(9) });
-                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Roof }, false, true, layerRoof, textLayer, Views.Select(ViewName.Roof, ViewName.RoofUp));
+                var layerRoof = dxf.Layers.Add(new Layer("Roof") { Color = new AciColor(7) });
+                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Roof }, false, true, layerRoof, textLayer, Views.Select(ViewName.Roof, ViewName.RoofUp), backgroundLayer);
             }
 
             void GenerateRoofDimensions()
             {
-                var layerRoofDim = dxf.Layers.Add(new Layer("Roof_dimensions") { Color = new AciColor(9) });
-                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Roof }, true, false, layerRoofDim, textLayer, Views.Select(ViewName.Roof, ViewName.RoofUp));
+                var layerRoofDim = dxf.Layers.Add(new Layer("Roof_dimensions") { Color = new AciColor(7) });
+                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Roof }, true, false, layerRoofDim, textLayer, Views.Select(ViewName.Roof, ViewName.RoofUp), backgroundLayer);
             }
 
             void GenerateSteamGenerator(string[] exceptViews)
             {
-                var layerRoof = dxf.Layers.Add(new Layer("SteamGenerator") { Color = new AciColor(9) });
-                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.SteamGenerator }, false, true, layerRoof, textLayer, Views.Except(exceptViews));
+                var layerRoof = dxf.Layers.Add(new Layer("SteamGenerator") { Color = new AciColor(7) });
+                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.SteamGenerator }, false, true, layerRoof, textLayer, Views.Except(exceptViews), backgroundLayer);
             }
 
             void GenerateSteamGeneratorDimensions()
             {
-                var layerRoofDim = dxf.Layers.Add(new Layer("SteamGenerator_dimensions") { Color = new AciColor(9) });
-                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.SteamGenerator }, true, false, layerRoofDim, textLayer, Views.Select(ViewName.Roof, ViewName.RoofUp));
+                var layerRoofDim = dxf.Layers.Add(new Layer("SteamGenerator_dimensions") { Color = new AciColor(7) });
+                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.SteamGenerator }, true, false, layerRoofDim, textLayer, Views.Select(ViewName.Roof, ViewName.RoofUp), backgroundLayer);
             }
 
-            MapElementsToViews(elements, isExtended);            
-            PrepareElementsToMode(elements, isExtended);            
+            MapElementsToViews(elements, isExtended);
+            PrepareElementsToMode(elements, isExtended);
             //IconRotation_CorrectXY(elements);
             if (!isExtended)
             {
@@ -1249,7 +1250,7 @@ namespace Klimor.WebApi.DXF
                 Views.DownUp.Visibility = false;
                 Views.FrameUp.Visibility = false;
                 Views.RoofUp.Visibility = false;
-            }            
+            }
 
             // przypisywanie DownUp i UpUp, wybór górnych i dolnych kanałów
             if (isExtended)
@@ -1278,20 +1279,20 @@ namespace Klimor.WebApi.DXF
             AssignExternalElementsToFunctions(elements);
 
             // ustawianie widoczności elementów (kolejność ma znaczenie)
-            SetElementsVisibility(elements, [Lab.Frame, Lab.FrameUp], Views.Except(ViewName.Frame) , null, false);
+            SetElementsVisibility(elements, [Lab.Frame, Lab.FrameUp], Views.Except(ViewName.Frame), null, false);
             SetElementsVisibility(elements, [Lab.Frame], Views.Select(ViewName.RightFront), true, true);
             //HideDimensions(elements);
             // widoczność wymiarów blokow
             //SetElementsVisibility(elements, [Lab.Block], Views.Select(ViewName.Operational), true, true);
             Connector_AddInsideCircle(elements);
-            RepositioningOnGridWhenViewsHide(norm, grid);            
+            RepositioningOnGridWhenViewsHide(norm, grid);
             if (true)
             {
                 // jeśli jest generator pary na froncie, to rysujemy go najpierw na operational, Bloki, potem SteamGen na back
                 var steamGenOnFront = elements.Any(e => e.type == "SteamGenerator_Front");
                 if (steamGenOnFront)
                 {
-                    GenerateSteamGenerator([ViewName.Frame, ViewName.Roof, ViewName.Operational]);                    
+                    GenerateSteamGenerator([ViewName.Frame, ViewName.Roof, ViewName.Operational]);
                     DrawBlocks();
                     DrawBlockDimensions();
                     GenerateSteamGenerator([ViewName.Frame, ViewName.Roof, ViewName.Back]);
@@ -1305,7 +1306,7 @@ namespace Klimor.WebApi.DXF
                     GenerateSteamGenerator([ViewName.Frame, ViewName.Roof, ViewName.Operational]);
                     GenerateSteamGeneratorDimensions();
                 }
-                
+
                 DrawFunctionsWithIcons(isExtended);
                 DrawFunctionsDimensions();
                 DrawExternalElements();
@@ -1317,8 +1318,10 @@ namespace Klimor.WebApi.DXF
                 GenerateRoofDimensions();
                 GeneratePorthole();
                 GeneratePortholeDimension();
-                GenerateRips();                
-            }            
+                GenerateRips();
+                GenerateSwitchbox();
+                GenerateSwitchboxDimension();
+            }
 
             // budowanie listy dla znaczników płyt, aby walle Operational i Back były widoczne na Up i Down
             //ShowHatchesOnUpDown(elements);
@@ -1355,7 +1358,7 @@ namespace Klimor.WebApi.DXF
             //DrawTable(dxf);
 
             // usuwanie duplikatów wymiarów
-            DedupLinearDimensions(dxf);            
+            DedupLinearDimensions(dxf);
             dxf.Save(fileOutput);
             foreach (var vw in Views.All)
             {
@@ -1582,7 +1585,7 @@ namespace Klimor.WebApi.DXF
                         {
                             views[ViewName.Up] = (1, 4);
                             views[ViewName.Roof] = (1, 3);
-                        }                        
+                        }
                     }
                     if (Views.DownUp.Visibility == false)
                     {
@@ -1607,7 +1610,7 @@ namespace Klimor.WebApi.DXF
                     break;
 
                 case Norm.PROD_EXTENDED:
-                    
+
                     break;
                 default:
                     break;
@@ -1655,7 +1658,7 @@ namespace Klimor.WebApi.DXF
                         elements.Remove(el);
                     }
                 }
-            }            
+            }
         }
 
         private void PrepareLayersToMode(DxfDocument dxf, bool isExtended)
@@ -1671,7 +1674,7 @@ namespace Klimor.WebApi.DXF
                         _ => layer.IsVisible
                     };
                 }
-            }            
+            }
         }
 
 
