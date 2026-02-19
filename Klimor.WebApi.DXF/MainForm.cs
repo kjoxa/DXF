@@ -1286,27 +1286,28 @@ namespace Klimor.WebApi.DXF
             //SetElementsVisibility(elements, [Lab.Block], Views.Select(ViewName.Operational), true, true);
             Connector_AddInsideCircle(elements);
             RepositioningOnGridWhenViewsHide(norm, grid);
-            if (true)
-            {
-                // jeśli jest generator pary na froncie, to rysujemy go najpierw na operational, Bloki, potem SteamGen na back
-                var steamGenOnFront = elements.Any(e => e.type == "SteamGenerator_Front");
-                if (steamGenOnFront)
-                {
-                    GenerateSteamGenerator([ViewName.Frame, ViewName.Roof, ViewName.Operational]);
-                    DrawBlocks();
-                    DrawBlockDimensions();
-                    GenerateSteamGenerator([ViewName.Frame, ViewName.Roof, ViewName.Back]);
-                    GenerateSteamGeneratorDimensions();
-                }
-                else
-                {
-                    GenerateSteamGenerator([ViewName.Frame, ViewName.Roof, ViewName.Back]);
-                    DrawBlocks();
-                    DrawBlockDimensions();
-                    GenerateSteamGenerator([ViewName.Frame, ViewName.Roof, ViewName.Operational]);
-                    GenerateSteamGeneratorDimensions();
-                }
 
+            // jeśli jest generator pary na froncie, to rysujemy go najpierw na operational, Bloki, potem SteamGen na back
+            var steamGenOnFront = elements.Any(e => e.type == "SteamGenerator_Front");
+            if (steamGenOnFront)
+            {
+                GenerateSteamGenerator([ViewName.Frame, ViewName.Roof, ViewName.Operational]);
+                DrawBlocks();
+                DrawBlockDimensions();
+                GenerateSteamGenerator([ViewName.Frame, ViewName.Roof, ViewName.Back]);
+                GenerateSteamGeneratorDimensions();
+            }
+            else
+            {
+                GenerateSteamGenerator([ViewName.Frame, ViewName.Roof, ViewName.Back]);
+                DrawBlocks();
+                DrawBlockDimensions();
+                GenerateSteamGenerator([ViewName.Frame, ViewName.Roof, ViewName.Operational]);
+                GenerateSteamGeneratorDimensions();
+            }
+
+            if (isExtended)
+            {
                 DrawFunctionsWithIcons(isExtended);
                 DrawFunctionsDimensions();
                 DrawExternalElements();
@@ -1317,11 +1318,27 @@ namespace Klimor.WebApi.DXF
                 GenerateRoof();
                 GenerateRoofDimensions();
                 GeneratePorthole();
-                GeneratePortholeDimension();
+                //GeneratePortholeDimension();
                 GenerateRips();
                 GenerateSwitchbox();
                 GenerateSwitchboxDimension();
             }
+            else
+            {
+                DrawFunctionsWithIcons(isExtended);
+                //DrawFunctionsDimensions();
+                DrawExternalElements();
+                //GenerateFrame();
+                //GenerateFrameDimensions();
+                //GenerateRoof();
+                //GenerateRoofDimensions();
+                GeneratePorthole();
+                //GeneratePortholeDimension();
+                //GenerateRips();
+                GenerateSwitchbox();
+                //GenerateSwitchboxDimension();
+            }
+            
 
             // budowanie listy dla znaczników płyt, aby walle Operational i Back były widoczne na Up i Down
             //ShowHatchesOnUpDown(elements);
