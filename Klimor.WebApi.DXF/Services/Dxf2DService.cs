@@ -46,7 +46,7 @@ namespace Klimor.WebApi.DXF.Services
     public class Dxf2DService
     {
         ViewsList Views;
-        public static bool isNetCoreService = false;
+        public static bool isNetCoreService = false;        
         public Dxf2DService(ViewsList vw)
         {
             Views = vw;
@@ -223,6 +223,117 @@ namespace Klimor.WebApi.DXF.Services
             }
 
             dxf.Entities.Add(fill);
+        }
+
+        void CreateArrow(DxfDocument dxf, Layer layer, string airPath, string airPathPosition, string direction, bool isLeftSide, double x, double y, Coordinates el, string viewName)
+        {
+            var arrLayer = dxf.Layers.Add(new Layer("Arrows") { Color = new AciColor(7) });            
+            var style = new TextStyle("ArialBold", "arialbd.ttf");
+
+            var arrowDirection = airPathPosition switch
+            {
+                "Inlet" when isLeftSide => ArrowDirection.Right,
+                "Inlet" when !isLeftSide => ArrowDirection.Left,
+                "Outlet" when isLeftSide => ArrowDirection.Left,
+                "Outlet" when !isLeftSide => ArrowDirection.Right,
+                _ => ArrowDirection.Right
+            };
+
+            var label = airPath switch
+            {
+                "Supply" when airPathPosition == "Inlet" => "ODA",
+                "Supply" when airPathPosition == "Outlet" => "SUP",
+                "Exhaust" when airPathPosition == "Inlet" => "ETA",
+                "Exhaust" when airPathPosition == "Outlet" => "EHA",
+            };
+
+            switch (direction)
+            {
+                case "Front" when viewName == ViewName.Operational:
+                    x = isLeftSide ? x - 450 : x + 450;
+                    y = direction switch
+                    {
+                        "Front" => y + (el.y2 - el.y1) / 2,
+                        _ => y
+                    };
+
+                    ArrowService.AddArrow(
+                        dxf,
+                        anchor: new Vector2(x, y),
+                        direction: arrowDirection,
+                        label: label,
+                        arrowSize: 150,
+                        padding: 20,
+                        outlineColor: airPath == "Supply" ? AciColor.Blue : AciColor.Red,
+                        layer: arrLayer,
+                        filled: true,
+                        textStyle: style
+                    );
+                    break;
+
+                case "Front" when viewName == ViewName.Up:
+                    x = isLeftSide ? x - 450 : x + 450;
+                    if (airPath == "Supply")
+                    {
+                        y += 350;
+                    }
+                    else
+                    {
+                        y += 100;
+                    }
+
+                    ArrowService.AddArrow(
+                        dxf,
+                        anchor: new Vector2(x, y),
+                        direction: arrowDirection,
+                        label: label,
+                        arrowSize: 150,
+                        padding: 20,
+                        outlineColor: airPath == "Supply" ? AciColor.Blue : AciColor.Red,
+                        layer: arrLayer,
+                        filled: true,
+                        textStyle: style
+                    );
+                    break;
+
+                case "Back" when viewName == ViewName.Up:                    
+                    //x = isLeftSide ? x - 450 : x + 450;
+
+                    switch (airPath)
+                    {
+                        case "Supply" when viewName == ViewName.Up:
+                            arrowDirection = airPathPosition == "Inlet" ? ArrowDirection.Down : ArrowDirection.Up;
+                            x = el.x1 + (el.x2 - el.x1) / 2 + 100;
+                            y += 250;                            
+                            break;
+
+                        case "Exhaust" when viewName == ViewName.Up:
+                            arrowDirection = airPathPosition == "Inlet" ? ArrowDirection.Down : ArrowDirection.Up;
+                            x = el.x1 + (el.x2 - el.x1) / 2 - 100;
+                            y += 250;
+                            break;
+
+                        default:
+                            break;
+                    }                    
+
+                    ArrowService.AddArrow(
+                        dxf,
+                        anchor: new Vector2(x, y),
+                        direction: arrowDirection,
+                        label: label,
+                        arrowSize: 150,
+                        padding: 20,
+                        outlineColor: airPath == "Supply" ? AciColor.Blue : AciColor.Red,
+                        layer: arrLayer,
+                        filled: true,
+                        textStyle: style
+                    );
+                    break;
+
+                default:
+                    break;
+            }            
         }
 
         public void GenerateView(DxfDocument dxf, List<Coordinates> elements, List<string> elementsGroup, bool createDimension, bool createShape, Layer layer, Layer textLayer, IEnumerable<ViewElement> views, Layer backgroundLayer)
@@ -481,6 +592,20 @@ namespace Klimor.WebApi.DXF.Services
                                 }
                             }
 
+                            if (el.label == Lab.Hole && view.Name is (ViewName.Operational or ViewName.Up))
+                            {                                
+                                CreateArrow(dxf, 
+                                    layer, 
+                                    el.additionalInfos?.airPath ?? "",            // airPath
+                                    el.additionalInfos?.airPathPosition ?? "",    // airPathPosition
+                                    el.additionalInfos?.direction ?? "",          // direction
+                                    el.additionalInfos?.isLeftSide ?? false,      // isLeftSide
+                                    outer2D[0].X,                  // x
+                                    outer2D[0].Y,                  // y
+                                    el,
+                                    view.Name);                                          // element
+                            }
+
                             // dodawanie konektora
                             if ((el.label == Lab.Connector || el.type == Lab.Porthole) && (view.Name == ViewName.Operational || view.Name == ViewName.Back))
                             {
@@ -554,7 +679,7 @@ namespace Klimor.WebApi.DXF.Services
                                 (view.Name is (ViewName.LeftFront or ViewName.RightFront));
 
                             if (el.label == view.Name ||
-                               (view.Name is (ViewName.Down or ViewName.DownUp) && el.label is (Lab.Down_Div or Lab.Down_DrainTray or Lab.Down_Wall)) ||
+                               (view.Name is (ViewName.Down or ViewName.DownUp) && el.label is (Lab.Down_Div or Lab.Down_DrainTray or Lab.Down_Wall or Lab.Middle_Wall)) ||
                                (view.Name is (ViewName.Up) && el.label is Lab.Wall) ||
                                (view.Name is (ViewName.UpUp) && el.label is Lab.Up) ||
                                (externalElementShow && el.View == view.Name) ||
@@ -793,11 +918,18 @@ namespace Klimor.WebApi.DXF.Services
                             }
 
                             // widok down
-                            if ((el.label == Lab.Down_Wall || el.label == Lab.Down_DrainTray) && view.Name == ViewName.Down && notForBlock)
+                            if ((el.label is (Lab.Down_Wall or Lab.Down_DrainTray)) && view.Name is ViewName.Down && notForBlock)
                             {
                                 widthDim = new LinearDimension(wStart, wEnd, (el.z2 - el.z1) / 2, 0.0, dimStyle);
                                 addDim = true;
-                            }                           
+                            }
+
+                            // widok downUp
+                            if (el.label is Lab.Middle_Wall && view.Name is ViewName.DownUp)
+                            {
+                                widthDim = new LinearDimension(wStart, wEnd, (el.z2 - el.z1) / 2, 0.0, dimStyle);
+                                addDim = true;
+                            }
                         }
 
                         if (el.View == view.Name)
@@ -880,11 +1012,18 @@ namespace Klimor.WebApi.DXF.Services
                             }
 
                             // widok down
-                            if ((el.label == Lab.Down || el.label == Lab.Down_DrainTray || el.label == Lab.Down_Wall) && view.Name == Lab.Down && notForBlock)
+                            if ((el.label is (Lab.Down or Lab.Down_DrainTray or Lab.Down_Wall)) && view.Name is ViewName.Down && notForBlock)
                             {
                                 heightDim = new LinearDimension(hStart, hEnd, dimOffset + ((el.x2 - el.x1) / 3), 90.0, dimStyle);
                                 addDim = true;
-                            }                            
+                            }
+
+                            // widok downUp
+                            if (el.label is Lab.Middle_Wall && view.Name is ViewName.DownUp)
+                            {
+                                heightDim = new LinearDimension(hStart, hEnd, dimOffset + ((el.x2 - el.x1) / 3), 90.0, dimStyle);
+                                addDim = true;
+                            }
                         }
 
                         if (el.View == view.Name)

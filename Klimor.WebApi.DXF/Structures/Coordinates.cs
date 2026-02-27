@@ -64,5 +64,7 @@ namespace Klimor.WebApi.DXF.Structures
         public string direction { get; set; }
 
         public string airPathPosition { get; set; }
+
+        public bool isLeftSide { get; set; }
     }
 }

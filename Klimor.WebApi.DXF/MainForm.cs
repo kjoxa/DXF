@@ -10,6 +10,7 @@ using netDxf.Header;
 using netDxf.Objects;
 using netDxf.Tables;
 using System.Diagnostics;
+using System.Reflection.Emit;
 using System.Security.Cryptography;
 using System.Security.Cryptography.Xml;
 using System.Text.Json;
@@ -539,7 +540,7 @@ namespace Klimor.WebApi.DXF
         {
             // wyciągamy downy
             Func<Coordinates, bool> downCondition = e =>
-                    (e.label is (Lab.Down_Wall or Lab.Down_DrainTray or Lab.Down_Div)) &&
+                    (e.label is (Lab.Down_Wall or Lab.Down_DrainTray or Lab.Down_Div or Lab.Middle_Wall)) &&
                     (e.type is (Lab.Wall or Lab.Down_DrainTray or Lab.DrainTray or Lab.Down_Div) ||
                      e.View == ViewName.Down);
 
@@ -556,8 +557,7 @@ namespace Klimor.WebApi.DXF
                 .ToList();
 
             if (levels.Count > 1)
-            {
-                // zamiast levels.Count - 1 => C# 8 [^1]                
+            {          
                 var topLevel = levels[^1]; // najwyższy Y1
 
                 // bierzemy tylko ściany z najwyższego poziomu
@@ -567,6 +567,17 @@ namespace Klimor.WebApi.DXF
 
                 elements.RemoveAll(e => e.y1 == topLevel && e.View == ViewName.Down && downCondition(e));
                 elements.RemoveAll(e => e.y1 != topLevel && e.View == ViewName.DownUp && downCondition(e));
+                // usuwanie DownUp
+                if (elements.Any(e => e.label == Lab.Middle_Wall))
+                {                    
+                    var downUpClear = elements
+                                  .Where(e => e.y1 == levels[1] &&
+                                              e.View == ViewName.DownUp &&
+                                              downCondition(e)).ToList();
+
+                elements.RemoveAll(e => !downUpClear.Contains(e) && e.View == ViewName.DownUp);
+                }                
+                Views.DownUp.Visibility = true;
             }
 
             // usuwanie duplikatów Hatchy na Up
@@ -738,7 +749,7 @@ namespace Klimor.WebApi.DXF
                         addElement(vw, el, 0, null);
                     }
 
-                    if (el.label is (Lab.Down_Wall or Lab.Down_Div or Lab.Down_DrainTray) && (el.type is Lab.Wall or Lab.Div or Lab.Down_DrainTray or Lab.DrainTray) && vw.Name is not (ViewName.Up or ViewName.UpUp))
+                    if (el.label is (Lab.Down_Wall or Lab.Middle_Wall or Lab.Down_Div or Lab.Down_DrainTray) && (el.type is Lab.Wall or Lab.Div or Lab.Down_DrainTray or Lab.DrainTray) && vw.Name is not (ViewName.Up or ViewName.UpUp))
                     {
                         addElement(vw, el, 0, null);
                     }
@@ -798,11 +809,11 @@ namespace Klimor.WebApi.DXF
             elements.RemoveAll(e => string.IsNullOrWhiteSpace(e.View) && e.label == Lab.Up && (e.type == Lab.Wall || e.type == Lab.Div));
             elements.RemoveAll(e => string.IsNullOrWhiteSpace(e.View) && e.label is (Lab.Down_Wall or Lab.Down_Div or Lab.Down_DrainTray or Lab.Up) && (e.type is Lab.Wall or Lab.Div or Lab.Down_DrainTray or Lab.Down_DrainTray));
             elements.RemoveAll(e => string.IsNullOrWhiteSpace(e.View) && e.label is (Lab.Frame or Lab.Roof));
-            elements.RemoveAll(e => e.type is (Lab.Div or Lab.Wall) && e.label != e.View && e.label is not (Lab.Down_Wall or Lab.Down_Div or Lab.Down_DrainTray or Lab.Up) && e.label != Lab.Hatch);
+            elements.RemoveAll(e => e.type is (Lab.Div or Lab.Wall) && e.label != e.View && e.label is not (Lab.Down_Wall or Lab.Middle_Wall or Lab.Down_Div or Lab.Down_DrainTray or Lab.Up) && e.label != Lab.Hatch);
             elements.RemoveAll(e => e.label is (Lab.Frame or Lab.Roof) && e.View is (ViewName.Down or ViewName.DownUp or ViewName.Up or ViewName.UpUp));
             elements.RemoveAll(e => e.label is Lab.Roof && e.View is not (ViewName.Roof or ViewName.RoofUp));
             elements.RemoveAll(e => e.label is Lab.Frame && e.View is (ViewName.Roof or ViewName.RoofUp));
-            elements.RemoveAll(e => e.label is (ViewName.Up or Lab.Down_Wall) && e.View is (ViewName.LeftFront or ViewName.RightFront));
+            elements.RemoveAll(e => e.label is (ViewName.Up or Lab.Down_Wall or Lab.Middle_Wall) && e.View is (ViewName.LeftFront or ViewName.RightFront));
 
             // do weryfikacji
             elements.RemoveAll(e => e.label is (Lab.Frame or Lab.FrameUp) && e.View is (ViewName.Down or ViewName.DownUp or ViewName.Up or ViewName.UpUp));
@@ -957,7 +968,7 @@ namespace Klimor.WebApi.DXF
                 //    .Where(e => BelongsToBlock(e, blockDown, maxOffset_Z, maxOffset_Y))
                 //    .ToList();
             }
-        }
+        }        
 
         private void Generate2D(List<Coordinates> elements, string fileOutput, bool isExtended, Norm norm)
         {
@@ -1017,13 +1028,13 @@ namespace Klimor.WebApi.DXF
             void GenerateWalls()
             {
                 var layer = dxf.Layers.Add(new Layer("Walls") { Color = new AciColor(7) });
-                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Operational, Lab.Up, Lab.Down, Lab.Down_DrainTray, Lab.Down_Wall, Lab.Back, ViewName.LeftFront, ViewName.RightFront }, false, true, layer, textLayer, Views.Except(ViewName.Frame, ViewName.Roof), backgroundLayer);
+                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Operational, Lab.Up, Lab.Down, Lab.Down_DrainTray, Lab.Down_Wall, Lab.Middle_Wall, Lab.Back, ViewName.LeftFront, ViewName.RightFront }, false, true, layer, textLayer, Views.Except(ViewName.Frame, ViewName.Roof), backgroundLayer);
             }
 
             void GenerateWallsDimensions()
             {
                 var layer = dxf.Layers.Add(new Layer("Walls_dimension") { Color = new AciColor(7) });
-                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Operational, Lab.Up, Lab.Down, Lab.Down_DrainTray, Lab.Down_Wall, Lab.Back }, true, false, layer, textLayer, Views.Except(ViewName.Frame, ViewName.Roof), backgroundLayer);
+                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Operational, Lab.Up, Lab.Down, Lab.Down_DrainTray, Lab.Down_Wall, Lab.Middle_Wall, Lab.Back }, true, false, layer, textLayer, Views.Except(ViewName.Frame, ViewName.Roof), backgroundLayer);
             }
 
             void DrawBlockDimensions()
@@ -1337,8 +1348,20 @@ namespace Klimor.WebApi.DXF
                 //GenerateRips();
                 GenerateSwitchbox();
                 //GenerateSwitchboxDimension();
-            }
-            
+            }            
+
+            //ArrowService.AddArrow(
+            //    dxf,
+            //    anchor: new Vector2(0, 1970),
+            //    direction: ArrowDirection.Right,
+            //    label: "ETA",
+            //    arrowSize: 120,
+            //    padding: 20,
+            //    outlineColor: AciColor.Red,
+            //    layer: arrowLayer,
+            //    filled: false,
+            //    textStyle: style
+            //);
 
             // budowanie listy dla znaczników płyt, aby walle Operational i Back były widoczne na Up i Down
             //ShowHatchesOnUpDown(elements);
