@@ -824,7 +824,7 @@ namespace Klimor.WebApi.DXF.Services
 
                         /* SZTUCZNE WYMIARY i wyjątki */
                         {
-                            if (el.View is (ViewName.Down or ViewName.DownUp) && el.label == Lab.Connector)
+                            if (el.View is (ViewName.Down or ViewName.DownUp or ViewName.Up or ViewName.UpUp) && el.label == Lab.Connector)
                             {
                                 continue;
                             }
