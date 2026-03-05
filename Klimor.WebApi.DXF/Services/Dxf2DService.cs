@@ -115,7 +115,7 @@ namespace Klimor.WebApi.DXF.Services
                     Rotation = 0,
                     Color = new AciColor(7),
                     WidthFactor = 1.2,
-                    Style = new TextStyle("ArialBold", "arialbd.ttf")
+                    Style = LabelTextStyles.ArialBold
                 };
                 dxf.Entities.Add(numberUp);
             }
@@ -129,7 +129,7 @@ namespace Klimor.WebApi.DXF.Services
                     Rotation = 0,
                     Color = new AciColor(7),
                     WidthFactor = 1.2,
-                    Style = new TextStyle("ArialBold", "arialbd.ttf")
+                    Style = LabelTextStyles.ArialBold
                 };
                 dxf.Entities.Add(numberDown);
             }
@@ -143,7 +143,7 @@ namespace Klimor.WebApi.DXF.Services
                     Rotation = 0,
                     Color = new AciColor(7),
                     WidthFactor = 1.2,
-                    Style = new TextStyle("ArialBold", "arialbd.ttf")
+                    Style = LabelTextStyles.ArialBold
                 };
                 dxf.Entities.Add(numberUp);
             }
@@ -157,7 +157,7 @@ namespace Klimor.WebApi.DXF.Services
                     Rotation = 0,
                     Color = new AciColor(7),
                     WidthFactor = 1.2,
-                    Style = new TextStyle("ArialBold", "arialbd.ttf")
+                    Style = LabelTextStyles.ArialBold
                 };
                 dxf.Entities.Add(numberUp);
             }
@@ -172,7 +172,7 @@ namespace Klimor.WebApi.DXF.Services
                     Rotation = 0,
                     Color = new AciColor(7),
                     WidthFactor = 1.2,
-                    Style = new TextStyle("ArialBold", "arialbd.ttf")
+                    Style = LabelTextStyles.ArialBold
                 };
                 dxf.Entities.Add(numberUp);
             }
@@ -186,7 +186,7 @@ namespace Klimor.WebApi.DXF.Services
                     Rotation = 0,
                     Color = new AciColor(7),
                     WidthFactor = 1.2,
-                    Style = new TextStyle("ArialBold", "arialbd.ttf")
+                    Style = LabelTextStyles.ArialBold
                 };
                 dxf.Entities.Add(numberUp);
             }
@@ -228,7 +228,7 @@ namespace Klimor.WebApi.DXF.Services
         void CreateArrow(DxfDocument dxf, Layer layer, string airPath, string airPathPosition, string direction, bool isLeftSide, double x, double y, Coordinates el, string viewName)
         {
             var arrLayer = dxf.Layers.Add(new Layer("Arrows") { Color = new AciColor(7) });            
-            var style = new TextStyle("ArialBold", "arialbd.ttf");
+            var style = LabelTextStyles.ArialBold;
 
             var arrowDirection = airPathPosition switch
             {
@@ -510,7 +510,7 @@ namespace Klimor.WebApi.DXF.Services
                                             var text = new Text(el.additionalInfos.blockNumber.ToString(),
                                             new Vector3(c.X + 2 * profileOffset, c.Y + 2 * profileOffset, 0), 70);
 
-                                            text.Style = new TextStyle("ArialBold", "arialbd.ttf");
+                                            text.Style = LabelTextStyles.ArialBold;
                                             text.Layer = layer;
                                             text.Color = new AciColor(7);
                                             dxf.Entities.Add(text);
@@ -778,7 +778,7 @@ namespace Klimor.WebApi.DXF.Services
                                                     var text = new Text(wallDescription,
                                                     new Vector3(c.X - ((el.x2 - el.x1) / 2) - profileOffset, c.Y + 2 * profileOffset + externalElementsYOffset, 0), 20);
 
-                                                    text.Style = new TextStyle("ArialBold", "arialbd.ttf");
+                                                    text.Style = LabelTextStyles.ArialBold;
                                                     text.Layer = layer;
                                                     text.Color = new AciColor(7);
                                                     dxf.Entities.Add(text);
@@ -1176,10 +1176,64 @@ namespace Klimor.WebApi.DXF.Services
                 Color = new AciColor(7),
                 Rotation = 0,
                 WidthFactor = 1.2,
-                Style = new TextStyle("ArialBold", "arialbd.ttf")
+                Style = LabelTextStyles.ArialBold
             };
+            text.Position = new Vector3(midX, yInProfile - 27, 0);
+            text.Alignment = TextAlignment.BottomCenter;
 
             dxf.Entities.Add(text);
         }
+
+        public void AddBigOneWatermark(DxfDocument dxf, Layer textLayer, IEnumerable<Coordinates> allElements, ViewElement view, string textValue, bool isEvoH)
+        {
+            if (isEvoH) view = Views.Up;
+            var blocks = allElements.Where(e => e.label == Lab.Block).ToList();
+            if (blocks.Count == 0) return;
+
+            var xMin = blocks.Min(b => b.x1);
+            var xMax = blocks.Max(b => b.x2);
+            var yMin = blocks.Min(b => b.y1);
+            var yMax = blocks.Max(b => b.y2);
+            var zMin = blocks.Min(b => b.z1);
+            var zMax = blocks.Max(b => b.z2);
+
+            var assembly = new Coordinates
+            {
+                x1 = xMin,
+                x2 = xMax,
+                y1 = yMin,
+                y2 = yMax,
+                z1 = zMin,
+                z2 = zMax,
+                label = Lab.Block
+            };
+
+            var rect2D = GenerateViewVertices(assembly, view.Name, globalXMin, globalXMax, globalYMin, globalYMax, globalZMin, globalZMax);
+
+            // offset widoku
+            rect2D = rect2D.Select(p => new Vector2(p.X + view.XOffset, p.Y + view.YOffset)).ToList();
+
+            // wyliczamy środek po X oraz „górę” prostokąta po Y, a następnie schodzimy o połowę grubości profilu
+            double leftX = rect2D.Min(p => p.X);
+            double rightX = rect2D.Max(p => p.X);
+            double topY = rect2D.Max(p => p.Y);
+
+            double midX = (leftX + rightX) / 2.0;
+            double yInProfile = topY - (profileOffset / 2.0);
+
+            var textHeight = (yMax - yMin) / 3;
+            var text = new Text(textValue, new Vector3(midX, yInProfile + 100, 0), textHeight)
+            {
+                Layer = textLayer,
+                Color = new AciColor(7),
+                Rotation = 0,
+                WidthFactor = 1.2,
+                Style = LabelTextStyles.ArialBold
+            };
+            text.Position = new Vector3(midX, yInProfile + 100, 0);
+            text.Alignment = TextAlignment.BottomCenter;
+
+            dxf.Entities.Add(text);
+        }        
     }
 }

@@ -2,6 +2,7 @@
 using Klimor.WebApi.DXF.Development;
 using Klimor.WebApi.DXF.Services;
 using Klimor.WebApi.DXF.Structures;
+using Microsoft.Win32;
 using netDxf;
 using netDxf.Blocks;
 using netDxf.Collections;
@@ -968,12 +969,40 @@ namespace Klimor.WebApi.DXF
                 //    .Where(e => BelongsToBlock(e, blockDown, maxOffset_Z, maxOffset_Y))
                 //    .ToList();
             }
-        }        
+        }
+
+        private bool IsEVO_H(List<Coordinates>? elements)
+        {
+            if (elements == null || elements.Count == 0)
+                return false;
+
+            var blocks = elements
+                .Where(e => e != null && e.label == Lab.Block)
+                .ToList();
+
+            if (blocks.Count < 2)
+                return false;
+
+            var recovery = blocks
+                .FirstOrDefault(b => b.PositionUp > 0 && b.PositionDown > 0);
+
+            if (recovery == null)
+                return false;
+
+            var normalBlock = blocks
+                .FirstOrDefault(b => !ReferenceEquals(b, recovery));
+
+            if (normalBlock == null)
+                return false;
+
+            return recovery.z2 > normalBlock.z2 + 200;
+        }
 
         private void Generate2D(List<Coordinates> elements, string fileOutput, bool isExtended, Norm norm)
         {
             dxf2D.isExtended = isExtended;
 
+            var isEvoH = IsEVO_H(elements);
             MoveElementsFor_SeparatellyUnits_M(elements);
 
             // EVO-S-D: fix na popsute ikony
@@ -1393,7 +1422,12 @@ namespace Klimor.WebApi.DXF
             //    GenerateSwitchbox();
             //    GenerateSwitchboxDimension();
             //}
-            PrepareLayersToMode(dxf, isExtended);
+
+            PrepareLayersToMode(dxf, isExtended);   
+            if (!isExtended)
+            {
+                dxf2D.AddBigOneWatermark(dxf, textLayer, elements, Views.Operational, "EVO", isEvoH);
+            }
 
             //DrawTable(dxf);
 
@@ -1505,7 +1539,7 @@ namespace Klimor.WebApi.DXF
             // Wariant A: tylko wymiary (najczyściej)
             var dims = dxf.Entities.Dimensions.OfType<LinearDimension>().ToList();
 
-            // Wariant B: jeśli w Twojej wersji nie ma Dimensions, to zwykle działa:
+            // Wariant B: jeśli w wersji nie ma Dimensions, to:
             // var dims = dxf.Entities.All.OfType<LinearDimension>().ToList();
 
             var keep = dims.DistinctBy(Key).ToHashSet();
@@ -1545,7 +1579,7 @@ namespace Klimor.WebApi.DXF
                 {
                     Alignment = TextAlignment.MiddleCenter
                 };
-                if (bold) t.Style = new TextStyle("ArialBold", "arialbd.ttf");
+                if (bold) t.Style = LabelTextStyles.ArialBold;
                 dxf.Entities.Add(t);
             }
 

@@ -43,25 +43,25 @@ namespace Klimor.WebApi.DXF.Services
             return ents;
         }
 
-public static ArrowEntities CreateArrowEntities(
-    Vector2 anchor,
-    ArrowDirection direction,
-    string label,
-    double arrowSize,
-    double padding,
-    AciColor outlineColor,
-    Layer layer,
-    bool filled = false,
-    AciColor? fillColor = null,
-    double lengthFactor = 0.1,
-    double headFactor = 0.15,
-    double textHeightFactor = 1.40,
-    TextStyle? textStyle = null,
-    double shaftFactor = 0.40   // <-- NOWE: wysokość trzonka jako % H (0.55–0.65 wygląda “ikonowo”)
-)
+        public static ArrowEntities CreateArrowEntities(
+            Vector2 anchor,
+            ArrowDirection direction,
+            string label,
+            double arrowSize,
+            double padding,
+            AciColor outlineColor,
+            Layer layer,
+            bool filled = false,
+            AciColor? fillColor = null,
+            double lengthFactor = 0.1,
+            double headFactor = 0.15,
+            double textHeightFactor = 1.40,
+            TextStyle? textStyle = null,
+            double shaftFactor = 0.40   // <-- NOWE: wysokość trzonka jako % H (0.55–0.65 wygląda “ikonowo”)
+        )
         {
             double H = arrowSize;
-            double L = lengthFactor * H/2;
+            double L = lengthFactor * H / 2;
             double headLen = Math.Min(headFactor * H, L * 0.3);
 
             double halfH = H / 2.0;
@@ -123,7 +123,7 @@ public static ArrowEntities CreateArrowEntities(
                 hatch.BoundaryPaths.Add(new HatchBoundaryPath(new List<EntityObject> { boundaryPoly }));
             }
 
-            double textHeight = Math.Max(1e-6, (H * textHeightFactor) - H/10);
+            double textHeight = Math.Max(1e-6, (H * textHeightFactor) - H / 10);
 
             var localTextShift = new Vector2(-headLen * 0.20, 0);
             var shift = Rotate(localTextShift, angDeg);
