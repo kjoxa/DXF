@@ -45,7 +45,14 @@ namespace Klimor.WebApi.DXF.Services
             var iconLayer = dxf.Layers.Add(new Layer(Lab.Icon) { Color = new AciColor(7) });
 
             var icons = DxfDocument.Load("BLOCKS.dxf");
-            var iconsList = icons.Blocks.ToList();            
+            var iconsList = icons.Blocks.ToList();
+
+            // ikony bez tego nie będą wstawiane
+            var mapIcons = elements.Where(e => e.label.Contains("icon")).ToList();
+            foreach (var icon in mapIcons)
+            {
+                icon.View = icon.additionalInfos.iconPosition;
+            }
 
             if (elements == null || elements.Count == 0) return;
 
