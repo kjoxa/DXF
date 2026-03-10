@@ -210,6 +210,7 @@ namespace Klimor.WebApi.DXF.Services
                 "Supply" when airPathPosition == "Outlet" => "SUP",
                 "Exhaust" when airPathPosition == "Inlet" => "ETA",
                 "Exhaust" when airPathPosition == "Outlet" => "EHA",
+                _ => "N/A"
             };
 
             switch (direction)

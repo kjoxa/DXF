@@ -1071,6 +1071,13 @@ namespace Klimor.WebApi.DXF
                 dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Operational, Lab.Up, Lab.Down, Lab.Down_DrainTray, Lab.Down_Wall, Lab.Middle_Wall, Lab.Back, ViewName.LeftFront, ViewName.RightFront }, false, true, layer, textLayer, Views.Except(ViewName.Frame, ViewName.Roof), backgroundLayer);
             }
 
+            void GenerateWallsNotExtended()
+            {
+                var layer = dxf.Layers.Add(new Layer("Walls") { Color = new AciColor(7) });
+                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Operational, Lab.Back }, false, true, layer, textLayer,
+                    Views.Select(ViewName.Operational, ViewName.Back, ViewName.LeftFront, ViewName.RightFront), backgroundLayer);
+            }
+
             void GenerateWallsDimensions()
             {
                 var layer = dxf.Layers.Add(new Layer("Walls_dimension") { Color = new AciColor(7) });
@@ -1387,6 +1394,7 @@ namespace Klimor.WebApi.DXF
                 //GeneratePortholeDimension();
                 //GenerateRips();
                 GenerateSwitchbox();
+                GenerateWallsNotExtended();
                 //GenerateSwitchboxDimension();
             }            
 
