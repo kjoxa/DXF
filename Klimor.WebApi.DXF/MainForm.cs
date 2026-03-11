@@ -1015,6 +1015,7 @@ namespace Klimor.WebApi.DXF
 
             var isEvoH = IsEVO_H(elements);
             MoveElementsFor_SeparatellyUnits_M(elements);
+            dxf2D.calculationNorm = norm;
 
             // EVO-S-D: fix na popsute ikony
             //elements.RemoveAll(e => e.z1 == 2101);
@@ -1075,7 +1076,7 @@ namespace Klimor.WebApi.DXF
             {
                 var layer = dxf.Layers.Add(new Layer("Walls") { Color = new AciColor(7) });
                 dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Operational, Lab.Back }, false, true, layer, textLayer,
-                    Views.Select(ViewName.Operational, ViewName.Back, ViewName.LeftFront, ViewName.RightFront), backgroundLayer);
+                    Views.Select(ViewName.Operational, ViewName.Back, ViewName.LeftFront, ViewName.RightFront, ViewName.Down), backgroundLayer);
             }
 
             void GenerateWallsDimensions()

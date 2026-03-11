@@ -60,6 +60,7 @@ namespace Klimor.WebApi.DXF.Services
         public double globalZMin = 0;
         public double globalZMax = 0;
         public bool isExtended = true;
+        public Norm calculationNorm;
 
         int channelNumberTextSize = 200;
 
@@ -239,13 +240,29 @@ namespace Klimor.WebApi.DXF.Services
                 _ => ArrowDirection.Right
             };
 
-            var label = airPath switch
+            var label = string.Empty;
+            if (calculationNorm is (Norm.US or Norm.US_EXTENDED))
             {
-                "Supply" when airPathPosition == "Inlet" => "ODA",
-                "Supply" when airPathPosition == "Outlet" => "SUP",
-                "Exhaust" when airPathPosition == "Inlet" => "ETA",
-                "Exhaust" when airPathPosition == "Outlet" => "EHA",
-            };
+                label = airPath switch
+                {
+                    "Supply" when airPathPosition == "Inlet" => "O/A",
+                    "Supply" when airPathPosition == "Outlet" => "S/A",
+                    "Exhaust" when airPathPosition == "Inlet" => "R/A",
+                    "Exhaust" when airPathPosition == "Outlet" => "C/A",
+                    _ => "N/A",
+                };
+            }
+            else
+            {
+                label = airPath switch
+                {
+                    "Supply" when airPathPosition == "Inlet" => "ODA",
+                    "Supply" when airPathPosition == "Outlet" => "SUP",
+                    "Exhaust" when airPathPosition == "Inlet" => "ETA",
+                    "Exhaust" when airPathPosition == "Outlet" => "EHA",
+                    _ => "N/A",
+                };
+            }
 
             switch (direction)
             {
