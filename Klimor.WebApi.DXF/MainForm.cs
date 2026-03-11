@@ -65,7 +65,7 @@ namespace Klimor.WebApi.DXF
                         var norm = isExtended ? Norm.ISO_EXTENDED : Norm.ISO;
 
                         Generate2D(elements, $"{Path.GetFileNameWithoutExtension(ofd.FileName)}.dxf", isExtended, norm);
-                        dxf3D.Generate3D(elements, $"{Path.GetFileNameWithoutExtension(ofd.FileName)}_3D.dxf");
+                        dxf3D.Generate3D(elements, $"{Path.GetFileNameWithoutExtension(ofd.FileName)}_3D.dxf", norm);
 
                         //MessageBox.Show("Pliki DXF zostały wygenerowane.", "Sukces", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
@@ -1011,11 +1011,13 @@ namespace Klimor.WebApi.DXF
 
         private void Generate2D(List<Coordinates> elements, string fileOutput, bool isExtended, Norm norm)
         {
+            dxf2D.calculationNorm = norm;
+
+            // start Copying
             dxf2D.isExtended = isExtended;
 
             var isEvoH = IsEVO_H(elements);
-            MoveElementsFor_SeparatellyUnits_M(elements);
-            dxf2D.calculationNorm = norm;
+            MoveElementsFor_SeparatellyUnits_M(elements);            
 
             // EVO-S-D: fix na popsute ikony
             //elements.RemoveAll(e => e.z1 == 2101);
@@ -1387,9 +1389,9 @@ namespace Klimor.WebApi.DXF
                 DrawFunctionsWithIcons(isExtended);
                 //DrawFunctionsDimensions();
                 DrawExternalElements();
-                //GenerateFrame();
+                GenerateFrame();
                 //GenerateFrameDimensions();
-                //GenerateRoof();
+                GenerateRoof();
                 //GenerateRoofDimensions();
                 GeneratePorthole();
                 //GeneratePortholeDimension();
@@ -1398,50 +1400,6 @@ namespace Klimor.WebApi.DXF
                 GenerateWallsNotExtended();
                 //GenerateSwitchboxDimension();
             }            
-
-            //ArrowService.AddArrow(
-            //    dxf,
-            //    anchor: new Vector2(0, 1970),
-            //    direction: ArrowDirection.Right,
-            //    label: "ETA",
-            //    arrowSize: 120,
-            //    padding: 20,
-            //    outlineColor: AciColor.Red,
-            //    layer: arrowLayer,
-            //    filled: false,
-            //    textStyle: style
-            //);
-
-            // budowanie listy dla znaczników płyt, aby walle Operational i Back były widoczne na Up i Down
-            //ShowHatchesOnUpDown(elements);
-
-            // do zrobienia
-            //GeneratePorthole();
-            //GeneratePortholeDimension();
-            //GenerateSwitchbox();
-            //GenerateSwitchboxDimension();
-
-            //if (!advanced2D)
-            //{
-            //    GenerateFunctionsWithIcons();
-            //    GenerateFunctionsDimensions();
-            //    GenerateExternalElements();
-            //}
-
-            //if (advanced2D)
-            //{
-            //    GenerateWalls();
-            //    GenerateWallsDimensions();
-            //    GenerateExternalElements();
-            //    GenerateFrame();
-            //    GenerateFrameDimensions();
-            //    GenerateRoof();
-            //    GenerateRoofDimensions();
-            //    GeneratePorthole();
-            //    GeneratePortholeDimension();
-            //    GenerateSwitchbox();
-            //    GenerateSwitchboxDimension();
-            //}
 
             PrepareLayersToMode(dxf, isExtended);   
             if (!isExtended)

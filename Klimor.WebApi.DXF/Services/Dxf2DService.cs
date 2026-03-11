@@ -395,6 +395,7 @@ namespace Klimor.WebApi.DXF.Services
                         _ => view.Name
                     };
 
+                    bool alreadyExists = dxf.Entities.All.OfType<Text>().Any(t => t.Value == textToShow);
                     var text = new Text(textToShow, new Vector3(view.XOffset, view.YOffset - globalYMax / 4, 0), globalXMax * 2 / 100)
                     {
                         Layer = textLayer,
@@ -405,7 +406,9 @@ namespace Klimor.WebApi.DXF.Services
 
                     // EVO-T miało niskie globalYMax, co powodowało zbyt małą odległość napisu [75038]
                     if (globalYMax < 1000) text.Position = new Vector3(text.Position.X, view.YOffset - 250, 0);
-                    dxf.Entities.Add(text);
+
+                    //if (!alreadyExists)
+                        dxf.Entities.Add(text);
                 }
 
                 // numery kanałów
