@@ -63,7 +63,7 @@ namespace Klimor.WebApi.DXF
 
                         var isExtended = prodBox.Checked;
                         var norm = isExtended ? Norm.ISO_EXTENDED : Norm.ISO;
-
+                        norm = Norm.US_EXTENDED;
                         Generate2D(elements, $"{Path.GetFileNameWithoutExtension(ofd.FileName)}.dxf", isExtended, norm);
                         dxf3D.Generate3D(elements, $"{Path.GetFileNameWithoutExtension(ofd.FileName)}_3D.dxf");
 
@@ -1042,7 +1042,7 @@ namespace Klimor.WebApi.DXF
             var cellHeight = Views.AhuHeight > Views.AhuWidth ? Views.AhuHeight + (Views.AhuHeight) : Views.AhuWidth + (Views.AhuWidth);
             var cellWidth = Views.AhuLength + (Views.AhuLength * 1 / 3);
             var grid = new ViewGrid(columns: 5, rows: 10, cellWidth: (int)cellWidth, cellHeight: (int)cellHeight);
-            grid.AlignCellToPoint(col: 1, row: 5, worldX: 0, worldY: 0);
+            grid.AlignCellToPoint(col: 2, row: 5, worldX: 0, worldY: 0);
 
             Views.Table.Visibility = false;
             // Użycie presetów siatkowych:
@@ -1379,9 +1379,9 @@ namespace Klimor.WebApi.DXF
                 DrawFunctionsWithIcons(isExtended);
                 //DrawFunctionsDimensions();
                 DrawExternalElements();
-                //GenerateFrame();
+                GenerateFrame();
                 //GenerateFrameDimensions();
-                //GenerateRoof();
+                GenerateRoof();
                 //GenerateRoofDimensions();
                 GeneratePorthole();
                 //GeneratePortholeDimension();
@@ -1687,9 +1687,9 @@ namespace Klimor.WebApi.DXF
                     {
                         if (GridPresets.Cells.TryGetValue(Norm.US_EXTENDED, out var views))
                         {
-                            views[ViewName.Down] = (1, 4);
-                            views[ViewName.Roof] = (1, 7);
-                            views[ViewName.Frame] = (1, 3);
+                            views[ViewName.Down] = (2, 4);
+                            views[ViewName.Roof] = (2, 7);
+                            views[ViewName.Frame] = (2, 3);
                         }
                     }
                     break;

@@ -1221,7 +1221,7 @@ namespace Klimor.WebApi.DXF.Services
             double midX = (leftX + rightX) / 2.0;
             double yInProfile = topY - (profileOffset / 2.0);
 
-            var textHeight = (yMax - yMin) / 3;
+            var textHeight = (yMax - yMin) / 5;
             var text = new Text(textValue, new Vector3(midX, yInProfile + 100, 0), textHeight)
             {
                 Layer = textLayer,
