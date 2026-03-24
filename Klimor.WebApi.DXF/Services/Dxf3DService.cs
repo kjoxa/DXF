@@ -17,13 +17,14 @@ namespace Klimor.WebApi.DXF.Services
     public class Dxf3DService
     {
         public ViewsList Views;
+        public Norm calculationNorm;
 
         public Dxf3DService()
         {
             Views = new ViewsList();
         }
 
-        public void Generate3D(List<Coordinates> elements, string filePath)
+        public void Generate3D(List<Coordinates> elements, string filePath, Norm drawingNorm)
         {
             Views = new ViewsList();
             var dxf = new DxfDocument();
@@ -204,13 +205,29 @@ namespace Klimor.WebApi.DXF.Services
                 _ => ArrowDirection.Right
             };
 
-            var label = airPath switch
+            var label = string.Empty;
+            if (calculationNorm is (Norm.US or Norm.US_EXTENDED))
             {
-                "Supply" when airPathPosition == "Inlet" => "ODA",
-                "Supply" when airPathPosition == "Outlet" => "SUP",
-                "Exhaust" when airPathPosition == "Inlet" => "ETA",
-                "Exhaust" when airPathPosition == "Outlet" => "EHA",
-            };
+                label = airPath switch
+                {
+                    "Supply" when airPathPosition == "Inlet" => "O/A",
+                    "Supply" when airPathPosition == "Outlet" => "S/A",
+                    "Exhaust" when airPathPosition == "Inlet" => "R/A",
+                    "Exhaust" when airPathPosition == "Outlet" => "C/A",
+                    _ => "N/A",
+                };
+            }
+            else
+            {
+                label = airPath switch
+                {
+                    "Supply" when airPathPosition == "Inlet" => "ODA",
+                    "Supply" when airPathPosition == "Outlet" => "SUP",
+                    "Exhaust" when airPathPosition == "Inlet" => "ETA",
+                    "Exhaust" when airPathPosition == "Outlet" => "EHA",
+                    _ => "N/A",
+                };
+            }
 
             switch (direction)
             {
