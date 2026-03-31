@@ -796,7 +796,7 @@ namespace Klimor.WebApi.DXF.Services
                                                     el.View is (ViewName.Down or ViewName.DownUp or ViewName.Up or ViewName.UpUp))
                                                 {
                                                     var text = new Text(wallDescription,
-                                                    new Vector3(c.X - ((el.x2 - el.x1) / 2) - profileOffset, c.Y + 2 * profileOffset + externalElementsYOffset, 0), 20);
+                                                    new Vector3(c.X - ((el.x2 - el.x1) / 2) - profileOffset, c.Y + 2 * profileOffset + externalElementsYOffset, 0), 5);
 
                                                     text.Style = LabelTextStyles.ArialBold;
                                                     text.Layer = layer;
