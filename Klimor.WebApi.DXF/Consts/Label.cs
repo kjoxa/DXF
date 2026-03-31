@@ -24,6 +24,7 @@ namespace Klimor.WebApi.DXF.Consts
         public const string Div = "Div";
         public const string Down_Div = "Down_Div";
         public const string Down_Wall = "Down_Wall";
+        public const string Down_Removable = "Down_Removable";
         public const string Middle_Wall = "Middle_Wall";
         public const string Back = "Back";
         public const string Operational = "Operational";

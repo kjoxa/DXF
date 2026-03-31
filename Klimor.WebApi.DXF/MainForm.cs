@@ -12,6 +12,7 @@ using netDxf.Objects;
 using netDxf.Tables;
 using System.Diagnostics;
 using System.Reflection.Emit;
+using System.Security.AccessControl;
 using System.Security.Cryptography;
 using System.Security.Cryptography.Xml;
 using System.Text.Json;
@@ -36,6 +37,7 @@ namespace Klimor.WebApi.DXF
         CornerService cornerService;
         Dxf2DService dxf2D;
         Dxf3DService dxf3D;
+        public string ahuType = "EVO";
 
         public MainFrm()
         {
@@ -64,7 +66,9 @@ namespace Klimor.WebApi.DXF
                         var isExtended = prodBox.Checked;
                         var norm = isExtended ? Norm.ISO_EXTENDED : Norm.ISO;
                         norm = Norm.US_EXTENDED;
-                        Generate2D(elements, $"{Path.GetFileNameWithoutExtension(ofd.FileName)}.dxf", isExtended, norm);
+                        var input = new FirstStepInput { AhuType = AhuTypeName.Evot };
+                        //var input = new FirstStepInput { AhuType = AhuTypeName.Evo };
+                        Generate2D(elements, $"{Path.GetFileNameWithoutExtension(ofd.FileName)}.dxf", isExtended, norm, input);
                         dxf3D.Generate3D(elements, $"{Path.GetFileNameWithoutExtension(ofd.FileName)}_3D.dxf", norm);
 
                         //MessageBox.Show("Pliki DXF zostały wygenerowane.", "Sukces", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -980,7 +984,7 @@ namespace Klimor.WebApi.DXF
                     e.y2 -= 350;
                 }
             }
-        }
+        }        
 
         private bool IsEVO_H(List<Coordinates>? elements)
         {
@@ -1009,13 +1013,121 @@ namespace Klimor.WebApi.DXF
             return recovery.z2 > normalBlock.z2 + 200;
         }
 
-        private void Generate2D(List<Coordinates> elements, string fileOutput, bool isExtended, Norm norm)
+        /*EvoT*/
+        private void ChangeCoordinatesForEVOT(List<Coordinates> elements, string ahuType)
+        {
+            if (ahuType != AhuTypeName.Evot) return;
+
+            var blocks = elements.Where(e => e.label is Lab.Block).ToList();
+            var downs = elements.Where(e => e.label is (Lab.Down_Wall or Lab.Down_DrainTray or Lab.Down_Removable)).ToList();
+
+            foreach (var block in blocks)
+            {
+                block.y1 += 25;
+            }
+
+            foreach (var down in downs)
+            {
+                elements.Add(new Coordinates
+                {
+                    View = ViewName.Down,
+                    label = Lab.Down_Removable,
+                    type = down.type,
+                    x1 = down.x1,
+                    x2 = down.x2,
+                    y1 = down.y1,
+                    y2 = down.y2,
+                    z1 = down.z1,
+                    z2 = down.z2,
+                    PositionUp = down.PositionUp,
+                    PositionDown = down.PositionDown,
+                    posUpDown = down.posUpDown,
+                    additionalInfos = down.additionalInfos,
+                    ShowDimension = false
+                });
+
+                elements.Add(new Coordinates
+                {
+                    View = ViewName.Operational,
+                    label = Lab.Operational,
+                    type = down.type,
+                    x1 = down.x1,
+                    x2 = down.x2,
+                    y1 = down.y1,
+                    y2 = down.y2,
+                    z1 = down.z1,
+                    z2 = down.z2,
+                    PositionUp = down.PositionUp,
+                    PositionDown = down.PositionDown,
+                    posUpDown = down.posUpDown,
+                    additionalInfos = down.additionalInfos,
+                    ShowDimension = false
+                });
+
+                elements.Add(new Coordinates
+                {
+                    View = ViewName.Back,
+                    label = Lab.Back,
+                    type = down.type,
+                    x1 = down.x1,
+                    x2 = down.x2,
+                    y1 = down.y1,
+                    y2 = down.y2,
+                    z1 = down.z1,
+                    z2 = down.z2,
+                    PositionUp = down.PositionUp,
+                    PositionDown = down.PositionDown,
+                    posUpDown = down.posUpDown,
+                    additionalInfos = down.additionalInfos,
+                    ShowDimension = false
+                });
+
+                elements.Add(new Coordinates
+                {
+                    View = ViewName.LeftFront,
+                    label = Lab.Down_Removable,
+                    type = down.type,
+                    x1 = down.x1,
+                    x2 = down.x2,
+                    y1 = down.y1,
+                    y2 = down.y2,
+                    z1 = down.z1,
+                    z2 = down.z2,
+                    PositionUp = down.PositionUp,
+                    PositionDown = down.PositionDown,
+                    posUpDown = down.posUpDown,
+                    additionalInfos = down.additionalInfos,
+                    ShowDimension = false
+                });
+
+                elements.Add(new Coordinates
+                {
+                    View = ViewName.RightFront,
+                    label = Lab.Down_Removable,
+                    type = down.type,
+                    x1 = down.x1,
+                    x2 = down.x2,
+                    y1 = down.y1,
+                    y2 = down.y2,
+                    z1 = down.z1,
+                    z2 = down.z2,
+                    PositionUp = down.PositionUp,
+                    PositionDown = down.PositionDown,
+                    posUpDown = down.posUpDown,
+                    additionalInfos = down.additionalInfos,
+                    ShowDimension = false
+                });                
+            }
+        }
+
+        private void Generate2D(List<Coordinates> elements, string fileOutput, bool isExtended, Norm norm, FirstStepInput input)
         {
             dxf2D.calculationNorm = norm;
 
             // start Copying
             dxf2D.isExtended = isExtended;
-
+            ahuType = input.AhuType;
+            dxf2D.ahuType = ahuType;
             var isEvoH = IsEVO_H(elements);
             MoveElementsFor_SeparatellyUnits_M(elements);            
 
@@ -1071,13 +1183,13 @@ namespace Klimor.WebApi.DXF
             void GenerateWalls()
             {
                 var layer = dxf.Layers.Add(new Layer("Walls") { Color = new AciColor(7) });
-                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Operational, Lab.Up, Lab.Down, Lab.Down_DrainTray, Lab.Down_Wall, Lab.Middle_Wall, Lab.Back, ViewName.LeftFront, ViewName.RightFront }, false, true, layer, textLayer, Views.Except(ViewName.Frame, ViewName.Roof), backgroundLayer);
+                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Operational, Lab.Up, Lab.Down, Lab.Down_DrainTray, Lab.Down_Wall, Lab.Down_Removable, Lab.Middle_Wall, Lab.Back, ViewName.LeftFront, ViewName.RightFront }, false, true, layer, textLayer, Views.Except(ViewName.Frame, ViewName.Roof), backgroundLayer);
             }
 
             void GenerateWallsNotExtended()
             {
                 var layer = dxf.Layers.Add(new Layer("Walls") { Color = new AciColor(7) });
-                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Operational, Lab.Back }, false, true, layer, textLayer,
+                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Operational, Lab.Back, Lab.Down_Removable }, false, true, layer, textLayer,
                     Views.Select(ViewName.Operational, ViewName.Back, ViewName.LeftFront, ViewName.RightFront, ViewName.Down), backgroundLayer);
             }
 
@@ -1313,6 +1425,14 @@ namespace Klimor.WebApi.DXF
                 Views.RoofUp.Visibility = false;
             }
 
+            /*EvoT*/
+            ChangeCoordinatesForEVOT(elements, ahuType);
+            if (ahuType == AhuTypeName.Evot)
+            {
+                Views.Frame.Visibility = false;
+                Views.FrameUp.Visibility = false;
+            }
+
             // przypisywanie DownUp i UpUp, wybór górnych i dolnych kanałów
             if (isExtended)
             {
@@ -1398,7 +1518,7 @@ namespace Klimor.WebApi.DXF
                 //GenerateRips();
                 GenerateSwitchbox();
                 GenerateWallsNotExtended();
-                //GenerateSwitchboxDimension();
+                //GenerateSwitchboxDimension();                              
             }            
 
             PrepareLayersToMode(dxf, isExtended);   
@@ -1744,7 +1864,7 @@ namespace Klimor.WebApi.DXF
 
                 elements = elements.Where(e => !string.IsNullOrWhiteSpace(e.label)).ToList();
 
-                Generate2D(elements, $"{Path.GetFileNameWithoutExtension(path)}.dxf", true, Norm.ISO);
+                Generate2D(elements, $"{Path.GetFileNameWithoutExtension(path)}.dxf", true, Norm.ISO, null);
                 var dwgPath = @"C:\Program Files\Autodesk\DWG TrueView 2026 - English\dwgviewr.exe";
                 var dxfPath = Path.ChangeExtension(Path.GetFileNameWithoutExtension(path), ".dxf");
 

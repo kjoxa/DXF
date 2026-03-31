@@ -10,15 +10,16 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection.Emit;
+using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
 using static netDxf.Entities.HatchBoundaryPath;
-using System.Linq;
-using System.Linq.Expressions;
 
 namespace Klimor.WebApi.DXF.Services
 {
@@ -46,7 +47,8 @@ namespace Klimor.WebApi.DXF.Services
     public class Dxf2DService
     {
         ViewsList Views;
-        public static bool isNetCoreService = false;        
+        public static bool isNetCoreService = false;
+        public string ahuType = "EVO";
         public Dxf2DService(ViewsList vw)
         {
             Views = vw;
@@ -380,7 +382,7 @@ namespace Klimor.WebApi.DXF.Services
                     //double elementCenterY = (firstElement.y1 + firstElement.y2) - 500 + view.YOffset;
                     var textToShow = view.Name switch
                     {
-                        ViewName.Operational => "Obsługa/Inspection",
+                        ViewName.Operational => "Przód/Front",
                         ViewName.Back => "Plecy/Back",
                         ViewName.LeftFront => "Lewy bok/Side L",
                         ViewName.RightFront => "Prawy bok/Side R",
@@ -475,8 +477,13 @@ namespace Klimor.WebApi.DXF.Services
                             fillIndexColor += 50;
                             AddSolidFill(dxf, backgroundLayer, outerPoly, fillIndexColor);
                             //if (view.Name == ViewName.Operational)
+                            if (ahuType == AhuTypeName.Evot)
                             {
-                                AddWatermarkText(dxf, textLayer, elements, view, Views.GetWaterMark());
+                                AddWatermarkText(dxf, textLayer, elements, view, Views.GetWaterMark(), 20);
+                            }
+                            else
+                            {
+                                AddWatermarkText(dxf, textLayer, elements, view, Views.GetWaterMark(), 35);
                             }
 
                             outerPoly.Layer.Color = new AciColor(7);
@@ -499,13 +506,16 @@ namespace Klimor.WebApi.DXF.Services
                             topRight = new Vector2(topRight.X - 2 * profileOffset, topRight.Y);
                             topLeft = new Vector2(topLeft.X, topLeft.Y);
 
-                            inner2D = new List<Vector2> { bottomLeft, bottomRight, topRight, topLeft };
-
-                            var innerPoly = new Polyline2D(inner2D.Select(v => new Polyline2DVertex(v.X, v.Y, 0)).ToList(), true)
+                            // EvoT
+                            if (ahuType != AhuTypeName.Evot)
                             {
-                                Layer = layer
-                            };
-                            dxf.Entities.Add(innerPoly);
+                                inner2D = new List<Vector2> { bottomLeft, bottomRight, topRight, topLeft };
+                                var innerPoly = new Polyline2D(inner2D.Select(v => new Polyline2DVertex(v.X, v.Y, 0)).ToList(), true)
+                                {
+                                    Layer = layer
+                                };
+                                dxf.Entities.Add(innerPoly);
+                            }
 
                             var idx = 0;
                             var extra = 20.0;              // długość „wysunięcia” do wnętrza
@@ -565,11 +575,15 @@ namespace Klimor.WebApi.DXF.Services
                                         break;
                                 }
 
-                                var cornerPoly = new Polyline2D(cornerVertices, true) { Layer = layer };
-                                var hatch = new Hatch(HatchPattern.Solid, true) { Layer = layer, Color = new AciColor(7) };
-                                hatch.BoundaryPaths.Add(new HatchBoundaryPath(new List<EntityObject> { cornerPoly }));
+                                // EvoT
+                                if (ahuType != AhuTypeName.Evot)
+                                {
+                                    var cornerPoly = new Polyline2D(cornerVertices, true) { Layer = layer };
+                                    var hatch = new Hatch(HatchPattern.Solid, true) { Layer = layer, Color = new AciColor(7) };
+                                    hatch.BoundaryPaths.Add(new HatchBoundaryPath(new List<EntityObject> { cornerPoly }));
 
-                                dxf.Entities.Add(hatch);
+                                    dxf.Entities.Add(hatch);
+                                }
                                 idx++;
                             }
                             idx = 0;
@@ -577,7 +591,7 @@ namespace Klimor.WebApi.DXF.Services
 
                         if ((!string.IsNullOrEmpty(el.type) && el.label != Lab.Block && el.Show) &&
                             (el.View == view.Name || el.label == Lab.Hole || el.label == Lab.Hatch) ||
-                            (el.label == Lab.Connector && view.Name is (ViewName.LeftFront or ViewName.RightFront)) ||
+                            (el.label is (Lab.Connector or Lab.Down_Removable) && view.Name is (ViewName.LeftFront or ViewName.RightFront)) ||
                             (el.label is (ViewName.LeftFront or ViewName.RightFront)))
                         {
                             // zakrywanie elementów na frontach
@@ -588,6 +602,13 @@ namespace Klimor.WebApi.DXF.Services
                                     var firstblock = view.Name is ViewName.LeftFront ?
                                         elements.OrderBy(e => e.x1).FirstOrDefault(e => e.label == Lab.Block) :
                                         elements.OrderBy(e => e.x2).FirstOrDefault(e => e.label == Lab.Block);
+                                    Coordinates? secondBlock = null;
+                                    if (firstblock != null)
+                                    {
+                                        secondBlock = view.Name is ViewName.LeftFront ?
+                                        elements.OrderBy(e => e.x1).FirstOrDefault(e => e.label == Lab.Block && e.x1 > firstblock.x1) :
+                                        elements.OrderBy(e => e.x2).FirstOrDefault(e => e.label == Lab.Block && e.x2 > firstblock.x2);
+                                    }                                    
 
                                     // zakrywanie i ukrywanie elementów zewnętrznych poza blokiem - chodzi o to jak są elementy na dachu, by nie brać ich pod uwagę
                                     bool exElmsOutsideBlock_OnUp = el.y1 >= firstblock.y1 && el.y2 <= firstblock.y2;
@@ -596,17 +617,37 @@ namespace Klimor.WebApi.DXF.Services
                                     {
                                         if (view.Name is ViewName.LeftFront)
                                         {
-                                            if (!((el.x1 < firstblock.x1 && el.x1 < firstblock.x2) || (el.x1 < firstblock.x2 && el.y1 > firstblock.y1)))
+                                            if (secondBlock != null)
                                             {
-                                                continue;
+                                                if (!(el.x1 < secondBlock.x2 && el.z1 > firstblock.z1))
+                                                {
+                                                    continue;
+                                                }
                                             }
+                                            else
+                                            {
+                                                if (!((el.x1 < firstblock.x1 && el.x1 < firstblock.x2) || (el.x1 < firstblock.x2 && el.y1 > firstblock.y1) || (el.x1 > firstblock.x1 && el.z1 > firstblock.z1)))
+                                                {
+                                                    continue;
+                                                }
+                                            }                                            
                                         }
                                         else
                                         {
-                                            if (!((el.x2 > firstblock.x2 && el.x2 > firstblock.x1) || (el.x2 > firstblock.x1 && el.y1 > firstblock.y1)))
+                                            if (secondBlock != null)
                                             {
-                                                continue;
+                                                if (!(el.x1 > secondBlock.x2 && el.z1 > firstblock.z1))
+                                                {
+                                                    continue;
+                                                }
                                             }
+                                            else
+                                            {
+                                                if (!((el.x2 > firstblock.x2 && el.x2 > firstblock.x1) || (el.x2 > firstblock.x1 && el.y1 > firstblock.y1) || (el.x1 > firstblock.x1 && el.z1 > firstblock.z1)))
+                                                {
+                                                    continue;
+                                                }
+                                            }                                            
                                         }
                                     }
                                 }
@@ -704,7 +745,8 @@ namespace Klimor.WebApi.DXF.Services
                                (view.Name is (ViewName.UpUp) && el.label is Lab.Up) ||
                                (externalElementShow && el.View == view.Name) ||
                                (el.label == Lab.Connector && isFront) ||
-                               (el.type == Lab.Wall && isFront && view.Name is not (ViewName.Up or ViewName.UpUp or ViewName.DownUp or ViewName.FrameUp or ViewName.RoofUp))
+                               (el.type == Lab.Wall && isFront && view.Name is not (ViewName.Up or ViewName.UpUp or ViewName.DownUp or ViewName.FrameUp or ViewName.RoofUp)) ||
+/*EvoT*/                       (el.View is (ViewName.LeftFront or ViewName.RightFront or ViewName.Down) && el.label is Lab.Down_Removable && el.View == view.Name)
                                )
                             {                                
                                 dxf.Entities.Add(outerPoly); // &&*
@@ -750,6 +792,7 @@ namespace Klimor.WebApi.DXF.Services
 
                                             if (el.type == "Wall" || el.type.Contains("Removable") || el.type.Contains("Door")
                                                 || externalElementShow // elementy zewnętrzne
+/*EvoT*/                                        || (el.View == ViewName.Down && el.label == Lab.Down_Removable)
                                                 || (el.label.Contains("_") && view.Name == "Down"))
                                             {
                                                 var wallDescription = el.label switch
@@ -765,6 +808,7 @@ namespace Klimor.WebApi.DXF.Services
                                                     "Frame" => "",
                                                     "Hatch" => "",
                                                     "Connector" => "",
+/*EvoT*/                                            "Down_Removable" => "PNL_GRIP",
                                                     _ => el.label
                                                 };
 
@@ -781,11 +825,12 @@ namespace Klimor.WebApi.DXF.Services
                                                         "Door" => "DOOR",
                                                         "Removable" => "PNL_GRIP",
                                                         "Removable_2" => "PNL_HH",
-                                                        "Removable_3" => "PNL_BSH",
+                                                        "Removable_3" => "PNL_BSH",                                                        
                                                         "Wall" => "PNL", //operational, back, frontLeft, frontRight, up, down, middle
                                                         "DrainTray" => "DRN_TY", //down, middle
                                                         "Hole" => "HOLE", //operational, back, frontLeft, frontRight, up, down, middle
                                                         "Div" => "", //operational, back, frontLeft, frontRight, up, down, middle                                                          
+/*EvoT*/                                                "Down_Removable" => "PNL_GRIP",
                                                         _ => "INS"
                                                     };
                                                 }
@@ -793,10 +838,15 @@ namespace Klimor.WebApi.DXF.Services
                                                 if (el.label == view.Name ||
                                                     Lab.ExternalElements.Any(l => l == el.label) ||
                                                     el.label == Lab.Hole && string.IsNullOrEmpty(el.View) ||
+/*EvoT*/                                            el.label == Lab.Down_Removable ||
                                                     el.View is (ViewName.Down or ViewName.DownUp or ViewName.Up or ViewName.UpUp))
                                                 {
+/*EvoT*/                                            if (ahuType == AhuTypeName.Evot && (el.View != ViewName.Down || view.Name != ViewName.Down))
+                                                    {
+                                                        continue;
+                                                    }
                                                     var text = new Text(wallDescription,
-                                                    new Vector3(c.X - ((el.x2 - el.x1) / 2) - profileOffset, c.Y + 2 * profileOffset + externalElementsYOffset, 0), 5);
+                                                    new Vector3(c.X - ((el.x2 - el.x1) / 2) - profileOffset, c.Y + 2 * profileOffset + externalElementsYOffset, 0), 20);
 
                                                     text.Style = LabelTextStyles.ArialBold;
                                                     text.Layer = layer;
@@ -964,7 +1014,7 @@ namespace Klimor.WebApi.DXF.Services
                             }
                             else if ((el.label == Lab.Function
                                   || (el.label == Lab.Block && el.View == ViewName.RightFront)
-                                  || Lab.ExternalElements.Any(l => l == el.label)
+ /*EvoT*/                         || (Lab.ExternalElements.Any(l => l == el.label) && el.View == ViewName.RightFront)
                                   || addDim) && !exceptionNotShow)
                             {
                                 widthDim.Layer = layer;
