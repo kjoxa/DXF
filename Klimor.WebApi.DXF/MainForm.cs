@@ -65,7 +65,7 @@ namespace Klimor.WebApi.DXF
 
                         var isExtended = prodBox.Checked;
                         var norm = isExtended ? Norm.ISO_EXTENDED : Norm.ISO;
-                        norm = Norm.US_EXTENDED;
+                        norm = Norm.ISO;
                         var input = new FirstStepInput { AhuType = AhuTypeName.Evot };
                         //var input = new FirstStepInput { AhuType = AhuTypeName.Evo };
                         Generate2D(elements, $"{Path.GetFileNameWithoutExtension(ofd.FileName)}.dxf", isExtended, norm, input);
@@ -83,69 +83,69 @@ namespace Klimor.WebApi.DXF
                 Application.Exit();
         }
 
-        public void IconRotation_CorrectXY(List<Coordinates> coordinates)
-        {
-            var dbg = coordinates.Where(e => e.label.Contains("icon")).ToList();
-            var allIcons = coordinates.DistinctBy(e => (e.posUpDown, e.x1, e.y1, e.z1)).Where(i => i.label.Contains("icon") && i.additionalInfos != null).ToList();
-            foreach (var i in allIcons)
-            {
-                var ir = i.additionalInfos.iconRotation;
-                if (ir != 0)
-                {
-                    var lenX = i.x2 - i.x1;
-                    var lenY = i.y2 - i.y1;
-                    var lenZ = i.z2 - i.z1;
+        //public void IconRotation_CorrectXY(List<Coordinates> coordinates)
+        //{
+        //    var dbg = coordinates.Where(e => e.label.Contains("icon")).ToList();
+        //    var allIcons = coordinates.DistinctBy(e => (e.posUpDown, e.x1, e.y1, e.z1)).Where(i => i.label.Contains("icon") && i.additionalInfos != null).ToList();
+        //    foreach (var i in allIcons)
+        //    {
+        //        var ir = i.additionalInfos.iconRotation;
+        //        if (ir != 0)
+        //        {
+        //            var lenX = i.x2 - i.x1;
+        //            var lenY = i.y2 - i.y1;
+        //            var lenZ = i.z2 - i.z1;
 
-                    switch (i.View)
-                    {
-                        case ViewName.Operational:
-                            if (ir == 90 || ir == 180)
-                            {
-                                i.y1 += lenY;
-                                i.y2 += lenY;
-                                i.x1 += lenX;
-                                i.x2 += lenX;
-                            }
-                            else
-                            {
-                                if (ir == 270)
-                                {
-                                    i.x1 += lenX;
-                                    i.x2 += lenX;
-                                }
-                            }
-                            break;
-                        case ViewName.Back:
-                            if (ir == 90 || ir == 180)
-                            {
-                                i.y1 += lenY;
-                                i.y2 += lenY;
-                                //i.x1 -= lenX;
-                                //i.x2 -= lenX;
-                            }
+        //            switch (i.View)
+        //            {
+        //                case ViewName.Operational:
+        //                    if (ir == 90 || ir == 180)
+        //                    {
+        //                        i.y1 += lenY;
+        //                        i.y2 += lenY;
+        //                        i.x1 += lenX;
+        //                        i.x2 += lenX;
+        //                    }
+        //                    else
+        //                    {
+        //                        if (ir == 270)
+        //                        {
+        //                            i.x1 += lenX;
+        //                            i.x2 += lenX;
+        //                        }
+        //                    }
+        //                    break;
+        //                case ViewName.Back:
+        //                    if (ir == 90 || ir == 180)
+        //                    {
+        //                        i.y1 += lenY;
+        //                        i.y2 += lenY;
+        //                        //i.x1 -= lenX;
+        //                        //i.x2 -= lenX;
+        //                    }
 
-                            break;
-                        case ViewName.Up:
-                        case ViewName.UpUp:
-                            if (ir > 0)
-                            {
-                                i.z1 += lenZ;
-                                i.z2 += lenZ;
-                                i.x1 += lenX;
-                                i.x2 += lenX;
-                            }
-                            else
-                            {
-                                i.x1 -= lenX;
-                                i.x2 -= lenX;
-                            }
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            }
-        }
+        //                    break;
+        //                case ViewName.Up:
+        //                case ViewName.UpUp:
+        //                    if (ir > 0)
+        //                    {
+        //                        i.z1 += lenZ;
+        //                        i.z2 += lenZ;
+        //                        i.x1 += lenX;
+        //                        i.x2 += lenX;
+        //                    }
+        //                    else
+        //                    {
+        //                        i.x1 -= lenX;
+        //                        i.x2 -= lenX;
+        //                    }
+        //                    break;
+        //                default:
+        //                    break;
+        //            }
+        //        }
+        //    }
+        //}
 
         private void SelectBlockUpChannel(List<Coordinates> elements)
         {
@@ -562,7 +562,7 @@ namespace Klimor.WebApi.DXF
                 .ToList();
 
             if (levels.Count > 1)
-            {          
+            {
                 var topLevel = levels[^1]; // najwyższy Y1
 
                 // bierzemy tylko ściany z najwyższego poziomu
@@ -574,14 +574,14 @@ namespace Klimor.WebApi.DXF
                 elements.RemoveAll(e => e.y1 != topLevel && e.View == ViewName.DownUp && downCondition(e));
                 // usuwanie DownUp
                 if (elements.Any(e => e.label == Lab.Middle_Wall))
-                {                    
+                {
                     var downUpClear = elements
                                   .Where(e => e.y1 == levels[1] &&
                                               e.View == ViewName.DownUp &&
                                               downCondition(e)).ToList();
 
-                elements.RemoveAll(e => !downUpClear.Contains(e) && e.View == ViewName.DownUp);
-                }                
+                    elements.RemoveAll(e => !downUpClear.Contains(e) && e.View == ViewName.DownUp);
+                }
                 Views.DownUp.Visibility = true;
             }
 
@@ -832,73 +832,6 @@ namespace Klimor.WebApi.DXF
             }
         }
 
-        //private void ShowHatchesOnUpDown(List<Coordinates> elements)
-        //{
-        //    void addElement(ViewElement vw, Coordinates el)
-        //    {
-        //        var addBlock = new Coordinates
-        //        {
-        //            View = vw.Name,
-        //            label = el.label,
-        //            type = el.type,
-        //            x1 = el.x1,
-        //            x2 = el.x2,
-        //            y1 = el.y1,
-        //            y2 = el.y2,
-        //            z1 = el.z1,
-        //            z2 = el.z2,
-        //            PositionUp = el.PositionUp,
-        //            PositionDown = el.PositionDown,
-        //            posUpDown = el.posUpDown,
-        //            additionalInfos = el.additionalInfos,
-        //        };
-        //        elements.Add(addBlock);
-        //    }
-
-        //    foreach (var el in elements.ToList())
-        //    {
-        //        if (el.label == "FrontRight")
-        //            el.label = "RightFront";
-        //        if (el.label == "FrontLeft")
-        //            el.label = "LeftFront";
-        //    }
-        //    var views = Views.Except("Frame", "Roof", "Connector");
-        //    foreach (var el in elements.ToList())
-        //    {
-        //    }
-        //}
-
-        //private void MoveElementsFor_SeparatellyUnits_M(List<Coordinates> elements)
-        //{
-
-        //    /*              
-        //        EVO-S: Separatelly Units: 
-        //        Z odsunięty o 700 
-        //        Y odsunięty o 500
-
-        //        Wyszukujemy bloki góra i dół, sprawdzamy czy różnica Z1 wynosi 700 oraz czy różnica pomiędzy y1 wynosi 1000
-        //        jeśli tak jest, to w kolejnym kroku szukamy elementów oddalonych maksymalnie o 500 w X,Y,Z od danego toru i tak przyrównujemy co do czego należy 
-        //    */
-        //    var separatellyUnitsOffset_Z = 700;
-        //    var separatellyUnitsOffset_Y = 500;
-        //    var maxOffset_Z = 350; // INTK + AD
-        //    var maxOffset_Y = 350; // INTK + AD
-
-        //    var blockUp = elements.FirstOrDefault(e => e.label == Lab.Block && e.PositionUp > 0 && e.PositionDown == 0);
-        //    var blockDown = elements.FirstOrDefault(e => e.label == Lab.Block && e.PositionDown > 0 && e.PositionUp == 0);
-        //    if (blockUp != null && blockDown != null)
-        //    {
-        //        if (blockUp.z1 - blockDown.z2 == separatellyUnitsOffset_Z && 
-        //            blockUp.y1 - blockDown.y2 == separatellyUnitsOffset_Y)
-        //        {
-        //            var elementsUp = elements.Where(e => (e.z1 <= blockUp.z1 && e.z2 >= blockUp.z2) || (e.z1 >= blockUp.z1 + maxOffset_Z && e.z2 <= blockUp.z2 + maxOffset_Z)).ToList();
-        //            var elementsDown = elements.Where(e => (e.z1 <= blockDown.z1 && e.z2 >= blockDown.z2) || (e.z1 >= blockDown.z1 + maxOffset_Z && e.z2 <= blockDown.z2 + maxOffset_Z)).ToList();
-        //        }
-        //    }            
-        //}
-
-
-
         private void MoveElementsFor_SeparatellyUnits_M(List<Coordinates> elements)
         {
             /*
@@ -984,7 +917,7 @@ namespace Klimor.WebApi.DXF
                     e.y2 -= 350;
                 }
             }
-        }        
+        }
 
         private bool IsEVO_H(List<Coordinates>? elements)
         {
@@ -1116,9 +1049,10 @@ namespace Klimor.WebApi.DXF
                     posUpDown = down.posUpDown,
                     additionalInfos = down.additionalInfos,
                     ShowDimension = false
-                });                
+                });
             }
         }
+
 
         private void Generate2D(List<Coordinates> elements, string fileOutput, bool isExtended, Norm norm, FirstStepInput input)
         {
@@ -1129,7 +1063,7 @@ namespace Klimor.WebApi.DXF
             ahuType = input.AhuType;
             dxf2D.ahuType = ahuType;
             var isEvoH = IsEVO_H(elements);
-            MoveElementsFor_SeparatellyUnits_M(elements);            
+            MoveElementsFor_SeparatellyUnits_M(elements);
 
             // EVO-S-D: fix na popsute ikony
             //elements.RemoveAll(e => e.z1 == 2101);
@@ -1155,9 +1089,10 @@ namespace Klimor.WebApi.DXF
             Views.SetWaterMark("EVO");
 
             var cellHeight = Views.AhuHeight > Views.AhuWidth ? Views.AhuHeight + (Views.AhuHeight) : Views.AhuWidth + (Views.AhuWidth);
-            var cellWidth = Views.AhuLength + (Views.AhuLength * 1 / 3);
+            var cellWidth = Views.AhuLength + (Views.AhuLength * 1 / 3) + (Views.AhuLength < 1500 ? 600 : 0);
             var grid = new ViewGrid(columns: 5, rows: 10, cellWidth: (int)cellWidth, cellHeight: (int)cellHeight);
-            grid.AlignCellToPoint(col: 2, row: 5, worldX: 0, worldY: 0);
+            var col = norm == Norm.ISO || norm == Norm.ISO_EXTENDED ? 1 : 2;
+            grid.AlignCellToPoint(col: col, row: 5, worldX: 0, worldY: 0);
 
             Views.Table.Visibility = false;
             // Użycie presetów siatkowych:
@@ -1190,7 +1125,7 @@ namespace Klimor.WebApi.DXF
             {
                 var layer = dxf.Layers.Add(new Layer("Walls") { Color = new AciColor(7) });
                 dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Operational, Lab.Back, Lab.Down_Removable }, false, true, layer, textLayer,
-                    Views.Select(ViewName.Operational, ViewName.Back, ViewName.LeftFront, ViewName.RightFront, ViewName.Down), backgroundLayer);
+                   Views.Select(ViewName.Operational, ViewName.Back, ViewName.LeftFront, ViewName.RightFront, ViewName.Down), backgroundLayer);
             }
 
             void GenerateWallsDimensions()
@@ -1413,7 +1348,6 @@ namespace Klimor.WebApi.DXF
 
             MapElementsToViews(elements, isExtended);
             PrepareElementsToMode(elements, isExtended);
-            //IconRotation_CorrectXY(elements);
             if (!isExtended)
             {
                 if (!elements.Any(e => e.label == Lab.Roof))
@@ -1463,8 +1397,7 @@ namespace Klimor.WebApi.DXF
             // ustawianie widoczności elementów (kolejność ma znaczenie)
             SetElementsVisibility(elements, [Lab.Frame, Lab.FrameUp], Views.Except(ViewName.Frame), null, false);
             SetElementsVisibility(elements, [Lab.Frame], Views.Select(ViewName.RightFront), true, true);
-            //HideDimensions(elements);
-            // widoczność wymiarów blokow
+
             //SetElementsVisibility(elements, [Lab.Block], Views.Select(ViewName.Operational), true, true);
             Connector_AddInsideCircle(elements);
             RepositioningOnGridWhenViewsHide(norm, grid);
@@ -1519,15 +1452,16 @@ namespace Klimor.WebApi.DXF
                 //GenerateRips();
                 GenerateSwitchbox();
                 GenerateWallsNotExtended();
-                //GenerateSwitchboxDimension();                              
-            }            
+                //GenerateSwitchboxDimension();
+            }
 
-            PrepareLayersToMode(dxf, isExtended);   
+            PrepareLayersToMode(dxf, isExtended);
             if (!isExtended)
             {
                 dxf2D.AddBigOneWatermark(dxf, textLayer, elements, Views.Operational, "EVO", isEvoH);
             }
 
+            // przykładowa tabela
             //DrawTable(dxf);
 
             // usuwanie duplikatów wymiarów

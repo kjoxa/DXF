@@ -19,11 +19,9 @@ namespace Klimor.WebApi.DXF.Consts
         public int GutterX { get; }
         public int GutterY { get; }
 
-        // teraz set; żeby dało się przestawiać
         public int OriginX { get; private set; }
         public int OriginY { get; private set; }
 
-        // opcjonalnie kierunki osi
         public AxisDir ColDir { get; }
         public AxisDir RowDir { get; }
 
@@ -81,10 +79,8 @@ namespace Klimor.WebApi.DXF.Consts
         public bool TryGetCell(string viewName, out (int col, int row, int dx, int dy) pos)
             => _cellMap.TryGetValue(viewName, out pos);
 
-        /// <summary>
-        /// Zastosuj layout: ustawia XOffset/YOffset widoków tak,
-        /// by lewy-dolny róg każdego widoku pokrył się z lewym-dolnym rogiem komórki + ewent. lokalny offset.
-        /// </summary>
+        //ustawia XOffset/YOffset widoków tak,
+        // by lewy-dolny róg każdego widoku pokrył się z lewym-dolnym rogiem komórki + ewent. lokalny offset.        
         public void ApplyTo(ViewsList views)
         {
             foreach (var kv in _cellMap)

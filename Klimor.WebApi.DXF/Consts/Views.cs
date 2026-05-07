@@ -31,7 +31,7 @@ namespace Klimor.WebApi.DXF.Consts
 
         public int YOffset { get; set; }
 
-        public bool Visibility { get; set; } = true; // 🔹 nowe pole, domyślnie true
+        public bool Visibility { get; set; } = true; // nowe pole, domyślnie true
 
         public ViewElement(string name, int x, int y, bool visibility = true) =>
             (Name, XOffset, YOffset, Visibility) = (name, x, y, visibility);
