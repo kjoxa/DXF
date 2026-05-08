@@ -115,7 +115,7 @@ namespace Klimor.WebApi.DXF.Services
                     if (el.label.Contains("icon"))
                     {
                         var sName = el.additionalInfos.iconName;
-                        if (sName is ("PFM" or "PFO" or "PFC")) sName = "PF";
+                        if (sName is ("PFM" or "PFO" or "PFC" or "PFD")) sName = "PF";
                         bool isExhaust = el.additionalInfos.airPath.ToLower() == "exhaust";
                         if (Dxf2DService.IconMap.ContainsKey(sName!))
                         {

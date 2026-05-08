@@ -1171,7 +1171,7 @@ namespace Klimor.WebApi.DXF
                 foreach (var icon in distinctList)
                 {
                     sName = icon.additionalInfos.iconName;
-                    if (sName is ("PFM" or "PFO" or "PFC")) sName = "PF";
+                    if (sName is ("PFM" or "PFO" or "PFC" or "PFD")) sName = "PF";
                     bool isExhaust = icon.additionalInfos.airPath.ToLower() == "exhaust";
                     if (Dxf2DService.IconMap.ContainsKey(sName!))
                     {
