@@ -44,6 +44,7 @@ namespace Klimor.WebApi.DXF.Services
             var flexibleConnectionLayer = dxf.Layers.Add(new Layer(Lab.FC) { Color = new AciColor(10) });
             var intakeOutletLayer = dxf.Layers.Add(new Layer(Lab.INTK) { Color = new AciColor(11) });
             var iconLayer = dxf.Layers.Add(new Layer(Lab.Icon) { Color = new AciColor(7) });
+            var portholeLayer = dxf.Layers.Add(new Layer(Lab.Porthole) { Color = new AciColor(7) });
 
             var icons = DxfDocument.Load("BLOCKS.dxf");
             var iconsList = icons.Blocks.ToList();
@@ -83,6 +84,27 @@ namespace Klimor.WebApi.DXF.Services
 
             foreach (var el in elements)
             {
+                if (el.label == "Porthole")
+                {
+                    double cx = X((el.x1 + el.x2) / 2.0);
+                    double cy = Y((el.y1 + el.y2) / 2.0);
+                    double cz = Z(el.z1);
+
+                    double radius = Math.Min(
+                        Math.Abs(X(el.x2) - X(el.x1)),
+                        Math.Abs(Y(el.y2) - Y(el.y1))
+                    ) / 2.0;
+
+                    var circle = new Circle(new Vector3(cx, cy, cz), radius)
+                    {
+                        Layer = portholeLayer,
+                        Normal = new Vector3(0, 0, 1)
+                    };
+
+                    dxf.Entities.Add(circle);
+                    continue;
+                }
+
                 var p1 = new Vector3(X(el.x1), Y(el.y1), Z(el.z1));
                 var p2 = new Vector3(X(el.x2), Y(el.y1), Z(el.z1));
                 var p3 = new Vector3(X(el.x2), Y(el.y2), Z(el.z1));
