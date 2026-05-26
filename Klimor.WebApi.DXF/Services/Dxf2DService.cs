@@ -1132,7 +1132,7 @@ namespace Klimor.WebApi.DXF.Services
             var center = new Vector3((minX + maxX) / 2.0, (minY + maxY) / 2.0, 0.0);
 
             // promień = połowa boku (ew mniejszy wymiar)
-            double radius = Math.Min(maxX - minX, maxY - minY) / 2.0;
+            double radius = (Math.Min(maxX - minX, maxY - minY) / 2.0) == 0 ? 5 : (Math.Min(maxX - minX, maxY - minY) / 2.0);
 
             var circle = new Circle(center, radius)
             {

@@ -65,9 +65,9 @@ namespace Klimor.WebApi.DXF
 
                         var isExtended = prodBox.Checked;
                         var norm = isExtended ? Norm.ISO_EXTENDED : Norm.ISO;
-                        norm = Norm.ISO;
-                        var input = new FirstStepInput { AhuType = AhuTypeName.Evot };
-                        //var input = new FirstStepInput { AhuType = AhuTypeName.Evo };
+                        //norm = Norm.ISO;
+                        //var input = new FirstStepInput { AhuType = AhuTypeName.Evot };
+                        var input = new FirstStepInput { AhuType = AhuTypeName.Evo, AhuSetup = "D" };
                         Generate2D(elements, $"{Path.GetFileNameWithoutExtension(ofd.FileName)}.dxf", isExtended, norm, input);
                         dxf3D.Generate3D(elements, $"{Path.GetFileNameWithoutExtension(ofd.FileName)}_3D.dxf", norm);
 
@@ -1053,6 +1053,15 @@ namespace Klimor.WebApi.DXF
             }
         }
 
+        public void RemoveSteamGeneratorWithoutRoof(List<Coordinates> elements)
+        {
+            var hasRoof = elements.Any(e => e.label == Lab.Roof);
+            if (!hasRoof)
+            {
+                elements.RemoveAll(e => e.label == Lab.SteamGenerator);
+                elements.RemoveAll(e => e.posUpDown == "Frame: SH");
+            }
+        }
 
         private void Generate2D(List<Coordinates> elements, string fileOutput, bool isExtended, Norm norm, FirstStepInput input)
         {
@@ -1403,6 +1412,7 @@ namespace Klimor.WebApi.DXF
             RepositioningOnGridWhenViewsHide(norm, grid);
 
             // jeśli jest generator pary na froncie, to rysujemy go najpierw na operational, Bloki, potem SteamGen na back
+            RemoveSteamGeneratorWithoutRoof(elements);
             var steamGenOnFront = elements.Any(e => e.type == "SteamGenerator_Front");
             if (steamGenOnFront)
             {
