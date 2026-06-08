@@ -580,9 +580,30 @@ namespace Klimor.WebApi.DXF
                                               e.View == ViewName.DownUp &&
                                               downCondition(e)).ToList();
 
-                    elements.RemoveAll(e => !downUpClear.Contains(e) && e.View == ViewName.DownUp);
+                    elements.RemoveAll(e => !downUpClear.Contains(e) && e.View == ViewName.DownUp && e.label != Lab.Hatch);
                 }
+                
                 Views.DownUp.Visibility = true;
+            }
+
+            foreach (var wallBlock in elements.Where(e => e.label == Lab.Middle_Wall && e.View == ViewName.DownUp).ToList())
+            {
+                elements.Add(new Coordinates
+                {
+                    View = ViewName.DownUp,
+                    label = Lab.Block,
+                    type = Lab.Block,
+                    x1 = wallBlock.x1 - 50,
+                    x2 = wallBlock.x2 + 50,
+                    y1 = wallBlock.y1 - 50,
+                    y2 = wallBlock.y2 + 50,
+                    z1 = wallBlock.z1 - 50,
+                    z2 = wallBlock.z2 + 50,
+                    PositionUp = wallBlock.PositionUp,
+                    PositionDown = wallBlock.PositionDown,
+                    posUpDown = wallBlock.posUpDown,
+                    additionalInfos = wallBlock.additionalInfos,
+                });
             }
 
             // usuwanie duplikatów Hatchy na Up
@@ -718,7 +739,7 @@ namespace Klimor.WebApi.DXF
                             Back: Wall
                         */
                         var blockIgnore = elements.Any(e => e.label == Lab.Block && e.x1 == el.x1 - 50 && e.x2 == el.x2 + 50);
-                        if (!blockIgnore)
+                        //if (!blockIgnore)
                             addElement(vw, el, el.y2 + 50, Lab.Hatch);
                     }
 
@@ -1295,9 +1316,101 @@ namespace Klimor.WebApi.DXF
             }
 
             void GenerateRips()
-            {
+            {                
+                var operationals = elements.Where(el => el.label == Lab.Operational).ToList();
+                var backs = elements.Where(el => el.label == Lab.Back).ToList();
+                var ups = elements.Where(el => el.label is (Lab.Up)).ToList();                
+                var downs = elements.Where(el => el.label is 
+                (Lab.Down or Lab.Down_Wall or Lab.Down_DrainTray or Lab.Down_Removable
+                or Lab.Middle_Wall or Lab.Middle_DrainTray)).ToList();                
+
+                // operationale: Up + Down
+                foreach (var rips in ups.Concat(downs))
+                {
+                    foreach (var view in Views.Select(ViewName.Operational, ViewName.Back))
+                    {
+                        elements.Add(new Coordinates
+                        {
+                            View = view.Name,
+                            label = Lab.Hatch,
+                            type = rips.type,
+                            x1 = rips.x2 + 50,
+                            x2 = rips.x2,
+                            y1 = rips.y1,
+                            y2 = rips.y2,
+                            z1 = rips.z1,
+                            z2 = rips.z2,
+                            PositionUp = rips.PositionUp,
+                            PositionDown = rips.PositionDown,
+                            posUpDown = rips.posUpDown,
+                            additionalInfos = rips.additionalInfos,
+                        });
+                    }
+
+                    foreach (var view in Views.Select(ViewName.LeftFront, ViewName.RightFront))
+                    {
+                        if (view.Name == ViewName.RightFront)
+                        {
+                            elements.Add(new Coordinates
+                            {
+                                View = view.Name,
+                                label = Lab.Hatch,
+                                type = rips.type,
+                                x1 = rips.x1,
+                                x2 = rips.x1,
+                                y1 = rips.y1,
+                                y2 = rips.y2,
+                                z1 = rips.z2 + 50,
+                                z2 = rips.z2,
+                                PositionUp = rips.PositionUp,
+                                PositionDown = rips.PositionDown,
+                                posUpDown = rips.posUpDown,
+                                additionalInfos = rips.additionalInfos,
+                            });
+                        }
+                        if (view.Name == ViewName.LeftFront)
+                        {
+                            elements.Add(new Coordinates
+                            {
+                                View = view.Name,
+                                label = Lab.Hatch,
+                                type = rips.type,
+                                x1 = rips.x1,
+                                x2 = rips.x2,
+                                y1 = rips.y1,
+                                y2 = rips.y2,
+                                z1 = rips.z2 + 50,
+                                z2 = rips.z2,
+                                PositionUp = rips.PositionUp,
+                                PositionDown = rips.PositionDown,
+                                posUpDown = rips.posUpDown,
+                                additionalInfos = rips.additionalInfos,
+                            });
+                        }
+                    }
+                }                
+
+                //foreach (var rips in elements.Where(el => el.label == Lab.Hatch).ToList())
+                //{
+                //    elements.Add(new Coordinates
+                //    {
+                //        View = ViewName.Operational,
+                //        label = Lab.Hatch,
+                //        type = rips.type,
+                //        x1 = rips.x1,
+                //        x2 = rips.x2,
+                //        y1 = rips.y1,
+                //        y2 = rips.y2,
+                //        z1 = rips.z1,
+                //        z2 = rips.z2,
+                //        PositionUp = rips.PositionUp,
+                //        PositionDown = rips.PositionDown,
+                //        posUpDown = rips.posUpDown,
+                //        additionalInfos = rips.additionalInfos,
+                //    });
+                //}
                 var layer = dxf.Layers.Add(new Layer("Rips") { Color = new AciColor(7) });
-                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Hatch }, false, true, layer, textLayer, Views.Select(ViewName.Up, ViewName.UpUp, ViewName.Down, ViewName.DownUp), backgroundLayer);
+                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Hatch }, false, true, layer, textLayer, Views.Select(ViewName.Up, ViewName.UpUp, ViewName.Down, ViewName.DownUp, ViewName.Operational, ViewName.Back, ViewName.LeftFront, ViewName.RightFront), backgroundLayer);
             }
 
             void GeneratePortholeDimension()
@@ -1788,6 +1901,20 @@ namespace Klimor.WebApi.DXF
                     {
                         "Function_dimensions" or
                         "Walls_dimensions" => false,
+                        _ => layer.IsVisible
+                    };
+                }
+            }
+
+            if (isExtended)
+            {
+                foreach (var layer in dxf.Layers)
+                {
+                    layer.IsVisible = layer.Name switch
+                    {
+                        "Arrows" or 
+                        "ExternalElements" or 
+                        "ExternalElements_dimensions" => false,
                         _ => layer.IsVisible
                     };
                 }

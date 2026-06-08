@@ -54,7 +54,7 @@ namespace Klimor.WebApi.DXF.Services
         public void AddFilledCorner(double x, double y,
                                     double size = 50.0,
                                     AnchorPos anchor = AnchorPos.BottomLeft,
-                                    short aciColor = 9)
+                                    short aciColor = 7)
         {
             // wyznacz lewy-dolny narożnik kwadratu w zależności od kotwicy
             double x0 = x, y0 = y;

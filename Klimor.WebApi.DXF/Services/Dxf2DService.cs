@@ -68,7 +68,7 @@ namespace Klimor.WebApi.DXF.Services
 
         DimensionStyle dimStyle = new DimensionStyle("MyDimStyle")
         {
-            TextHeight = 15.0,
+            TextHeight = 20.0,
             ArrowSize = 15,
             LengthPrecision = 0,
             DimLineColor = AciColor.ByLayer,
@@ -753,10 +753,10 @@ namespace Klimor.WebApi.DXF.Services
                             }
 
                             // dodajemy kwadraciki - Up/Down ożebrowanie / znaczniki płyt na Up/Down
-                            if ((el.View == ViewName.UpUp || el.View == ViewName.DownUp)
+                            if ((el.View is (ViewName.UpUp or ViewName.DownUp or ViewName.Down or ViewName.Up or ViewName.Operational or ViewName.Back or ViewName.LeftFront or ViewName.RightFront))
                                 && (el.label == Lab.Hatch))
                             {
-                                if (el.x2 + 50 < Views.AhuLength && el.View == view.Name)
+                                if (el.x2 + 50 < Views.AhuLength && (el.View == view.Name))
                                 {
                                     var cornerService = new CornerService(dxf, layer);
                                     cornerService.AddFilledCorner(
@@ -801,9 +801,9 @@ namespace Klimor.WebApi.DXF.Services
                                                     "UpUp" => "UP",
                                                     "Operational" => "INS",
                                                     "Back" => "BACK",
-                                                    "Down" => "Down",
-                                                    "DownUp" => "Down",
-                                                    "Down_Wall" => "DOWN",
+                                                    "Down" => "PNL",
+                                                    "DownUp" => "PNL",
+                                                    "Down_Wall" => "PNL",
                                                     "Down_DrainTray" => "DRN_TRY",
                                                     "Frame" => "",
                                                     "Hatch" => "",
@@ -845,8 +845,13 @@ namespace Klimor.WebApi.DXF.Services
                                                     {
                                                         continue;
                                                     }
+                                                    var textY = c.Y + (el.y2 - el.y1) - profileOffset + externalElementsYOffset;
+                                                    if (view.Name is (ViewName.Up or ViewName.UpUp or ViewName.Down or ViewName.DownUp))
+                                                    {
+                                                        textY += (el.z2 - el.z1) - profileOffset;
+                                                    }
                                                     var text = new Text(wallDescription,
-                                                    new Vector3(c.X - ((el.x2 - el.x1) / 2) - profileOffset, c.Y + 2 * profileOffset + externalElementsYOffset, 0), 20);
+                                                    new Vector3(c.X - ((el.x2 - el.x1) / 2) - profileOffset, textY, 0), 17);
 
                                                     text.Style = LabelTextStyles.ArialBold;
                                                     text.Layer = layer;
@@ -950,54 +955,57 @@ namespace Klimor.WebApi.DXF.Services
                             }
                         }
 
+                        // pozycje poziomych wymiarów: Length KADOwe, korekta
+                        var downLengthLinePositionFactorY = 100;// (el.y2 - el.y1) / 2.35;
+                        var downLengthLinePositionFactorZ = 100;// (el.z2 - el.z1) / 2.25;                        
                         if (!string.IsNullOrEmpty(el.type))
-                        {
+                        {                            
                             // elementy zewnętrzne
                             if (externalElementShow)
                             {
-                                widthDim = new LinearDimension(wStart, wEnd, (el.y2 - el.y1) / 2, 0.0, dimStyle);
+                                widthDim = new LinearDimension(wStart, wEnd, downLengthLinePositionFactorZ, 0.0, dimStyle);
                                 addDim = true;
                             }
 
                             // widok operational
                             if ((el.type == Lab.Wall || el.type == Lab.Door || el.type.Contains(Lab.Removable)) && el.label == Lab.Operational && view.Name == ViewName.Operational && notForBlock)
                             {
-                                widthDim = new LinearDimension(wStart, wEnd, (el.y2 - el.y1) / 2 - profileOffset, 0.0, dimStyle);
+                                widthDim = new LinearDimension(wStart, wEnd, downLengthLinePositionFactorY, 0.0, dimStyle);
                                 addDim = true;
                             }
 
                             // widok back
                             if ((el.type == Lab.Wall || el.type == Lab.Door || el.type.Contains(Lab.Removable) || el.label == Lab.Frame) && el.label == Lab.Back && view.Name == ViewName.Back && notForBlock)
                             {
-                                widthDim = new LinearDimension(wStart, wEnd, (el.y2 - el.y1) / 2, 0.0, dimStyle);
+                                widthDim = new LinearDimension(wStart, wEnd, downLengthLinePositionFactorY, 0.0, dimStyle);
                                 addDim = true;
                             }
 
                             // widok up
                             if (el.type == Lab.Wall && el.label == Lab.Up && view.Name == ViewName.Up && notForBlock)
                             {
-                                widthDim = new LinearDimension(wStart, wEnd, (el.z2 - el.z1) / 2, 0.0, dimStyle);
+                                widthDim = new LinearDimension(wStart, wEnd, downLengthLinePositionFactorZ, 0.0, dimStyle);
                                 addDim = true;
                             }
 
                             // widok upUp
                             if (el.type == Lab.Wall && el.label == Lab.Up && view.Name == ViewName.UpUp && notForBlock)
                             {
-                                widthDim = new LinearDimension(wStart, wEnd, (el.z2 - el.z1) / 2, 0.0, dimStyle);
+                                widthDim = new LinearDimension(wStart, wEnd, downLengthLinePositionFactorZ, 0.0, dimStyle);
                                 addDim = true;
                             }
 
                             // widok down
                             if ((el.label is (Lab.Down_Wall or Lab.Down_DrainTray)) && view.Name is ViewName.Down && notForBlock)
                             {
-                                widthDim = new LinearDimension(wStart, wEnd, (el.z2 - el.z1) / 2, 0.0, dimStyle);
+                                widthDim = new LinearDimension(wStart, wEnd, downLengthLinePositionFactorZ, 0.0, dimStyle);
                                 addDim = true;
                             }
 
                             // widok downUp
                             if (el.label is Lab.Middle_Wall && view.Name is ViewName.DownUp)
                             {
-                                widthDim = new LinearDimension(wStart, wEnd, (el.z2 - el.z1) / 2, 0.0, dimStyle);
+                                widthDim = new LinearDimension(wStart, wEnd, downLengthLinePositionFactorZ, 0.0, dimStyle);
                                 addDim = true;
                             }
                         }
@@ -1024,7 +1032,7 @@ namespace Klimor.WebApi.DXF.Services
 
                         var hStart = outer2D[1];
                         var hEnd = outer2D[2];
-                        var heightDim = new LinearDimension(hStart, hEnd, dimOffset, 90.0, dimStyle)
+                        var heightDim = new LinearDimension(hStart, hEnd, dimOffset - downLengthLinePositionFactorZ, 90.0, dimStyle)
                         {
                             Layer = layer
                         };
