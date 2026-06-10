@@ -1355,7 +1355,7 @@ namespace Klimor.WebApi.DXF
                             {
                                 View = view.Name,
                                 label = Lab.Hatch,
-                                type = rips.type,
+                                type = "Hatch",
                                 x1 = rips.x1,
                                 x2 = rips.x1,
                                 y1 = rips.y1,
@@ -1374,7 +1374,7 @@ namespace Klimor.WebApi.DXF
                             {
                                 View = view.Name,
                                 label = Lab.Hatch,
-                                type = rips.type,
+                                type = "Hatch",
                                 x1 = rips.x1,
                                 x2 = rips.x2,
                                 y1 = rips.y1,

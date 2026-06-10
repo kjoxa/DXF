@@ -956,8 +956,8 @@ namespace Klimor.WebApi.DXF.Services
                         }
 
                         // pozycje poziomych wymiarów: Length KADOwe, korekta
-                        var downLengthLinePositionFactorY = 100;// (el.y2 - el.y1) / 2.35;
-                        var downLengthLinePositionFactorZ = 100;// (el.z2 - el.z1) / 2.25;                        
+                        var downLengthLinePositionFactorY = 70;// (el.y2 - el.y1) / 2.35;
+                        var downLengthLinePositionFactorZ = 70;// (el.z2 - el.z1) / 2.25;                        
                         if (!string.IsNullOrEmpty(el.type))
                         {                            
                             // elementy zewnętrzne
@@ -1058,48 +1058,55 @@ namespace Klimor.WebApi.DXF.Services
                             if (externalElementShow)
                             {
                                 heightDim = new LinearDimension(hStart, hEnd, dimOffset, 90.0, dimStyle);
+                                heightDim = new LinearDimension(hStart, hEnd, dimOffset, 90.0, dimStyle);
                                 addDim = true;
                             }
 
                             // widok operational
                             if ((el.type == Lab.Wall || el.type == Lab.Door || el.type.Contains(Lab.Removable)) && el.label == Lab.Operational && view.Name == ViewName.Operational && notForBlock)
                             {
-                                heightDim = new LinearDimension(hStart, hEnd, dimOffset, 90.0, dimStyle);
+                                //heightDim = new LinearDimension(hStart, hEnd, dimOffset, 90.0, dimStyle);
+                                heightDim = new LinearDimension(hStart, hEnd, downLengthLinePositionFactorY, 90.0, dimStyle);
                                 addDim = true;
                             }
 
                             // widok back
                             if ((el.type == Lab.Wall || el.type == Lab.Door || el.type.Contains(Lab.Removable)) && el.label == Lab.Back && view.Name == ViewName.Back && notForBlock)
                             {
-                                heightDim = new LinearDimension(hStart, hEnd, dimOffset + 100, 90.0, dimStyle);
+                                //heightDim = new LinearDimension(hStart, hEnd, dimOffset + 100, 90.0, dimStyle);
+                                heightDim = new LinearDimension(hStart, hEnd, downLengthLinePositionFactorY, 90.0, dimStyle);
                                 addDim = true;
                             }
 
                             // widok up
                             if ((el.type == Lab.Wall || el.type == Lab.Door || el.type.Contains(Lab.Removable)) && el.label == Lab.Up && view.Name == ViewName.Up && notForBlock)
                             {
-                                heightDim = new LinearDimension(hStart, hEnd, dimOffset + 100, 90.0, dimStyle);
+                                //heightDim = new LinearDimension(hStart, hEnd, dimOffset + 100, 90.0, dimStyle);
+                                heightDim = new LinearDimension(hStart, hEnd, downLengthLinePositionFactorY, 90.0, dimStyle);
                                 addDim = true;
                             }
 
                             // widok upUp
                             if ((el.type == Lab.Wall || el.type == Lab.Door || el.type.Contains(Lab.Removable)) && el.label == Lab.Up && view.Name == ViewName.UpUp && notForBlock)
                             {
-                                heightDim = new LinearDimension(hStart, hEnd, dimOffset + 100, 90.0, dimStyle);
+                                //heightDim = new LinearDimension(hStart, hEnd, dimOffset + 100, 90.0, dimStyle);
+                                heightDim = new LinearDimension(hStart, hEnd, downLengthLinePositionFactorY, 90.0, dimStyle);
                                 addDim = true;
                             }
 
                             // widok down
                             if ((el.label is (Lab.Down or Lab.Down_DrainTray or Lab.Down_Wall)) && view.Name is ViewName.Down && notForBlock)
                             {
-                                heightDim = new LinearDimension(hStart, hEnd, dimOffset + ((el.x2 - el.x1) / 3), 90.0, dimStyle);
+                                //heightDim = new LinearDimension(hStart, hEnd, dimOffset + ((el.x2 - el.x1) / 3), 90.0, dimStyle);
+                                heightDim = new LinearDimension(hStart, hEnd, downLengthLinePositionFactorY, 90.0, dimStyle);
                                 addDim = true;
                             }
 
                             // widok downUp
                             if (el.label is Lab.Middle_Wall && view.Name is ViewName.DownUp)
                             {
-                                heightDim = new LinearDimension(hStart, hEnd, dimOffset + ((el.x2 - el.x1) / 3), 90.0, dimStyle);
+                                //heightDim = new LinearDimension(hStart, hEnd, dimOffset + ((el.x2 - el.x1) / 3), 90.0, dimStyle);
+                                heightDim = new LinearDimension(hStart, hEnd, downLengthLinePositionFactorY, 90.0, dimStyle);
                                 addDim = true;
                             }
                         }

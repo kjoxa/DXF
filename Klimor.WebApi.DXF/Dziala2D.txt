@@ -114,3 +114,271 @@ private void Generate2D(List<Element> elements, string filePath)
 
             dxf.Save(filePath);
         }
+
+
+        NEW 3D WORK
+
+        public void Generate3D(List<Coordinates> elements, string filePath, Norm drawingNorm)
+        {
+            Views = new ViewsList();
+            var dxf = new DxfDocument();
+
+            Views.AhuLength = elements.Where(el => el.label == Lab.Block).Max(e => e.x2);
+            Views.AhuHeight = elements.Where(el => el.label == Lab.Block).Max(e => e.y2);
+            Views.AhuWidth = elements.Where(el => el.label == Lab.Block).Max(e => e.z2);
+
+            var blocksLayer = dxf.Layers.Add(new Layer(Lab.Block) { Color = new AciColor(4) });
+            var functionsLayer = dxf.Layers.Add(new Layer(Lab.Function) { Color = new AciColor(3) });
+            var operationalLayer = dxf.Layers.Add(new Layer(Lab.Operational) { Color = new AciColor(2) });
+            var backLayer = dxf.Layers.Add(new Layer(Lab.Back) { Color = new AciColor(1) });
+            var upLayer = dxf.Layers.Add(new Layer(Lab.Up) { Color = new AciColor(7) });
+            var downLayer = dxf.Layers.Add(new Layer(Lab.Down) { Color = new AciColor(6) });
+            var holeLayer = dxf.Layers.Add(new Layer(Lab.Hole) { Color = new AciColor(5) });
+            var airDamperLayer = dxf.Layers.Add(new Layer(Lab.AD) { Color = new AciColor(9) });
+            var flexibleConnectionLayer = dxf.Layers.Add(new Layer(Lab.FC) { Color = new AciColor(10) });
+            var intakeOutletLayer = dxf.Layers.Add(new Layer(Lab.INTK) { Color = new AciColor(11) });
+            var iconLayer = dxf.Layers.Add(new Layer(Lab.Icon) { Color = new AciColor(7) });
+            var portholeLayer = dxf.Layers.Add(new Layer(Lab.Porthole) { Color = new AciColor(7) });
+
+            var icons = DxfDocument.Load("BLOCKS.dxf");
+            var iconsList = icons.Blocks.ToList();
+
+            var mapIcons = elements.Where(e => e.label.Contains("icon")).ToList();
+            foreach (var icon in mapIcons)
+            {
+                icon.View = icon.additionalInfos.iconPosition;
+            }
+
+            if (elements == null || elements.Count == 0) return;
+
+            double minX = double.PositiveInfinity,
+                   minY = double.PositiveInfinity,
+                   minZ = double.PositiveInfinity;
+
+            foreach (var e in elements)
+            {
+                minX = Math.Min(minX, Math.Min(e.x1, e.x2));
+                minY = Math.Min(minY, Math.Min(e.y1, e.y2));
+                minZ = Math.Min(minZ, Math.Min(e.z1, e.z2));
+            }
+
+            double X(double x) => x - minX;
+            double Y(double y) => y - minY;
+            double Z(double z) => z - minZ;
+
+            const double profile = 50.0;
+
+            void AddLine(Vector3 a, Vector3 b, Layer layer)
+            {
+                dxf.Entities.Add(new Line(a, b)
+                {
+                    Layer = layer
+                });
+            }
+
+            void AddRect(Vector3 a, Vector3 b, Vector3 c, Vector3 d, Layer layer)
+            {
+                AddLine(a, b, layer);
+                AddLine(b, c, layer);
+                AddLine(c, d, layer);
+                AddLine(d, a, layer);
+            }
+
+            void AddBlockProfile(Coordinates el, Layer layer)
+            {
+                var p1 = new Vector3(X(el.x1), Z(el.z1), Y(el.y1));
+                var p2 = new Vector3(X(el.x2), Z(el.z1), Y(el.y1));
+                var p3 = new Vector3(X(el.x2), Z(el.z1), Y(el.y2));
+                var p4 = new Vector3(X(el.x1), Z(el.z1), Y(el.y2));
+
+                var p5 = new Vector3(X(el.x1), Z(el.z2), Y(el.y1));
+                var p6 = new Vector3(X(el.x2), Z(el.z2), Y(el.y1));
+                var p7 = new Vector3(X(el.x2), Z(el.z2), Y(el.y2));
+                var p8 = new Vector3(X(el.x1), Z(el.z2), Y(el.y2));
+
+                var i1 = new Vector3(X(el.x1 + profile), Z(el.z1 + profile), Y(el.y1 + profile));
+                var i2 = new Vector3(X(el.x2 - profile), Z(el.z1 + profile), Y(el.y1 + profile));
+                var i3 = new Vector3(X(el.x2 - profile), Z(el.z1 + profile), Y(el.y2 - profile));
+                var i4 = new Vector3(X(el.x1 + profile), Z(el.z1 + profile), Y(el.y2 - profile));
+
+                var i5 = new Vector3(X(el.x1 + profile), Z(el.z2 - profile), Y(el.y1 + profile));
+                var i6 = new Vector3(X(el.x2 - profile), Z(el.z2 - profile), Y(el.y1 + profile));
+                var i7 = new Vector3(X(el.x2 - profile), Z(el.z2 - profile), Y(el.y2 - profile));
+                var i8 = new Vector3(X(el.x1 + profile), Z(el.z2 - profile), Y(el.y2 - profile));
+
+                AddRect(p1, p2, p3, p4, layer);
+                AddRect(p5, p6, p7, p8, layer);
+
+                AddLine(p1, p5, layer);
+                AddLine(p2, p6, layer);
+                AddLine(p3, p7, layer);
+                AddLine(p4, p8, layer);
+
+                AddRect(i1, i2, i3, i4, layer);
+                AddRect(i5, i6, i7, i8, layer);
+
+                AddLine(i1, i5, layer);
+                AddLine(i2, i6, layer);
+                AddLine(i3, i7, layer);
+                AddLine(i4, i8, layer);
+            }
+
+            var textLayer = dxf.Layers.Add(new Layer("WatermarkEVO") { Color = new AciColor(7) });
+            var arrowLayer = dxf.Layers.Add(new Layer("Arrows") { Color = new AciColor(7) });
+
+            Add3DWatermark(dxf, textLayer, elements, X, Y, Z, textValue: "EVO", margin: 100);
+
+            foreach (var el in elements)
+            {
+                if (el.label == Lab.Block)
+                {
+                    AddBlockProfile(el, blocksLayer);
+                    continue;
+                }
+                if (el.label == "Porthole")
+                {
+                    double cx = X((el.x1 + el.x2) / 2.0);
+                    double cy = Y((el.y1 + el.y2) / 2.0);
+                    double cz = Z(el.z1);
+
+                    double radius = Math.Min(
+                        Math.Abs(X(el.x2) - X(el.x1)),
+                        Math.Abs(Y(el.y2) - Y(el.y1))
+                    ) / 2.0;
+
+                    var circle = new Circle(new Vector3(cx, cy, cz), radius)
+                    {
+                        Layer = portholeLayer,
+                        Normal = new Vector3(0, 0, 1)
+                    };
+
+                    dxf.Entities.Add(circle);
+                    continue;
+                }
+
+                var p1 = new Vector3(X(el.x1), Z(el.z1), Y(el.y1)); // lewy-dolny-przód
+                var p2 = new Vector3(X(el.x2), Z(el.z1), Y(el.y1)); // prawy-dolny-przód
+                var p3 = new Vector3(X(el.x2), Z(el.z1), Y(el.y2)); // prawy-górny-przód
+                var p4 = new Vector3(X(el.x1), Z(el.z1), Y(el.y2)); // lewy-górny-przód
+
+                var p5 = new Vector3(X(el.x1), Z(el.z2), Y(el.y1)); // lewy-dolny-ty³
+                var p6 = new Vector3(X(el.x2), Z(el.z2), Y(el.y1)); // prawy-dolny-ty³
+                var p7 = new Vector3(X(el.x2), Z(el.z2), Y(el.y2)); // prawy-górny-ty³
+                var p8 = new Vector3(X(el.x1), Z(el.z2), Y(el.y2)); // lewy-górny-ty³
+
+                // trójk¹ty
+                //var faces = new[]
+                //{
+                //    new Face3D(p1, p2, p3), new Face3D(p1, p3, p4),
+                //    new Face3D(p5, p6, p7), new Face3D(p5, p7, p8),
+                //    new Face3D(p1, p2, p6), new Face3D(p1, p6, p5),
+                //    new Face3D(p4, p3, p7), new Face3D(p4, p7, p8),
+                //    new Face3D(p1, p4, p8), new Face3D(p1, p8, p5),
+                //    new Face3D(p2, p3, p7), new Face3D(p2, p7, p6),
+                //};
+
+                var faces = new[]
+                {
+                    new Face3D(p1, p2, p3, p4), // front
+                    new Face3D(p5, p6, p7, p8), // back
+                
+                    new Face3D(p1, p2, p6, p5), // bottom
+                    new Face3D(p4, p3, p7, p8), // top
+                
+                    new Face3D(p1, p4, p8, p5), // left
+                    new Face3D(p2, p3, p7, p6), // right
+                };
+
+                var layer = new Layer(el.label) { Color = new AciColor(7) };
+
+                if (el.label == Lab.Hole)
+                {
+                    Create3DArrow(dxf, arrowLayer, el.additionalInfos?.airPath ?? "", el.additionalInfos?.airPathPosition ?? "", el.additionalInfos?.direction ?? "", el.additionalInfos?.isLeftSide ?? false, X(el.x1), Y(el.y1), el, el.View);
+                }
+                
+                foreach (var f in faces)
+                {
+                    if (el.label.Contains("icon"))
+                    {
+                        var sName = el.additionalInfos.iconName;
+                        if (sName is ("PFM" or "PFO" or "PFC" or "PFD")) sName = "PF";
+                        bool isExhaust = el.additionalInfos.airPath.ToLower() == "exhaust";
+                        if (Dxf2DService.IconMap.ContainsKey(sName!))
+                        {
+                            var insertIcon = iconsList.FirstOrDefault(b => b.Name.Equals(sName, StringComparison.OrdinalIgnoreCase));
+                            switch (el.additionalInfos.iconPosition)
+                            {
+                                case ViewName.Operational:
+                                    var insertIconOperational = new Insert(insertIcon)
+                                    {
+                                        Position = new Vector3(X(el.x1 + (el.x2 - el.x1)), Z(el.z1), Y(el.y1)), // przesuniêcie w bok
+                                        Layer = iconLayer,
+                                        Scale = new Vector3(1, 1, 1),
+                                        Normal = new Vector3(0, 1, 0)
+                                    };
+                                    if (!isExhaust && el.additionalInfos.sName == "VF")
+                                    {
+                                        insertIconOperational.Position = new Vector3(X(el.x1), Z(el.z1), Y(el.y1));
+                                        insertIconOperational.Scale = new Vector3(-1, 1, 1);                                        
+                                    }
+
+                                    if (el.View == ViewName.Operational)
+                                        dxf.Entities.Add(insertIconOperational);
+                                    break;
+
+                                case ViewName.Back:
+                                    var insertIconBack = new Insert(insertIcon)
+                                    {
+                                        Position = new Vector3(X(el.x1), Z(el.z1), Y(el.y1)),
+                                        Layer = iconLayer,
+                                        Scale = new Vector3(-1, 1, 1),
+                                        Normal = new Vector3(0, 1, 0)
+                                    };
+                                    if (isExhaust && el.additionalInfos.sName == "VF")
+                                    {
+                                        insertIconBack.Position = new Vector3(X(el.x2), Z(el.z1), Y(el.y1));
+                                        insertIconBack.Scale = new Vector3(1, 1, 1);
+                                    }
+
+                                    if (el.View == ViewName.Back)
+                                        dxf.Entities.Add(insertIconBack);
+                                    break;
+
+                                case ViewName.Up:
+                                case ViewName.UpUp:
+                                    var insertIconUp = new Insert(insertIcon)
+                                    {
+                                        Position = new Vector3(X(el.x1), Z(el.z1), Y(el.y1)),
+                                        Layer = iconLayer,
+                                        Normal = new Vector3(0, 0, 1)
+                                    };
+                                    if (!isExhaust && el.additionalInfos.sName == "VF")
+                                    {
+                                        insertIconUp.Position = new Vector3(X(el.x1), Z(el.z1), Y(el.y1));
+                                        insertIconUp.Scale = new Vector3(-1, 1, 1);        
+                                        insertIconUp.Rotation = 180;
+                                    }
+
+                                    dxf.Entities.Add(insertIconUp);
+                                    break;
+
+                                default:
+                                    break;
+                            }
+                        }
+                    }
+                    if (el.label.Contains("icon"))
+                    {
+                        f.Layer = iconLayer;
+                    }
+                    else
+                    {
+                        f.Layer = layer;
+                    }                        
+
+                    dxf.Entities.Add(f);
+                }
+            }            
+
+            dxf.Save(filePath);
+        }
