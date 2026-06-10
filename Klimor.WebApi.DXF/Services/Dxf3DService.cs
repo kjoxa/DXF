@@ -1,6 +1,7 @@
 ﻿using Klimor.WebApi.DXF.Consts;
 using Klimor.WebApi.DXF.Structures;
 using netDxf;
+using netDxf.Blocks;
 using netDxf.Collections;
 using netDxf.Entities;
 using netDxf.Tables;
@@ -11,6 +12,7 @@ using System.Linq;
 using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Windows.Forms.DataFormats;
 
 namespace Klimor.WebApi.DXF.Services
 {
@@ -33,17 +35,18 @@ namespace Klimor.WebApi.DXF.Services
             Views.AhuHeight = elements.Where(el => el.label == Lab.Block).Max(e => e.y2);
             Views.AhuWidth = elements.Where(el => el.label == Lab.Block).Max(e => e.z2);
 
-            var blocksLayer = dxf.Layers.Add(new Layer(Lab.Block) { Color = new AciColor(4) });
-            var functionsLayer = dxf.Layers.Add(new Layer(Lab.Function) { Color = new AciColor(3) });
-            var operationalLayer = dxf.Layers.Add(new Layer(Lab.Operational) { Color = new AciColor(2) });
-            var backLayer = dxf.Layers.Add(new Layer(Lab.Back) { Color = new AciColor(1) });
+            var blocksLayer = dxf.Layers.Add(new Layer(Lab.Block) { Color = new AciColor(7) });
+            var functionsLayer = dxf.Layers.Add(new Layer(Lab.Function) { Color = new AciColor(7) });
+            var operationalLayer = dxf.Layers.Add(new Layer(Lab.Operational) { Color = new AciColor(7) });
+            var backLayer = dxf.Layers.Add(new Layer(Lab.Back) { Color = new AciColor(7) });
             var upLayer = dxf.Layers.Add(new Layer(Lab.Up) { Color = new AciColor(7) });
-            var downLayer = dxf.Layers.Add(new Layer(Lab.Down) { Color = new AciColor(6) });
-            var holeLayer = dxf.Layers.Add(new Layer(Lab.Hole) { Color = new AciColor(5) });
-            var airDamperLayer = dxf.Layers.Add(new Layer(Lab.AD) { Color = new AciColor(9) });
-            var flexibleConnectionLayer = dxf.Layers.Add(new Layer(Lab.FC) { Color = new AciColor(10) });
-            var intakeOutletLayer = dxf.Layers.Add(new Layer(Lab.INTK) { Color = new AciColor(11) });
+            var downLayer = dxf.Layers.Add(new Layer(Lab.Down) { Color = new AciColor(7) });
+            var holeLayer = dxf.Layers.Add(new Layer(Lab.Hole) { Color = new AciColor(7) });
+            var airDamperLayer = dxf.Layers.Add(new Layer(Lab.AD) { Color = new AciColor(7) });
+            var flexibleConnectionLayer = dxf.Layers.Add(new Layer(Lab.FC) { Color = new AciColor(7) });
+            var intakeOutletLayer = dxf.Layers.Add(new Layer(Lab.INTK) { Color = new AciColor(7) });
             var iconLayer = dxf.Layers.Add(new Layer(Lab.Icon) { Color = new AciColor(7) });
+            var frameLayer = dxf.Layers.Add(new Layer(Lab.Frame) { Color = new AciColor(7) });
             var portholeLayer = dxf.Layers.Add(new Layer(Lab.Porthole) { Color = new AciColor(7) });
 
             var icons = DxfDocument.Load("BLOCKS.dxf");
@@ -58,22 +61,20 @@ namespace Klimor.WebApi.DXF.Services
 
             if (elements == null || elements.Count == 0) return;
 
-            // raz przed foreachem:
             double minX = double.PositiveInfinity,
                    minY = double.PositiveInfinity,
-                   zFront = double.NegativeInfinity;
+                   minZ = double.PositiveInfinity;
 
             foreach (var e in elements)
             {
                 minX = Math.Min(minX, Math.Min(e.x1, e.x2));
                 minY = Math.Min(minY, Math.Min(e.y1, e.y2));
-                zFront = Math.Max(zFront, Math.Max(e.z1, e.z2)); // jeśli u "front" zawsze = z2 -> Math.Max(zFront, e.z2)
+                minZ = Math.Min(minZ, Math.Min(e.z1, e.z2));
             }
 
-            // skróty (żeby w pętli było czytelnie)
             double X(double x) => x - minX;
             double Y(double y) => y - minY;
-            double Z(double z) => zFront - z;
+            double Z(double z) => z - minZ;
 
             // Dodaj warstwę i tekst "EVO" jako znak wodny
             var textLayer = dxf.Layers.Add(new Layer("WatermarkEVO") { Color = new AciColor(7) });
@@ -105,24 +106,37 @@ namespace Klimor.WebApi.DXF.Services
                     continue;
                 }
 
-                var p1 = new Vector3(X(el.x1), Y(el.y1), Z(el.z1));
-                var p2 = new Vector3(X(el.x2), Y(el.y1), Z(el.z1));
-                var p3 = new Vector3(X(el.x2), Y(el.y2), Z(el.z1));
-                var p4 = new Vector3(X(el.x1), Y(el.y2), Z(el.z1));
+                var p1 = new Vector3(X(el.x1), Z(el.z1), Y(el.y1)); // lewy-dolny-przód
+                var p2 = new Vector3(X(el.x2), Z(el.z1), Y(el.y1)); // prawy-dolny-przód
+                var p3 = new Vector3(X(el.x2), Z(el.z1), Y(el.y2)); // prawy-górny-przód
+                var p4 = new Vector3(X(el.x1), Z(el.z1), Y(el.y2)); // lewy-górny-przód
 
-                var p5 = new Vector3(X(el.x1), Y(el.y1), Z(el.z2));
-                var p6 = new Vector3(X(el.x2), Y(el.y1), Z(el.z2));
-                var p7 = new Vector3(X(el.x2), Y(el.y2), Z(el.z2));
-                var p8 = new Vector3(X(el.x1), Y(el.y2), Z(el.z2));
+                var p5 = new Vector3(X(el.x1), Z(el.z2), Y(el.y1)); // lewy-dolny-tył
+                var p6 = new Vector3(X(el.x2), Z(el.z2), Y(el.y1)); // prawy-dolny-tył
+                var p7 = new Vector3(X(el.x2), Z(el.z2), Y(el.y2)); // prawy-górny-tył
+                var p8 = new Vector3(X(el.x1), Z(el.z2), Y(el.y2)); // lewy-górny-tył
+
+                // trójkąty
+                //var faces = new[]
+                //{
+                //    new Face3D(p1, p2, p3), new Face3D(p1, p3, p4),
+                //    new Face3D(p5, p6, p7), new Face3D(p5, p7, p8),
+                //    new Face3D(p1, p2, p6), new Face3D(p1, p6, p5),
+                //    new Face3D(p4, p3, p7), new Face3D(p4, p7, p8),
+                //    new Face3D(p1, p4, p8), new Face3D(p1, p8, p5),
+                //    new Face3D(p2, p3, p7), new Face3D(p2, p7, p6),
+                //};
 
                 var faces = new[]
                 {
-                    new Face3D(p1, p2, p3), new Face3D(p1, p3, p4),
-                    new Face3D(p5, p6, p7), new Face3D(p5, p7, p8),
-                    new Face3D(p1, p2, p6), new Face3D(p1, p6, p5),
-                    new Face3D(p4, p3, p7), new Face3D(p4, p7, p8),
-                    new Face3D(p1, p4, p8), new Face3D(p1, p8, p5),
-                    new Face3D(p2, p3, p7), new Face3D(p2, p7, p6),
+                    new Face3D(p1, p2, p3, p4), // front
+                    new Face3D(p5, p6, p7, p8), // back
+                
+                    new Face3D(p1, p2, p6, p5), // bottom
+                    new Face3D(p4, p3, p7, p8), // top
+                
+                    new Face3D(p1, p4, p8, p5), // left
+                    new Face3D(p2, p3, p7, p6), // right
                 };
 
                 var layer = new Layer(el.label) { Color = new AciColor(7) };
@@ -147,14 +161,15 @@ namespace Klimor.WebApi.DXF.Services
                                 case ViewName.Operational:
                                     var insertIconOperational = new Insert(insertIcon)
                                     {
-                                        Position = new Vector3(X(el.x1), Y(el.y1), Z(el.z1)), // przesunięcie w bok
+                                        Position = new Vector3(X(el.x1 + (el.x2 - el.x1)), Z(el.z1), Y(el.y1)), // przesunięcie w bok
                                         Layer = iconLayer,
-                                        Scale = new Vector3(1, 1, 1)
+                                        Scale = new Vector3(1, 1, 1),
+                                        Normal = new Vector3(0, 1, 0)
                                     };
                                     if (!isExhaust && el.additionalInfos.sName == "VF")
                                     {
-                                        insertIconOperational.Position = new Vector3(X(el.x1 + (el.x2 - el.x1)), Y(el.y1), Z(el.z1));
-                                        insertIconOperational.Scale = new Vector3(-1, 1, 1);
+                                        insertIconOperational.Position = new Vector3(X(el.x1), Z(el.z1), Y(el.y1));
+                                        insertIconOperational.Scale = new Vector3(-1, 1, 1);                                        
                                     }
 
                                     if (el.View == ViewName.Operational)
@@ -164,13 +179,14 @@ namespace Klimor.WebApi.DXF.Services
                                 case ViewName.Back:
                                     var insertIconBack = new Insert(insertIcon)
                                     {
-                                        Position = new Vector3(X(el.x2), Y(el.y1), Z(el.z1)),
+                                        Position = new Vector3(X(el.x1), Z(el.z1), Y(el.y1)),
                                         Layer = iconLayer,
-                                        Scale = new Vector3(-1, 1, 1)
+                                        Scale = new Vector3(-1, 1, 1),
+                                        Normal = new Vector3(0, 1, 0)
                                     };
                                     if (isExhaust && el.additionalInfos.sName == "VF")
                                     {
-                                        insertIconBack.Position = new Vector3(X(el.x1), Y(el.y1), Z(el.z1));
+                                        insertIconBack.Position = new Vector3(X(el.x2), Z(el.z1), Y(el.y1));
                                         insertIconBack.Scale = new Vector3(1, 1, 1);
                                     }
 
@@ -182,13 +198,13 @@ namespace Klimor.WebApi.DXF.Services
                                 case ViewName.UpUp:
                                     var insertIconUp = new Insert(insertIcon)
                                     {
-                                        Position = new Vector3(X(el.x1 + (el.x2 - el.x1)), Y(el.y1), Z(el.z1 + (el.z2 - el.z1))),
+                                        Position = new Vector3(X(el.x1), Z(el.z1), Y(el.y1)),
                                         Layer = iconLayer,
-                                        Normal = new Vector3(0, 1, 0)
+                                        Normal = new Vector3(0, 0, 1)
                                     };
                                     if (!isExhaust && el.additionalInfos.sName == "VF")
                                     {
-                                        insertIconUp.Position = new Vector3(X(el.x1 + (el.x2 - el.x1)), Y(el.y1), Z(el.z1));
+                                        insertIconUp.Position = new Vector3(X(el.x1), Z(el.z1), Y(el.y1));
                                         insertIconUp.Scale = new Vector3(-1, 1, 1);        
                                         insertIconUp.Rotation = 180;
                                     }
@@ -228,21 +244,16 @@ namespace Klimor.WebApi.DXF.Services
                 _ => ArrowDirection.Right
             };
 
-            var label = string.Empty;
-            if (calculationNorm is (Norm.US or Norm.US_EXTENDED))
-            {
-                label = airPath switch
+            var label = calculationNorm is (Norm.US or Norm.US_EXTENDED)
+                ? airPath switch
                 {
                     "Supply" when airPathPosition == "Inlet" => "O/A",
                     "Supply" when airPathPosition == "Outlet" => "S/A",
                     "Exhaust" when airPathPosition == "Inlet" => "R/A",
                     "Exhaust" when airPathPosition == "Outlet" => "C/A",
                     _ => "N/A",
-                };
-            }
-            else
-            {
-                label = airPath switch
+                }
+                : airPath switch
                 {
                     "Supply" when airPathPosition == "Inlet" => "ODA",
                     "Supply" when airPathPosition == "Outlet" => "SUP",
@@ -250,69 +261,75 @@ namespace Klimor.WebApi.DXF.Services
                     "Exhaust" when airPathPosition == "Outlet" => "EHA",
                     _ => "N/A",
                 };
+
+            void AddArrowBlock(double posX, double posY, ArrowDirection dir)
+            {
+                var arrow = ArrowService.CreateArrow(
+                    anchor: new Vector2(0, 0),
+                    direction: dir,
+                    label: label,
+                    arrowSize: 150,
+                    padding: 20,
+                    outlineColor: airPath == "Supply" ? AciColor.Blue : AciColor.Red,
+                    layer: layer,
+                    filled: true,
+                    textStyle: LabelTextStyles.ArialBold
+                );
+
+                var block = new Block($"Arrow_{Guid.NewGuid():N}");
+
+                if (arrow.Fill != null)
+                    block.Entities.Add(arrow.Fill);
+
+                block.Entities.Add(arrow.Outline);
+                block.Entities.Add(arrow.Label);
+
+                dxf.Blocks.Add(block);
+
+                var insert = new Insert(block)
+                {
+                    // 300 przesunięcie w Z (w głąb centrali po width => Z)
+                    Position = new Vector3(posX, 300, posY),
+                    Layer = layer,
+                    Normal = new Vector3(0, 1, 0),
+                    Scale = new Vector3(1, 1, 1)
+                };
+
+                dxf.Entities.Add(insert);
             }
 
             switch (direction)
             {
                 case "Front":
                     x = isLeftSide ? x - 450 : x + 450;
-                    y = direction switch
-                    {
-                        "Front" => y + (el.y2 - el.y1) / 2,
-                        _ => y
-                    };
+                    y += (el.y2 - el.y1) / 2;
 
-                    ArrowService.AddArrow(
-                        dxf,
-                        anchor: new Vector2(x, y),
-                        direction: arrowDirection,
-                        label: label,
-                        arrowSize: 150,
-                        padding: 20,
-                        outlineColor: airPath == "Supply" ? AciColor.Blue : AciColor.Red,
-                        layer: layer,
-                        filled: true,
-                        textStyle: LabelTextStyles.ArialBold
-                    );
+                    AddArrowBlock(x, y, arrowDirection);
                     break;
 
-
                 case "Back":
-                    //x = isLeftSide ? x - 450 : x + 450;
-
                     switch (airPath)
                     {
                         case "Supply" when viewName == ViewName.Up:
-                            arrowDirection = airPathPosition == "Inlet" ? ArrowDirection.Down : ArrowDirection.Up;
-                            x = el.x1 + (el.x2 - el.x1) / 2 + 100;
+                            arrowDirection = airPathPosition == "Inlet"
+                                ? ArrowDirection.Down
+                                : ArrowDirection.Up;
+
+                            x = x + (el.x2 - el.x1) / 2 + 100;
                             y += 250;
                             break;
 
                         case "Exhaust" when viewName == ViewName.Up:
-                            arrowDirection = airPathPosition == "Inlet" ? ArrowDirection.Down : ArrowDirection.Up;
-                            x = el.x1 + (el.x2 - el.x1) / 2 - 100;
-                            y += 250;
-                            break;
+                            arrowDirection = airPathPosition == "Inlet"
+                                ? ArrowDirection.Down
+                                : ArrowDirection.Up;
 
-                        default:
+                            x = x + (el.x2 - el.x1) / 2 - 100;
+                            y += 250;
                             break;
                     }
 
-                    ArrowService.AddArrow(
-                        dxf,
-                        anchor: new Vector2(x, y),
-                        direction: arrowDirection,
-                        label: label,
-                        arrowSize: 150,
-                        padding: 20,
-                        outlineColor: airPath == "Supply" ? AciColor.Blue : AciColor.Red,
-                        layer: layer,
-                        filled: true,
-                        textStyle: LabelTextStyles.ArialBold
-                    );
-                    break;
-
-                default:
+                    AddArrowBlock(x, y, arrowDirection);
                     break;
             }
         }

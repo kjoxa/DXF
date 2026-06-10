@@ -13,6 +13,25 @@ namespace Klimor.WebApi.DXF.Services
 
     public static class ArrowService
     {
+        public static ArrowEntities CreateArrow(Vector2 anchor, ArrowDirection direction, string label, double arrowSize, double padding, AciColor outlineColor, Layer layer,
+            bool filled = false, AciColor? fillColor = null, double lengthFactor = 2.4, double headFactor = 0.75, double textHeightFactor = 0.30, TextStyle? textStyle = null)
+        {
+            return CreateArrowEntities(
+                anchor,
+                direction,
+                label,
+                arrowSize,
+                padding,
+                outlineColor,
+                layer,
+                filled,
+                fillColor,
+                lengthFactor,
+                headFactor,
+                textHeightFactor,
+                textStyle
+            );
+        }
         public static ArrowEntities AddArrow(
             DxfDocument dxf,
             Vector2 anchor,
@@ -77,15 +96,15 @@ namespace Klimor.WebApi.DXF.Services
 
             // 7-punktowy kształt (Right): trzonek węższy, grot pełnej wysokości
             var local = new List<Vector2>
-    {
-        new Vector2(xLeft,     -halfS), // 0: lewy dół trzonka
-        new Vector2(xHeadBase, -halfS), // 1: prawy dół trzonka
-        new Vector2(xHeadBase, -halfH), // 2: dół podstawy grotu (stopień)
-        new Vector2(xRight,     0),     // 3: czubek
-        new Vector2(xHeadBase,  halfH), // 4: góra podstawy grotu (stopień)
-        new Vector2(xHeadBase,  halfS), // 5: prawy góra trzonka
-        new Vector2(xLeft,      halfS), // 6: lewy góra trzonka
-    };
+            {
+                new Vector2(xLeft,     -halfS), // 0: lewy dół trzonka
+                new Vector2(xHeadBase, -halfS), // 1: prawy dół trzonka
+                new Vector2(xHeadBase, -halfH), // 2: dół podstawy grotu (stopień)
+                new Vector2(xRight,     0),     // 3: czubek
+                new Vector2(xHeadBase,  halfH), // 4: góra podstawy grotu (stopień)
+                new Vector2(xHeadBase,  halfS), // 5: prawy góra trzonka
+                new Vector2(xLeft,      halfS), // 6: lewy góra trzonka
+            };
 
             double angDeg = direction switch
             {
@@ -132,7 +151,8 @@ namespace Klimor.WebApi.DXF.Services
             {
                 Layer = layer,
                 Color = filled ? new AciColor(7) : outlineColor,
-                Alignment = TextAlignment.MiddleCenter
+                Alignment = TextAlignment.MiddleCenter,
+                Normal = new Vector3(0, 0, -1)
             };
 
             if (textStyle != null)
@@ -161,5 +181,4 @@ namespace Klimor.WebApi.DXF.Services
         public Text Label { get; init; }
         public Hatch? Fill { get; init; } // null jeśli filled=false
     }
-
 }
