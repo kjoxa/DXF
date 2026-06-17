@@ -14,6 +14,7 @@ namespace Klimor.WebApi.DXF.Consts
         // blocks & functions
         public const string Block = "Block";
         public const string Function = "Function";
+        public const string Wall_Block = "Wall_Block";
 
         // walls
         public const string Wall = "Wall";

@@ -105,14 +105,14 @@ namespace Klimor.WebApi.DXF.Services
         {
             var upChannel = elements.OrderBy(e => e.x1).FirstOrDefault(e => e.label == Lab.Block && e.y1 > 120);
             var downChannel = elements.OrderBy(e => e.x1).FirstOrDefault(e => e.label == Lab.Block && e.y1 <= 120);
-            var upUpChannel = elements.OrderBy(e => e.x1).FirstOrDefault(e => e.View == ViewName.UpUp);
-            var downUpChannel = elements.OrderBy(e => e.x1).FirstOrDefault(e => e.View == ViewName.DownUp);
-            var frameUpChannel = elements.OrderBy(e => e.x1).FirstOrDefault(e => e.View is ViewName.FrameUp);
-            var roofUpChannel = elements.OrderBy(e => e.x1).FirstOrDefault(e => e.View == ViewName.RoofUp);
+            var upUpChannel = elements.OrderBy(e => e.x1).FirstOrDefault(e => e.View == ViewName.UpUp && e.label != Lab.Hatch);
+            var downUpChannel = elements.OrderBy(e => e.x1).FirstOrDefault(e => e.View == ViewName.DownUp && e.label != Lab.Hatch);
+            var frameUpChannel = elements.OrderBy(e => e.x1).FirstOrDefault(e => e.View is ViewName.FrameUp && e.label != Lab.Hatch);
+            var roofUpChannel = elements.OrderBy(e => e.x1).FirstOrDefault(e => e.View == ViewName.RoofUp && e.label != Lab.Hatch);
 
             if (upChannel != null && (view.Name == ViewName.Operational || view.Name == ViewName.Back))
             {
-                var numberUp = new Text("2", new Vector3(view.XOffset - 500, view.YOffset + upChannel.y2 - (upChannel.y2 - upChannel.y1) / 2 - 300 / 2, 0), channelNumberTextSize)
+                var numberUp = new Text("2", new Vector3(view.XOffset - 500, view.YOffset + upChannel.y2 - (upChannel.y2 - upChannel.y1) / 2 + 200, 0), channelNumberTextSize)
                 {
                     Layer = textLayer,
                     Rotation = 0,
@@ -126,7 +126,7 @@ namespace Klimor.WebApi.DXF.Services
             if (downChannel != null && (view.Name == ViewName.Operational || view.Name == ViewName.Back
                 || view.Name == ViewName.Up || view.Name == ViewName.Down || view.Name == ViewName.Frame || view.Name == ViewName.Roof))
             {
-                var numberDown = new Text("1", new Vector3(view.XOffset - 500, view.YOffset + downChannel.y2 - (downChannel.y2 - downChannel.y1) / 2 - 300 / 2, 0), channelNumberTextSize)
+                var numberDown = new Text("1", new Vector3(view.XOffset - 500, view.YOffset + downChannel.y2 - (downChannel.y2 - downChannel.y1) / 2 - 200, 0), channelNumberTextSize)
                 {
                     Layer = textLayer,
                     Rotation = 0,
@@ -518,8 +518,20 @@ namespace Klimor.WebApi.DXF.Services
                             }
 
                             var idx = 0;
-                            var extra = 20.0;              // długość „wysunięcia” do wnętrza
-                            var w = profileOffset;         // szerokość profilu (dotychczasowe 50)
+
+                            var isWallMiddleBlock = el.posUpDown == Lab.Wall_Block; // <- flaga: true = z zajechaniem, false = zwykły narożnik
+                            var extra = isWallMiddleBlock ? 0.0 : 20.0;
+                            var w = profileOffset;
+
+                            void AddCornerPoint(List<Polyline2DVertex> list, double x, double y)
+                            {
+                                if (!list.Any() ||
+                                    list.Last().Position.X != x ||
+                                    list.Last().Position.Y != y)
+                                {
+                                    list.Add(new Polyline2DVertex(x, y, 0));
+                                }
+                            }
 
                             foreach (var c in outer2D)
                             {
@@ -527,18 +539,20 @@ namespace Klimor.WebApi.DXF.Services
 
                                 switch (idx)
                                 {
-                                    case 0: // lewy dół – rozsunięcie: w prawo (X+) i w górę (Y+)
-                                        cornerVertices.Add(new Polyline2DVertex(c.X, c.Y, 0));
-                                        cornerVertices.Add(new Polyline2DVertex(c.X + w + extra, c.Y, 0));
-                                        cornerVertices.Add(new Polyline2DVertex(c.X + w + extra, c.Y + w, 0));
-                                        cornerVertices.Add(new Polyline2DVertex(c.X + w, c.Y + w, 0));
-                                        cornerVertices.Add(new Polyline2DVertex(c.X + w, c.Y + w + extra, 0));
-                                        cornerVertices.Add(new Polyline2DVertex(c.X, c.Y + w + extra, 0));
+                                    case 0: // lewy dół
+                                        AddCornerPoint(cornerVertices, c.X, c.Y);
+                                        AddCornerPoint(cornerVertices, c.X + w + extra, c.Y);
+                                        AddCornerPoint(cornerVertices, c.X + w + extra, c.Y + w);
+                                        AddCornerPoint(cornerVertices, c.X + w, c.Y + w);
+                                        AddCornerPoint(cornerVertices, c.X + w, c.Y + w + extra);
+                                        AddCornerPoint(cornerVertices, c.X, c.Y + w + extra);
 
                                         if (!view.Name.ToLower().Contains("front") && el.additionalInfos != null)
                                         {
-                                            var text = new Text(el.additionalInfos.blockNumber.ToString(),
-                                            new Vector3(c.X + 2 * profileOffset, c.Y + 2 * profileOffset, 0), 70);
+                                            var text = new Text(
+                                                el.additionalInfos.blockNumber.ToString(),
+                                                new Vector3(c.X + 2 * profileOffset, c.Y + 2 * profileOffset, 0),
+                                                70);
 
                                             text.Style = LabelTextStyles.ArialBold;
                                             text.Layer = layer;
@@ -547,45 +561,50 @@ namespace Klimor.WebApi.DXF.Services
                                         }
                                         break;
 
-                                    case 1: // prawy dół – rozsunięcie: w lewo (X−) i w górę (Y+)
-                                        cornerVertices.Add(new Polyline2DVertex(c.X, c.Y, 0));
-                                        cornerVertices.Add(new Polyline2DVertex(c.X - w - extra, c.Y, 0));
-                                        cornerVertices.Add(new Polyline2DVertex(c.X - w - extra, c.Y + w, 0));
-                                        cornerVertices.Add(new Polyline2DVertex(c.X - w, c.Y + w, 0));
-                                        cornerVertices.Add(new Polyline2DVertex(c.X - w, c.Y + w + extra, 0));
-                                        cornerVertices.Add(new Polyline2DVertex(c.X, c.Y + w + extra, 0));
+                                    case 1: // prawy dół
+                                        AddCornerPoint(cornerVertices, c.X, c.Y);
+                                        AddCornerPoint(cornerVertices, c.X - w - extra, c.Y);
+                                        AddCornerPoint(cornerVertices, c.X - w - extra, c.Y + w);
+                                        AddCornerPoint(cornerVertices, c.X - w, c.Y + w);
+                                        AddCornerPoint(cornerVertices, c.X - w, c.Y + w + extra);
+                                        AddCornerPoint(cornerVertices, c.X, c.Y + w + extra);
                                         break;
 
-                                    case 2: // prawy góra – rozsunięcie: w lewo (X−) i w dół (Y−)
-                                        cornerVertices.Add(new Polyline2DVertex(c.X, c.Y, 0));
-                                        cornerVertices.Add(new Polyline2DVertex(c.X - w - extra, c.Y, 0));
-                                        cornerVertices.Add(new Polyline2DVertex(c.X - w - extra, c.Y - w, 0));
-                                        cornerVertices.Add(new Polyline2DVertex(c.X - w, c.Y - w, 0));
-                                        cornerVertices.Add(new Polyline2DVertex(c.X - w, c.Y - w - extra, 0));
-                                        cornerVertices.Add(new Polyline2DVertex(c.X, c.Y - w - extra, 0));
+                                    case 2: // prawy góra
+                                        AddCornerPoint(cornerVertices, c.X, c.Y);
+                                        AddCornerPoint(cornerVertices, c.X - w - extra, c.Y);
+                                        AddCornerPoint(cornerVertices, c.X - w - extra, c.Y - w);
+                                        AddCornerPoint(cornerVertices, c.X - w, c.Y - w);
+                                        AddCornerPoint(cornerVertices, c.X - w, c.Y - w - extra);
+                                        AddCornerPoint(cornerVertices, c.X, c.Y - w - extra);
                                         break;
 
-                                    case 3: // lewy góra – rozsunięcie: w prawo (X+) i w dół (Y−)
-                                        cornerVertices.Add(new Polyline2DVertex(c.X, c.Y, 0));
-                                        cornerVertices.Add(new Polyline2DVertex(c.X + w + extra, c.Y, 0));
-                                        cornerVertices.Add(new Polyline2DVertex(c.X + w + extra, c.Y - w, 0));
-                                        cornerVertices.Add(new Polyline2DVertex(c.X + w, c.Y - w, 0));
-                                        cornerVertices.Add(new Polyline2DVertex(c.X + w, c.Y - w - extra, 0));
-                                        cornerVertices.Add(new Polyline2DVertex(c.X, c.Y - w - extra, 0));
+                                    case 3: // lewy góra
+                                        AddCornerPoint(cornerVertices, c.X, c.Y);
+                                        AddCornerPoint(cornerVertices, c.X + w + extra, c.Y);
+                                        AddCornerPoint(cornerVertices, c.X + w + extra, c.Y - w);
+                                        AddCornerPoint(cornerVertices, c.X + w, c.Y - w);
+                                        AddCornerPoint(cornerVertices, c.X + w, c.Y - w - extra);
+                                        AddCornerPoint(cornerVertices, c.X, c.Y - w - extra);
                                         break;
                                 }
 
-                                // EvoT
                                 if (ahuType != AhuTypeName.Evot)
                                 {
                                     var cornerPoly = new Polyline2D(cornerVertices, true) { Layer = layer };
-                                    var hatch = new Hatch(HatchPattern.Solid, true) { Layer = layer, Color = new AciColor(7) };
-                                    hatch.BoundaryPaths.Add(new HatchBoundaryPath(new List<EntityObject> { cornerPoly }));
+                                    var hatch = new Hatch(HatchPattern.Solid, true)
+                                    {
+                                        Layer = layer,
+                                        Color = new AciColor(7)
+                                    };
 
+                                    hatch.BoundaryPaths.Add(new HatchBoundaryPath(new List<EntityObject> { cornerPoly }));
                                     dxf.Entities.Add(hatch);
                                 }
+
                                 idx++;
                             }
+
                             idx = 0;
                         }
 
@@ -846,7 +865,7 @@ namespace Klimor.WebApi.DXF.Services
                                                         continue;
                                                     }
                                                     var textY = c.Y + (el.y2 - el.y1) - profileOffset + externalElementsYOffset;
-                                                    if (view.Name is (ViewName.Up or ViewName.UpUp or ViewName.Down or ViewName.DownUp))
+                                                    if (view.Name is (ViewName.Up or ViewName.UpUp or ViewName.Down or ViewName.DownUp) && el.label is not (Lab.AD or Lab.FC or Lab.INTK or Lab.Hole))
                                                     {
                                                         textY += (el.z2 - el.z1) - profileOffset;
                                                     }

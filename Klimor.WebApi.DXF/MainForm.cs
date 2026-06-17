@@ -510,35 +510,70 @@ namespace Klimor.WebApi.DXF
             //    elements.RemoveAll(e => e.y2 == levels.Take(1).FirstOrDefault() && (e.label == Lab.Up || e.label == Lab.Hatch) && (e.type == Lab.Wall || e.type == Lab.Div || e.type.Contains("Removable")) && e.View == ViewName.UpUp);
             //}
 
+            // rozróżnijmy 2 rzeczy
+            // 1. Usuwanie walli
+            // 2. Uuwanie hatchy
+
+            // tu usuwamy walle
             if (levels.Count > 1)
             {
-                // bierzemy wszystkie poziomy poza najniższym
                 var upperLevels = levels.Skip(1).ToList();
 
-                var upperWalls = upWalls
-                    .Where(e => upperLevels.Contains(e.y2))
+                var upUpClear = elements
+    .Where(e => (e.y2 == upperLevels.FirstOrDefault()) &&
+                (e.label == Lab.Up || e.label == Lab.Hatch) &&
+                (e.type == Lab.Wall || e.type == Lab.Div || e.type.Contains("Removable")) &&
+                e.View == ViewName.Up)
+    .ToList();
+
+                elements.RemoveAll(upUpClear.Contains);
+
+                var hatchesFromUpUpClear = elements
+                    .Where(h => h.label == Lab.Hatch &&
+                                h.View == ViewName.Up &&
+                                upUpClear.Any(u =>
+                                    u.label == Lab.Up &&
+                                    h.x1 >= u.x1 &&
+                                    h.x2 <= u.x2))
                     .ToList();
 
-                // czyszczenie UpUp
-                elements.RemoveAll(e => (e.y2 == upperLevels.FirstOrDefault()) && (e.label == Lab.Up) && (e.type == Lab.Wall || e.type == Lab.Div || e.type.Contains("Removable")) && e.View == ViewName.Up);
-                //elements.RemoveAll(e => (e.y2 == upperLevels.FirstOrDefault()) && (e.label == Lab.Hatch) && (e.type == Lab.Wall || e.type.Contains("Removable")) && e.View == ViewName.Up);
+                elements.RemoveAll(hatchesFromUpUpClear.Contains);
 
-                // czyszczenie Up
-                elements.RemoveAll(e => e.y2 == levels.Take(1).FirstOrDefault() && (e.label == Lab.Up) && (e.type == Lab.Wall || e.type == Lab.Div || e.type.Contains("Removable")) && e.View == ViewName.UpUp);
+                var upClear = elements
+                    .Where(e => e.y2 == levels.Take(1).FirstOrDefault() && (e.label == Lab.Up || e.label == Lab.Hatch) && (e.type == Lab.Wall || e.type == Lab.Div || e.type.Contains("Removable")) && e.View == ViewName.UpUp)
+                    .ToList();
+
+                var hatchesFromUpClear = elements
+    .Where(h => h.label == Lab.Hatch &&
+                h.View == ViewName.UpUp &&
+                upClear.Any(u =>
+                    u.label == Lab.Up &&
+                    h.x1 >= u.x1 &&
+                    h.x2 <= u.x2))
+    .ToList();
+
+                elements.RemoveAll(hatchesFromUpClear.Contains);
+                elements.RemoveAll(upClear.Contains);
             }
+
+            var hatchsUpUpXremove = elements.Where(e => e.label == Lab.Hatch && e.View == ViewName.UpUp);
+
+            var hatchsUpXremove = elements.Where(e => e.label == Lab.Hatch && e.View == ViewName.UpUp);
+
 
             // usuwanie duplikatów Hatchy na Up
-            //elements.RemoveAll(e => e.label == Lab.Hatch && e.View == ViewName.Up && upUpHatches.Any(h => h.x1 == e.x1 && h.x2 == e.x2));
-            elements.RemoveAll(e => e.label == Lab.Hatch && e.View == ViewName.UpUp && e.y2 < levels.Skip(1).FirstOrDefault());
+            ////elements.RemoveAll(e => e.label == Lab.Hatch && e.View == ViewName.Up && upUpHatches.Any(h => h.x1 == e.x1 && h.x2 == e.x2));
 
-            // przesuwanie Hatchy, które wychodzą poza obręb UpUp
-            var minUpUpX1 = elements.Where(e => e.label == Lab.Up && e.View == ViewName.UpUp).Min(e => e.x1);
-            var maxUpUpX2 = elements.Where(e => e.label == Lab.Up && e.View == ViewName.UpUp).Max(e => e.x2);
-            foreach (var hatch in elements.Where(e => e.label == Lab.Hatch))
-            {
-                if (hatch.x1 < minUpUpX1 || hatch.x2 > maxUpUpX2)
-                    hatch.View = ViewName.Up;
-            }
+            //elements.RemoveAll(e => e.label == Lab.Hatch && e.View == ViewName.UpUp && e.y2 < levels.Skip(1).FirstOrDefault());
+
+            //// przesuwanie Hatchy, które wychodzą poza obręb UpUp
+            //var minUpUpX1 = elements.Where(e => e.label == Lab.Up && e.View == ViewName.UpUp).Min(e => e.x1);
+            //var maxUpUpX2 = elements.Where(e => e.label == Lab.Up && e.View == ViewName.UpUp).Max(e => e.x2);
+            //foreach (var hatch in elements.Where(e => e.label == Lab.Hatch))
+            //{
+            //    if (hatch.x1 < minUpUpX1 || hatch.x2 > maxUpUpX2)
+            //        hatch.View = ViewName.Up;
+            //}            
         }
 
         private void SelectWallDownChannel(List<Coordinates> elements)
@@ -586,25 +621,78 @@ namespace Klimor.WebApi.DXF
                 Views.DownUp.Visibility = true;
             }
 
-            foreach (var wallBlock in elements.Where(e => e.label == Lab.Middle_Wall && e.View == ViewName.DownUp).ToList())
+            //elements.Add(new Coordinates
+            //{
+            //    View = ViewName.DownUp,
+            //    label = Lab.Block,
+            //    type = Lab.Block,
+            //    x1 = wallBlock.x1 - 50,
+            //    x2 = wallBlock.x2 + 50,
+            //    y1 = wallBlock.y1 - 50,
+            //    y2 = wallBlock.y2 + 50,
+            //    z1 = wallBlock.z1 - 50,
+            //    z2 = wallBlock.z2 + 50,
+            //    PositionUp = wallBlock.PositionUp,
+            //    PositionDown = wallBlock.PositionDown,
+            //    posUpDown = wallBlock.posUpDown,
+            //    additionalInfos = wallBlock.additionalInfos,
+            //});
+
+            var middleWalls = elements.Where(e => e.label == Lab.Middle_Wall && e.View == ViewName.DownUp).ToList();
+            if (middleWalls.Any())
             {
-                elements.Add(new Coordinates
+                var blockContainsMiddleWalls = elements.Where(e => e.label == Lab.Block &&
+                e.x1 < middleWalls.Min(w => w.x1) &&
+                e.x2 > middleWalls.Max(w => w.x2) &&
+                e.y1 < middleWalls.Min(w => w.y1) &&
+                e.y2 > middleWalls.Max(w => w.y2) &&
+                e.z1 < middleWalls.Min(w => w.z1) &&
+                e.z2 > middleWalls.Max(w => w.z2) && e.View == ViewName.Down
+                ).ToList();
+
+                foreach (var wallBlock in blockContainsMiddleWalls.ToList())
                 {
-                    View = ViewName.DownUp,
-                    label = Lab.Block,
-                    type = Lab.Block,
-                    x1 = wallBlock.x1 - 50,
-                    x2 = wallBlock.x2 + 50,
-                    y1 = wallBlock.y1 - 50,
-                    y2 = wallBlock.y2 + 50,
-                    z1 = wallBlock.z1 - 50,
-                    z2 = wallBlock.z2 + 50,
-                    PositionUp = wallBlock.PositionUp,
-                    PositionDown = wallBlock.PositionDown,
-                    posUpDown = wallBlock.posUpDown,
-                    additionalInfos = wallBlock.additionalInfos,
-                });
+                    elements.Add(new Coordinates
+                    {
+                        View = ViewName.DownUp,
+                        label = Lab.Block,
+                        type = Lab.Block,
+                        x1 = wallBlock.x1,
+                        x2 = wallBlock.x2,
+                        y1 = wallBlock.y1 + 1,
+                        y2 = wallBlock.y2,
+                        z1 = wallBlock.z1,
+                        z2 = wallBlock.z2,
+                        PositionUp = wallBlock.PositionUp,
+                        PositionDown = wallBlock.PositionDown,
+                        posUpDown = Lab.Wall_Block,
+                        additionalInfos = wallBlock.additionalInfos,
+                    });
+                }
             }
+            
+
+
+            //foreach (var wallBlock in elements.Where(e => e.label == Lab.Middle_Wall && e.View == ViewName.DownUp).ToList())
+            //{
+            //    elements.Add(new Coordinates
+            //    {
+            //        View = ViewName.DownUp,
+            //        label = Lab.Block,
+            //        type = Lab.Block,
+            //        x1 = wallBlock.x1 - 50,
+            //        x2 = wallBlock.x2 + 50,
+            //        y1 = wallBlock.y1 - 50,
+            //        y2 = wallBlock.y2 + 50,
+            //        z1 = wallBlock.z1 - 50,
+            //        z2 = wallBlock.z2 + 50,
+            //        PositionUp = wallBlock.PositionUp,
+            //        PositionDown = wallBlock.PositionDown,
+            //        posUpDown = wallBlock.posUpDown,
+            //        additionalInfos = wallBlock.additionalInfos,
+            //    });
+            //}
+
 
             // usuwanie duplikatów Hatchy na Up
             //elements.RemoveAll(e => e.label == Lab.Hatch && e.View == ViewName.Down && downUpHatches.Any(h => h.x1 == e.x1 && h.x2 == e.x2));
@@ -1316,13 +1404,110 @@ namespace Klimor.WebApi.DXF
             }
 
             void GenerateRips()
-            {                
+            {                      
                 var operationals = elements.Where(el => el.label == Lab.Operational).ToList();
                 var backs = elements.Where(el => el.label == Lab.Back).ToList();
                 var ups = elements.Where(el => el.label is (Lab.Up)).ToList();                
                 var downs = elements.Where(el => el.label is 
                 (Lab.Down or Lab.Down_Wall or Lab.Down_DrainTray or Lab.Down_Removable
-                or Lab.Middle_Wall or Lab.Middle_DrainTray)).ToList();                
+                or Lab.Middle_Wall or Lab.Middle_DrainTray)).ToList();
+
+                var upWalls = elements
+                .Where(e => (e.label == ViewName.Up || e.label == ViewName.UpUp) && (e.type == Lab.Wall) && (e.View == ViewName.Up || e.View == ViewName.UpUp))
+                .OrderBy(e => e.y2)
+                .ToList();
+
+                if (upWalls.Count == 0)
+                    return;
+
+                var levels = upWalls
+                    .Select(e => e.y2)
+                    .Distinct()
+                    .OrderBy(v => v)
+                    .ToList();
+
+                Func<Coordinates, bool> downCondition = e =>
+                    (e.label is (Lab.Down_Wall or Lab.Down_DrainTray or Lab.Down_Div or Lab.Middle_Wall)) &&
+                    (e.type is (Lab.Wall or Lab.Down_DrainTray or Lab.DrainTray or Lab.Down_Div) ||
+                     e.View == ViewName.Down);
+
+                var downWalls = elements.Where(downCondition).OrderBy(e => e.y1).ToList();
+
+                if (downWalls.Count == 0)
+                    return;
+                
+                var levelsD = downWalls
+                    .Select(e => e.y1)
+                    .Distinct()
+                    .OrderBy(v => v)
+                    .ToList();
+
+                foreach (var rips in operationals)
+                {
+                    foreach (var view in Views.Select(ViewName.Up))
+                    {
+                        var changeView = string.Empty;
+                        if (rips.y2 + 50 == upWalls.FirstOrDefault()?.y2)
+                        {
+                            if (rips.x2 <= upWalls.FirstOrDefault()?.x2)
+                            {
+                                changeView = "Up";
+                            }
+                            else
+                            {
+                                changeView = "UpUp";
+                            }
+                        }
+                        elements.Add(new Coordinates
+                        {
+                            View = changeView,
+                            label = Lab.Hatch,
+                            type = rips.type,
+                            x1 = rips.x2 + 50,
+                            x2 = rips.x2,
+                            y1 = rips.y1,
+                            y2 = rips.y2,
+                            z1 = rips.z1,
+                            z2 = rips.z2,
+                            PositionUp = rips.PositionUp,
+                            PositionDown = rips.PositionDown,
+                            posUpDown = rips.posUpDown,
+                            additionalInfos = rips.additionalInfos,
+                        });
+                    }
+
+                    foreach (var view in Views.Select(ViewName.Down))
+                    {
+                        var changeView = string.Empty;
+                        if (rips.y2 + 50 == downWalls.FirstOrDefault()?.y2)
+                        {
+                            if (rips.x2 <= downWalls.FirstOrDefault()?.x2)
+                            {
+                                changeView = "Down";
+                            }
+                            else
+                            {
+                                changeView = "DownUp";
+                            }
+                        }
+                        elements.Add(new Coordinates
+                        {
+                            View = changeView,
+                            label = Lab.Hatch,
+                            type = rips.type,
+                            x1 = rips.x2 + 50,
+                            x2 = rips.x2,
+                            y1 = rips.y1,
+                            y2 = rips.y2,
+                            z1 = rips.z1,
+                            z2 = rips.z2,
+                            PositionUp = rips.PositionUp,
+                            PositionDown = rips.PositionDown,
+                            posUpDown = rips.posUpDown,
+                            additionalInfos = rips.additionalInfos,
+                        });
+                    }
+                }
 
                 // operationale: Up + Down
                 foreach (var rips in ups.Concat(downs))
@@ -1390,25 +1575,6 @@ namespace Klimor.WebApi.DXF
                     }
                 }                
 
-                //foreach (var rips in elements.Where(el => el.label == Lab.Hatch).ToList())
-                //{
-                //    elements.Add(new Coordinates
-                //    {
-                //        View = ViewName.Operational,
-                //        label = Lab.Hatch,
-                //        type = rips.type,
-                //        x1 = rips.x1,
-                //        x2 = rips.x2,
-                //        y1 = rips.y1,
-                //        y2 = rips.y2,
-                //        z1 = rips.z1,
-                //        z2 = rips.z2,
-                //        PositionUp = rips.PositionUp,
-                //        PositionDown = rips.PositionDown,
-                //        posUpDown = rips.posUpDown,
-                //        additionalInfos = rips.additionalInfos,
-                //    });
-                //}
                 var layer = dxf.Layers.Add(new Layer("Rips") { Color = new AciColor(7) });
                 dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Hatch }, false, true, layer, textLayer, Views.Select(ViewName.Up, ViewName.UpUp, ViewName.Down, ViewName.DownUp, ViewName.Operational, ViewName.Back, ViewName.LeftFront, ViewName.RightFront), backgroundLayer);
             }
@@ -1556,7 +1722,7 @@ namespace Klimor.WebApi.DXF
                 GenerateRoof();
                 GenerateRoofDimensions();
                 GeneratePorthole();
-                //GeneratePortholeDimension();
+                //GeneratePortholeDimension();                
                 GenerateRips();
                 GenerateSwitchbox();
                 GenerateSwitchboxDimension();
@@ -1719,6 +1885,7 @@ namespace Klimor.WebApi.DXF
             CreateTable(dxf, offset_x: Views.Table.XOffset, offset_y: Views.Table.YOffset, rows: data, title: "NW1 EVO-S Compact");
         }
 
+        
         private void CreateTable(
             DxfDocument dxf,
             double offset_x,
