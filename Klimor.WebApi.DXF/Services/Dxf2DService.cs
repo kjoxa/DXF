@@ -507,8 +507,25 @@ namespace Klimor.WebApi.DXF.Services
                             topLeft = new Vector2(topLeft.X, topLeft.Y);
 
                             // EvoT
-                            if (ahuType != AhuTypeName.Evot)
+                            if (ahuType == AhuTypeName.Evot)
                             {
+                                if (view.Name is (ViewName.LeftFront or ViewName.RightFront))
+                                {
+                                    bottomLeft = new Vector2(bottomLeft.X - 25, bottomLeft.Y - 50);
+                                    bottomRight = new Vector2(bottomRight.X + 25, bottomRight.Y - 50);
+                                    topRight = new Vector2(topRight.X + 25, topRight.Y + 25);
+                                    topLeft = new Vector2(topLeft.X - 25, topLeft.Y + 25);
+
+                                    inner2D = new List<Vector2> { bottomLeft, bottomRight, topRight, topLeft };
+                                    var innerPoly = new Polyline2D(inner2D.Select(v => new Polyline2DVertex(v.X, v.Y, 0)).ToList(), true)
+                                    {
+                                        Layer = layer
+                                    };
+                                    dxf.Entities.Add(innerPoly);
+                                }                                
+                            }
+                            else
+                            {                                
                                 inner2D = new List<Vector2> { bottomLeft, bottomRight, topRight, topLeft };
                                 var innerPoly = new Polyline2D(inner2D.Select(v => new Polyline2DVertex(v.X, v.Y, 0)).ToList(), true)
                                 {
@@ -816,8 +833,8 @@ namespace Klimor.WebApi.DXF.Services
                                             {
                                                 var wallDescription = el.label switch
                                                 {
-                                                    "Up" => "UP",
-                                                    "UpUp" => "UP",
+                                                    "Up" => "PNL",
+                                                    "UpUp" => "PNL",
                                                     "Operational" => "INS",
                                                     "Back" => "BACK",
                                                     "Down" => "PNL",
@@ -868,6 +885,10 @@ namespace Klimor.WebApi.DXF.Services
                                                     if (view.Name is (ViewName.Up or ViewName.UpUp or ViewName.Down or ViewName.DownUp) && el.label is not (Lab.AD or Lab.FC or Lab.INTK or Lab.Hole))
                                                     {
                                                         textY += (el.z2 - el.z1) - profileOffset;
+                                                    }
+                                                    if (el.label is (Lab.Roof or Lab.RoofUp))
+                                                    {
+                                                        textY = c.Y + (el.z1 - 100);
                                                     }
                                                     var text = new Text(wallDescription,
                                                     new Vector3(c.X - ((el.x2 - el.x1) / 2) - profileOffset, textY, 0), 17);
@@ -963,14 +984,14 @@ namespace Klimor.WebApi.DXF.Services
                                     }
                                 }
 
-                                wStart = new Vector2(minXframes, wStart.Y);
-                                wEnd = new Vector2(el.x1, wStart.Y);
+                                wStart = new Vector2(minXframes, wStart.Y + frameDownYoffset);
+                                wEnd = new Vector2(el.x1, wStart.Y - frameDownYoffset);
 
                                 widthDim = new LinearDimension(wStart, wEnd, -dimOffset - el.z1 > 50 ? dimOffset - frameUpYoffset - 50 : dimOffset - frameDownYoffset + 20, 0.0, dimStyle);
                                 widthDim.Layer = layer;
                                 //widthDim.UserText = $"x1: {el.x1} x2: {el.x2} l: {el.x2 - el.x1} / z1: {el.z1} z2:{el.z2}";
-                                if (el.z1 >= 50)
-                                    frameDownYoffset += 30;
+                                if (el.z1 >= 50 || el.z1 == 0)
+                                    frameDownYoffset += 30;                                
                             }
                         }
 
@@ -1041,7 +1062,7 @@ namespace Klimor.WebApi.DXF.Services
                             }
                             else if ((el.label == Lab.Function
                                   || (el.label == Lab.Block && el.View == ViewName.RightFront)
- /*EvoT*/                         || (Lab.ExternalElements.Any(l => l == el.label) && el.View == ViewName.RightFront)
+ /*EvoT*/                         || (Lab.ExternalElements.Any(l => l == el.label))
                                   || addDim) && !exceptionNotShow)
                             {
                                 widthDim.Layer = layer;
@@ -1076,8 +1097,7 @@ namespace Klimor.WebApi.DXF.Services
                             // elementy zewnętrzne
                             if (externalElementShow)
                             {
-                                heightDim = new LinearDimension(hStart, hEnd, dimOffset, 90.0, dimStyle);
-                                heightDim = new LinearDimension(hStart, hEnd, dimOffset, 90.0, dimStyle);
+                                heightDim = new LinearDimension(hStart, hEnd, dimOffset, 90.0, dimStyle);                                
                                 addDim = true;
                             }
 
@@ -1131,10 +1151,14 @@ namespace Klimor.WebApi.DXF.Services
                         }
 
                         if (el.View == view.Name)
-                        {
+                        {                            
                             var dimensionMoved = el.label == Lab.Block && el.View is (ViewName.RightFront or ViewName.Operational);
                             if (dimensionMoved)
                             {
+                                if (ahuType == AhuTypeName.Evot && el.View == ViewName.RightFront && view.Name == ViewName.RightFront)
+                                {                                    
+                                    hStart.Y -= 25;                                    
+                                }                                
                                 dimOffset = 250;
                                 heightDim = new LinearDimension(hStart, hEnd, -dimOffset, 90.0, dimStyle);
                                 heightDim.Layer = layer;

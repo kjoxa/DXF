@@ -67,7 +67,7 @@ namespace Klimor.WebApi.DXF
                         var norm = isExtended ? Norm.ISO_EXTENDED : Norm.ISO;
                         //norm = Norm.ISO;
                         //var input = new FirstStepInput { AhuType = AhuTypeName.Evot };
-                        var input = new FirstStepInput { AhuType = AhuTypeName.Evo, AhuSetup = "D" };
+                        var input = new FirstStepInput { AhuType = AhuTypeName.Evo, AhuSetup = "V" };
                         Generate2D(elements, $"{Path.GetFileNameWithoutExtension(ofd.FileName)}.dxf", isExtended, norm, input);
                         dxf3D.Generate3D(elements, $"{Path.GetFileNameWithoutExtension(ofd.FileName)}_3D.dxf", norm);
 
@@ -1244,6 +1244,8 @@ namespace Klimor.WebApi.DXF
                 var layer = dxf.Layers.Add(new Layer("Walls") { Color = new AciColor(7) });
                 dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Operational, Lab.Back, Lab.Down_Removable }, false, true, layer, textLayer,
                    Views.Select(ViewName.Operational, ViewName.Back, ViewName.LeftFront, ViewName.RightFront, ViewName.Down), backgroundLayer);
+                layer = dxf.Layers.Add(new Layer("Walls_dimension") { Color = new AciColor(7) });
+                dxf2D.GenerateView(dxf, elements, new List<string> { Lab.Operational, Lab.Back, Lab.Down_Removable }, true, false, layer, textLayer, Views.Select(ViewName.Operational, ViewName.Down), backgroundLayer);
             }
 
             void GenerateWallsDimensions()
@@ -2049,7 +2051,7 @@ namespace Klimor.WebApi.DXF
                 foreach (var el in elements.ToList())
                 {
                     if (!(el.type.Contains("Removable") || el.type.Contains("Door")) &&
-                        (el.label is not (Lab.Block or Lab.Function) && !el.label.Contains("icon")) &&
+                        (el.label is not (Lab.Block or Lab.Function or Lab.SteamGenerator) && !el.label.Contains("icon")) &&
                         !Lab.ExternalElements.Any(l => l == el.label))
                     {
                         elements.Remove(el);

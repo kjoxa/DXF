@@ -65,8 +65,7 @@ namespace Klimor.WebApi.DXF.Services
                 case AnchorPos.TopRight: x0 = x - size; y0 = y - size; break;
                 case AnchorPos.TopLeft: x0 = x; y0 = y - size; break;
             }
-
-            // wierzchołki kwadratu (zgodnie z Twoim stylem)
+            
             var cornerVertices = new List<Polyline2DVertex>
             {
                 new Polyline2DVertex(x0,         y0,          0),
