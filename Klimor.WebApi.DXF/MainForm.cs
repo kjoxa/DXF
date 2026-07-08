@@ -66,8 +66,8 @@ namespace Klimor.WebApi.DXF
                         var isExtended = prodBox.Checked;
                         var norm = isExtended ? Norm.ISO_EXTENDED : Norm.ISO;
                         //norm = Norm.ISO;
-                        //var input = new FirstStepInput { AhuType = AhuTypeName.Evot };
-                        var input = new FirstStepInput { AhuType = AhuTypeName.Evo, AhuSetup = "V" };
+                        var input = new FirstStepInput { AhuType = AhuTypeName.Evot, AhuSetup = "H" };
+                        //var input = new FirstStepInput { AhuType = AhuTypeName.Evo, AhuSetup = "V" };
                         Generate2D(elements, $"{Path.GetFileNameWithoutExtension(ofd.FileName)}.dxf", isExtended, norm, input);
                         dxf3D.Generate3D(elements, $"{Path.GetFileNameWithoutExtension(ofd.FileName)}_3D.dxf", norm);
 
@@ -846,13 +846,17 @@ namespace Klimor.WebApi.DXF
                         addElement(vw, el, 0, null);
                     }
 
-                    if (el.label is Lab.Porthole && vw.Name is (ViewName.Operational or ViewName.Back))
+                    if (el.label is Lab.Porthole && vw.Name is (ViewName.Operational or ViewName.Back or ViewName.Down))
                     {
                         if (vw.Name == ViewName.Operational && el.z1 < 10)
                         {
                             addElement(vw, el, 0, null);
                         }
-                        else if (vw.Name == ViewName.Back && el.z1 > 10)
+                        else if (vw.Name == ViewName.Back && el.z1 > 10 && el.posUpDown != "Porthole_Down")
+                        {
+                            addElement(vw, el, 0, null);
+                        }  
+                        if (vw.Name == ViewName.Down && el.posUpDown == "Porthole_Down")
                         {
                             addElement(vw, el, 0, null);
                         }

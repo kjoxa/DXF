@@ -704,7 +704,8 @@ namespace Klimor.WebApi.DXF.Services
                             }
 
                             // dodawanie konektora
-                            if ((el.label == Lab.Connector || el.type == Lab.Porthole) && (view.Name == ViewName.Operational || view.Name == ViewName.Back))
+                            if ((el.label == Lab.Connector || el.type == Lab.Porthole) && view.Name is (ViewName.Operational or ViewName.Down or ViewName.Back))
+                            //if ((el.label == Lab.Connector || el.type == Lab.Porthole) && (view.Name == ViewName.Operational || view.Name == ViewName.Back))
                             {
                                 AddCircle(outer2D, dxf, el, layer);
                                 continue;
