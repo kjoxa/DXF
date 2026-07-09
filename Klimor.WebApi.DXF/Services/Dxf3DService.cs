@@ -36,7 +36,7 @@ namespace Klimor.WebApi.DXF.Services
             Views.AhuWidth = elements.Where(el => el.label == Lab.Block).Max(e => e.z2);
 
             var blocksLayer = dxf.Layers.Add(new Layer(Lab.Block) { Color = new AciColor(7) });
-            var functionsLayer = dxf.Layers.Add(new Layer(Lab.Function) { Color = new AciColor(7) });
+            var functionsLayer = dxf.Layers.Add(new Layer(Lab.Function) { Color = new AciColor(7), IsVisible = false });
             var operationalLayer = dxf.Layers.Add(new Layer(Lab.Operational) { Color = new AciColor(7) });
             var backLayer = dxf.Layers.Add(new Layer(Lab.Back) { Color = new AciColor(7) });
             var upLayer = dxf.Layers.Add(new Layer(Lab.Up) { Color = new AciColor(7) });
@@ -83,26 +83,62 @@ namespace Klimor.WebApi.DXF.Services
             Add3DWatermark(dxf, textLayer, elements, X, Y, Z, textValue: "EVO", margin: 100);
             // End dodawania znaku wodnego
 
+            foreach (var b in icons.Blocks)
+            {
+                b.Origin = new Vector3(50, 50, 0);
+            }
+
+            static double Normalize360(double deg)
+            {
+                deg %= 360.0;
+                if (deg < 0) deg += 360.0;
+                return deg;
+            }
+
             foreach (var el in elements)
             {
                 if (el.label == "Porthole")
                 {
                     double cx = X((el.x1 + el.x2) / 2.0);
-                    double cy = Y((el.y1 + el.y2) / 2.0);
-                    double cz = Z(el.z1);
+                    double radius;
 
-                    double radius = Math.Min(
-                        Math.Abs(X(el.x2) - X(el.x1)),
-                        Math.Abs(Y(el.y2) - Y(el.y1))
-                    ) / 2.0;
-
-                    var circle = new Circle(new Vector3(cx, cy, cz), radius)
+                    if (el.posUpDown == "Porthole_Down")
                     {
-                        Layer = portholeLayer,
-                        Normal = new Vector3(0, 0, 1)
-                    };
+                        double cy = Z((el.z1 + el.z2) / 2.0);
+                        double cz = Y(el.y1);
 
-                    dxf.Entities.Add(circle);
+                        radius = Math.Min(
+                            Math.Abs(X(el.x2) - X(el.x1)),
+                            Math.Abs(Z(el.z2) - Z(el.z1))
+                        ) / 2.0;
+
+                        var circle = new Circle(new Vector3(cx, cy, cz), radius)
+                        {
+                            Layer = portholeLayer,
+                            Normal = new Vector3(0, 0, 1)
+                        };
+
+                        dxf.Entities.Add(circle);
+                    }
+                    else
+                    {
+                        double cy = Z(el.z1);
+                        double cz = Y((el.y1 + el.y2) / 2.0);
+
+                        radius = Math.Min(
+                            Math.Abs(X(el.x2) - X(el.x1)),
+                            Math.Abs(Y(el.y2) - Y(el.y1))
+                        ) / 2.0;
+
+                        var circle = new Circle(new Vector3(cx, cy, cz), radius)
+                        {
+                            Layer = portholeLayer,
+                            Normal = new Vector3(0, 1, 0)
+                        };
+
+                        dxf.Entities.Add(circle);
+                    }
+
                     continue;
                 }
 
@@ -152,62 +188,56 @@ namespace Klimor.WebApi.DXF.Services
                     {
                         var sName = el.additionalInfos.iconName;
                         if (sName is ("PFM" or "PFO" or "PFC" or "PFD")) sName = "PF";
-                        bool isExhaust = el.additionalInfos.airPath.ToLower() == "exhaust";
+
                         if (Dxf2DService.IconMap.ContainsKey(sName!))
                         {
                             var insertIcon = iconsList.FirstOrDefault(b => b.Name.Equals(sName, StringComparison.OrdinalIgnoreCase));
+
+                            var cw = el.additionalInfos.iconRotation;
+                            var dxfIconRotation = Normalize360(360.0 - cw);
+
                             switch (el.additionalInfos.iconPosition)
                             {
                                 case ViewName.Operational:
                                     var insertIconOperational = new Insert(insertIcon)
                                     {
-                                        Position = new Vector3(X(el.x1 + (el.x2 - el.x1)), Z(el.z1), Y(el.y1)), // przesunięcie w bok
+                                        Position = new Vector3(X(el.x1 + 50), Z(el.z1), Y(el.y1 + 50)),
                                         Layer = iconLayer,
                                         Scale = new Vector3(1, 1, 1),
-                                        Normal = new Vector3(0, 1, 0)
+                                        Normal = new Vector3(0, -1, 0),
+                                        Rotation = dxfIconRotation
                                     };
-                                    if (!isExhaust && el.additionalInfos.sName == "VF")
-                                    {
-                                        insertIconOperational.Position = new Vector3(X(el.x1), Z(el.z1), Y(el.y1));
-                                        insertIconOperational.Scale = new Vector3(-1, 1, 1);                                        
-                                    }
 
                                     if (el.View == ViewName.Operational)
                                         dxf.Entities.Add(insertIconOperational);
+
                                     break;
 
                                 case ViewName.Back:
                                     var insertIconBack = new Insert(insertIcon)
                                     {
-                                        Position = new Vector3(X(el.x1), Z(el.z1), Y(el.y1)),
+                                        Position = new Vector3(X(el.x1 + 50), Z(el.z2), Y(el.y1 + 50)),
                                         Layer = iconLayer,
-                                        Scale = new Vector3(-1, 1, 1),
-                                        Normal = new Vector3(0, 1, 0)
+                                        Scale = new Vector3(1, 1, 1),
+                                        Normal = new Vector3(0, 1, 0),
+                                        Rotation = dxfIconRotation
                                     };
-                                    if (isExhaust && el.additionalInfos.sName == "VF")
-                                    {
-                                        insertIconBack.Position = new Vector3(X(el.x2), Z(el.z1), Y(el.y1));
-                                        insertIconBack.Scale = new Vector3(1, 1, 1);
-                                    }
 
                                     if (el.View == ViewName.Back)
                                         dxf.Entities.Add(insertIconBack);
+
                                     break;
 
                                 case ViewName.Up:
                                 case ViewName.UpUp:
                                     var insertIconUp = new Insert(insertIcon)
                                     {
-                                        Position = new Vector3(X(el.x1), Z(el.z1), Y(el.y1)),
+                                        Position = new Vector3(X(el.x1 + 50), Z(el.z1 + 50), Y(el.y1)),
                                         Layer = iconLayer,
-                                        Normal = new Vector3(0, 0, 1)
+                                        Scale = new Vector3(1, 1, 1),
+                                        Normal = new Vector3(0, 0, 1),
+                                        Rotation = dxfIconRotation
                                     };
-                                    if (!isExhaust && el.additionalInfos.sName == "VF")
-                                    {
-                                        insertIconUp.Position = new Vector3(X(el.x1), Z(el.z1), Y(el.y1));
-                                        insertIconUp.Scale = new Vector3(-1, 1, 1);        
-                                        insertIconUp.Rotation = 180;
-                                    }
 
                                     dxf.Entities.Add(insertIconUp);
                                     break;
@@ -291,7 +321,7 @@ namespace Klimor.WebApi.DXF.Services
                     // 300 przesunięcie w Z (w głąb centrali po width => Z)
                     Position = new Vector3(posX, 300, posY),
                     Layer = layer,
-                    Normal = new Vector3(0, 1, 0),
+                    Normal = new Vector3(0, -1, 0),
                     Scale = new Vector3(1, 1, 1)
                 };
 
