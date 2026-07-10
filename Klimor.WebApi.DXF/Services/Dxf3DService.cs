@@ -20,14 +20,16 @@ namespace Klimor.WebApi.DXF.Services
     {
         public ViewsList Views;
         public Norm calculationNorm;
+        private string ahuType;
 
         public Dxf3DService()
         {
             Views = new ViewsList();
         }
 
-        public void Generate3D(List<Coordinates> elements, string filePath, Norm drawingNorm)
+        public void Generate3D(List<Coordinates> elements, string filePath, Norm drawingNorm, FirstStepInput input)
         {
+            ahuType = input.AhuType;
             Views = new ViewsList();
             var dxf = new DxfDocument();
 
@@ -81,6 +83,7 @@ namespace Klimor.WebApi.DXF.Services
             var arrowLayer = dxf.Layers.Add(new Layer("Arrows") { Color = new AciColor(7) });
 
             Add3DWatermark(dxf, textLayer, elements, X, Y, Z, textValue: "EVO", margin: 100);
+
             // End dodawania znaku wodnego
 
             foreach (var b in icons.Blocks)
@@ -179,7 +182,7 @@ namespace Klimor.WebApi.DXF.Services
 
                 if (el.label == Lab.Hole)
                 {
-                    Create3DArrow(dxf, arrowLayer, el.additionalInfos?.airPath ?? "", el.additionalInfos?.airPathPosition ?? "", el.additionalInfos?.direction ?? "", el.additionalInfos?.isLeftSide ?? false, X(el.x1), Y(el.y1), el, el.View);
+                    Create3DArrow(dxf, arrowLayer, el.additionalInfos?.airPath ?? "", el.additionalInfos?.airPathPosition ?? "", el.additionalInfos?.direction ?? "", el.additionalInfos?.isLeftSide ?? false, X(el.x1), ahuType == AhuTypeName.Evo ? Z(el.y1) : Z(el.z1), el, el.View);
                 }
                 
                 foreach (var f in faces)
@@ -305,6 +308,7 @@ namespace Klimor.WebApi.DXF.Services
                     filled: true,
                     textStyle: LabelTextStyles.ArialBold
                 );
+                arrow.Label.IsBackward = true;
 
                 var block = new Block($"Arrow_{Guid.NewGuid():N}");
 
@@ -314,14 +318,22 @@ namespace Klimor.WebApi.DXF.Services
                 block.Entities.Add(arrow.Outline);
                 block.Entities.Add(arrow.Label);
 
-                dxf.Blocks.Add(block);
+                dxf.Blocks.Add(block);                
+
+                var isEvot = ahuType == AhuTypeName.Evot;
 
                 var insert = new Insert(block)
                 {
-                    // 300 przesunięcie w Z (w głąb centrali po width => Z)
-                    Position = new Vector3(posX, 300, posY),
+                    Position = isEvot
+                        ? new Vector3(posX, posY, (el.z2 - el.z1) / 2)
+                        : new Vector3(posX, el.y2 - el.y1, posY),
+
                     Layer = layer,
-                    Normal = new Vector3(0, -1, 0),
+
+                    Normal = isEvot
+                        ? new Vector3(0, 0, 1)
+                        : new Vector3(0, -1, 0),
+
                     Scale = new Vector3(1, 1, 1)
                 };
 
@@ -364,7 +376,8 @@ namespace Klimor.WebApi.DXF.Services
             }
         }
 
-        private void Add3DWatermark(DxfDocument dxf, Layer textLayer, IEnumerable<Coordinates> elements, Func<double, double> X, Func<double, double> Y, Func<double, double> Z, string textValue, double margin = 10)
+        private void Add3DWatermark(DxfDocument dxf, Layer textLayer, IEnumerable<Coordinates> elements, 
+            Func<double, double> X, Func<double, double> Y, Func<double, double> Z, string textValue, double margin = 10)
         {
             var blocks = elements.Where(e => e.label == Lab.Block).ToList();
             if (blocks.Count == 0) return;
@@ -389,13 +402,11 @@ namespace Klimor.WebApi.DXF.Services
 
             // "nad obiektem": nad górną krawędzią w osi Y
             double yText = yMax - 55;
+            double zText = zMax;
 
-            // gdzie w Z? – najprościej na "przodzie" albo pośrodku.
-            // Jeśli chcesz żeby napis był „z przodu” i zawsze widoczny w rzucie:
-            double zText = zMax; // zwykle bliżej obserwatora przy Twoim Z = zFront - z
-                                 // alternatywnie: double zText = (zMin + zMax) / 2.0;
-
-            var text = new Text(textValue, new Vector3(midX, yText, zText), 40)
+            var vector = ahuType != AhuTypeName.Evo ? 
+                new Vector3(midX, zText, yText) : new Vector3(midX, yText, zText);
+            var text = new Text(textValue, vector, 40)
             {
                 Layer = textLayer,
                 Color = new AciColor(7),
@@ -403,9 +414,6 @@ namespace Klimor.WebApi.DXF.Services
                 Style = LabelTextStyles.ArialBold,
                 Rotation = 0,
                 Alignment = TextAlignment.BottomCenter,
-
-                // Domyślnie Text leży w płaszczyźnie XY (Normal = Z+).
-                // Jeśli chcesz wymusić:
                 Normal = new Vector3(0, 0, 1)
             };
 
