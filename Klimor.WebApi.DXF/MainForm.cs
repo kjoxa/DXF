@@ -66,8 +66,8 @@ namespace Klimor.WebApi.DXF
                         var isExtended = prodBox.Checked;
                         var norm = isExtended ? Norm.ISO_EXTENDED : Norm.ISO;
                         //norm = Norm.ISO;
-                        var input = new FirstStepInput { AhuType = AhuTypeName.Evot, AhuSetup = "H" };
-                        //var input = new FirstStepInput { AhuType = AhuTypeName.Evo, AhuSetup = "V" };
+                        //var input = new FirstStepInput { AhuType = AhuTypeName.Evot, AhuSetup = "H" };
+                        var input = new FirstStepInput { AhuType = AhuTypeName.Evo, AhuSetup = "V" };
                         Generate2D(elements, $"{Path.GetFileNameWithoutExtension(ofd.FileName)}.dxf", isExtended, norm, input);
                         dxf3D.Generate3D(elements, $"{Path.GetFileNameWithoutExtension(ofd.FileName)}_3D.dxf", norm, input);
 

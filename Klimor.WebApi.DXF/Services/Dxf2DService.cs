@@ -99,6 +99,7 @@ namespace Klimor.WebApi.DXF.Services
             { "EH", "electricheater" },
             { "GM", "gas" },
             { "DE", "dropletEliminator" },
+            { "SH", "steam-generator" },
         };
 
         public void GenerateChannelNumbers(List<Coordinates> elements, DxfDocument dxf, ViewElement view, Layer textLayer)
@@ -1000,7 +1001,9 @@ namespace Klimor.WebApi.DXF.Services
                         var downLengthLinePositionFactorY = 70;// (el.y2 - el.y1) / 2.35;
                         var downLengthLinePositionFactorZ = 70;// (el.z2 - el.z1) / 2.25;                        
                         if (!string.IsNullOrEmpty(el.type))
-                        {                            
+                        {   
+                            if (el.label == Lab.SteamGenerator) addDim = true;
+
                             // elementy zewnętrzne
                             if (externalElementShow)
                             {
@@ -1089,6 +1092,8 @@ namespace Klimor.WebApi.DXF.Services
 
                         if (!string.IsNullOrEmpty(el.type))
                         {
+                            if (el.label == Lab.SteamGenerator) addDim = true;
+
                             // nie dodajemy wysokości drainTraya/connectora na widoku operational
                             if ((el.View == ViewName.Operational || el.View == ViewName.RightFront) && (el.label == Lab.Connector || el.label == Lab.InsideConnector))
                             {
