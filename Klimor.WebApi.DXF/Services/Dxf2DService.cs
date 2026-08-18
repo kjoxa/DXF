@@ -847,6 +847,7 @@ namespace Klimor.WebApi.DXF.Services
                                                     "Hatch" => "",
                                                     "Connector" => "",
 /*EvoT*/                                            "Down_Removable" => "PNL_GRIP",
+                                                    "Middle_Wall" => "PNL",
                                                     _ => el.label
                                                 };
 
@@ -856,7 +857,7 @@ namespace Klimor.WebApi.DXF.Services
                                                     wallDescription = "DRN_TRY";
                                                 }
 
-                                                if (wallDescription == "INS" || wallDescription == "BACK")
+                                                if (wallDescription == "INS" || wallDescription == "BACK" || wallDescription == "Hole")
                                                 {
                                                     wallDescription = el.type switch
                                                     {

@@ -67,7 +67,7 @@ namespace Klimor.WebApi.DXF
                         var norm = isExtended ? Norm.ISO_EXTENDED : Norm.ISO;
                         //norm = Norm.ISO;
                         //var input = new FirstStepInput { AhuType = AhuTypeName.Evot, AhuSetup = "H" };
-                        var input = new FirstStepInput { AhuType = AhuTypeName.Evo, AhuSetup = "V" };
+                        var input = new FirstStepInput { AhuType = AhuTypeName.Evo, AhuSetup = "V" }; // evoV ma ahuSetup SV to nowe Kamila
                         Generate2D(elements, $"{Path.GetFileNameWithoutExtension(ofd.FileName)}.dxf", isExtended, norm, input);
                         dxf3D.Generate3D(elements, $"{Path.GetFileNameWithoutExtension(ofd.FileName)}_3D.dxf", norm, input);
 
@@ -669,30 +669,30 @@ namespace Klimor.WebApi.DXF
                         additionalInfos = wallBlock.additionalInfos,
                     });
                 }
-            }
-            
 
-
-            //foreach (var wallBlock in elements.Where(e => e.label == Lab.Middle_Wall && e.View == ViewName.DownUp).ToList())
-            //{
-            //    elements.Add(new Coordinates
-            //    {
-            //        View = ViewName.DownUp,
-            //        label = Lab.Block,
-            //        type = Lab.Block,
-            //        x1 = wallBlock.x1 - 50,
-            //        x2 = wallBlock.x2 + 50,
-            //        y1 = wallBlock.y1 - 50,
-            //        y2 = wallBlock.y2 + 50,
-            //        z1 = wallBlock.z1 - 50,
-            //        z2 = wallBlock.z2 + 50,
-            //        PositionUp = wallBlock.PositionUp,
-            //        PositionDown = wallBlock.PositionDown,
-            //        posUpDown = wallBlock.posUpDown,
-            //        additionalInfos = wallBlock.additionalInfos,
-            //    });
-            //}
-
+                if (blockContainsMiddleWalls.Count() == 0)
+                {
+                    foreach (var wallBlock in elements.Where(e => e.label == Lab.Middle_Wall && e.View == ViewName.DownUp).ToList())
+                    {
+                        elements.Add(new Coordinates
+                        {
+                            View = ViewName.DownUp,
+                            label = Lab.Block,
+                            type = Lab.Block,
+                            x1 = wallBlock.x1 - 50,
+                            x2 = wallBlock.x2 + 50,
+                            y1 = wallBlock.y1 - 50,
+                            y2 = wallBlock.y2 + 50,
+                            z1 = wallBlock.z1 - 50,
+                            z2 = wallBlock.z2 + 50,
+                            PositionUp = wallBlock.PositionUp,
+                            PositionDown = wallBlock.PositionDown,
+                            posUpDown = wallBlock.posUpDown,
+                            additionalInfos = wallBlock.additionalInfos,
+                        });
+                    }
+                }                    
+            }            
 
             // usuwanie duplikatów Hatchy na Up
             //elements.RemoveAll(e => e.label == Lab.Hatch && e.View == ViewName.Down && downUpHatches.Any(h => h.x1 == e.x1 && h.x2 == e.x2));
